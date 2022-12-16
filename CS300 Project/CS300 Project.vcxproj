@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{f81161c1-3d95-40ed-871c-72e398400223}</ProjectGuid>
+    <RootNamespace>CS300Project</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Models;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)Models;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Models;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)Models;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common;$(SolutionDir)ThirdParty;$(SolutionDir)ThirdParty\assimp\include\;$(SolutionDir)ThirdParty\Imgui;$(SolutionDir)Models</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\GLEW\Win32;$(SolutionDir)ThirdParty\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "..\ThirdParty\GLFW\*.dll" "$(TargetDir)"
+xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common;$(SolutionDir)ThirdParty;$(SolutionDir)ThirdParty\assimp\include\;$(SolutionDir)ThirdParty\Imgui;$(SolutionDir)Models</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\GLEW\Win32;$(SolutionDir)ThirdParty\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "..\ThirdParty\GLFW\*.dll" "$(TargetDir)"
+xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common;$(SolutionDir)ThirdParty;$(SolutionDir)ThirdParty\assimp\include\;$(SolutionDir)ThirdParty\Imgui;$(SolutionDir)Models</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\GLFW;$(SolutionDir)ThirdParty\GLEW\x64;$(SolutionDir)ThirdParty\assimp\64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "..\ThirdParty\GLFW\*.dll" "$(TargetDir)"
+xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common;$(SolutionDir)ThirdParty;$(SolutionDir)ThirdParty\assimp\include\;$(SolutionDir)ThirdParty\Imgui;$(SolutionDir)Models</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)ThirdParty\GLFW;$(SolutionDir)ThirdParty\GLEW\x64;$(SolutionDir)ThirdParty\assimp\64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "..\ThirdParty\GLFW\*.dll" "$(TargetDir)"
+xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\1.0 - Simple Scene\GLApplication.cpp" />
+    <ClCompile Include="..\Common\AnimatingFunctions.cpp" />
+    <ClCompile Include="..\Common\AnimationModel.cpp" />
+    <ClCompile Include="..\Common\AnimationModelDatas.cpp" />
+    <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp" />
+    <ClCompile Include="..\Common\BillboardManager.cpp" />
+    <ClCompile Include="..\Common\BillBoardObject.cpp" />
+    <ClCompile Include="..\Common\BoneStorageManager.cpp" />
+    <ClCompile Include="..\Common\Floor.cpp" />
+    <ClCompile Include="..\Common\FrameBuffer.cpp" />
+    <ClCompile Include="..\Common\FrustumCulling.cpp" />
+    <ClCompile Include="..\Common\Graphic.cpp" />
+    <ClCompile Include="..\Common\Interpolation.cpp" />
+    <ClCompile Include="..\Common\MeshDatas.cpp" />
+    <ClCompile Include="..\Common\MultipleAnimationObject.cpp" />
+    <ClCompile Include="..\Common\Object.cpp" />
+    <ClCompile Include="..\Common\Quaternion.cpp" />
+    <ClCompile Include="..\Common\shader.cpp" />
+    <ClCompile Include="..\Common\SingleAnimationObject.cpp" />
+    <ClCompile Include="..\Common\SkyBox.cpp" />
+    <ClCompile Include="..\Common\Texture.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\ThirdParty\Imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\AnimatingFunctions.h" />
+    <ClInclude Include="..\Common\AnimationModel.h" />
+    <ClInclude Include="..\Common\AnimationModelDatas.h" />
+    <ClInclude Include="..\Common\AnimationStructure.hpp" />
+    <ClInclude Include="..\Common\BillboardAnimatingDatas.h" />
+    <ClInclude Include="..\Common\BillboardManager.h" />
+    <ClInclude Include="..\Common\BillBoardObject.h" />
+    <ClInclude Include="..\Common\BoneStorageManager.h" />
+    <ClInclude Include="..\Common\Buffer.hpp" />
+    <ClInclude Include="..\Common\Camera.hpp" />
+    <ClInclude Include="..\Common\Floor.hpp" />
+    <ClInclude Include="..\Common\FrameBuffer.h" />
+    <ClInclude Include="..\Common\FrustumCulling.h" />
+    <ClInclude Include="..\Common\Graphic.h" />
+    <ClInclude Include="..\Common\Interpolation.h" />
+    <ClInclude Include="..\Common\Material.h" />
+    <ClInclude Include="..\Common\MeshDatas.h" />
+    <ClInclude Include="..\Common\MultipleAnimationObject.h" />
+    <ClInclude Include="..\Common\Object.h" />
+    <ClInclude Include="..\Common\Quaternion.h" />
+    <ClInclude Include="..\Common\Shader.h" />
+    <ClInclude Include="..\Common\SimpleMeshes.h" />
+    <ClInclude Include="..\Common\SingleAnimationObject.h" />
+    <ClInclude Include="..\Common\Skybox.h" />
+    <ClInclude Include="..\Common\StringParser.h" />
+    <ClInclude Include="..\Common\Texture.h" />
+    <ClInclude Include="..\Common\VertexBoneData.hpp" />
+    <ClInclude Include="..\ThirdParty\Imgui\imconfig.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imgui.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imgui_internal.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imstb_textedit.h" />
+    <ClInclude Include="..\ThirdParty\Imgui\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\billboardFrag.glsl" />
+    <None Include="..\Shaders\billboardGeometry.glsl" />
+    <None Include="..\Shaders\billboardVert.glsl" />
+    <None Include="..\Shaders\computeShader.glsl" />
+    <None Include="..\Shaders\floorFragment.glsl" />
+    <None Include="..\Shaders\floorVertex.glsl" />
+    <None Include="..\Shaders\frag.glsl" />
+    <None Include="..\Shaders\SkyboxFragment.glsl" />
+    <None Include="..\Shaders\SkyboxVertex.glsl" />
+    <None Include="..\Shaders\vert.glsl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
