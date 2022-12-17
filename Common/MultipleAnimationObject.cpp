@@ -3,18 +3,18 @@
 #include <assimp/scene.h>
 
 #include "AnimationModel.h"
+#include "Timer.hpp"
 
 MultipleAnimationObject::MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal,
                                                  glm::vec3 scaleVal) : Object(posVal, rotVal, scaleVal)
 {
-	//animationModels.push_back(model);
-	//animationModel = animationModels[currentAnimationIndex];
-	animationModel = nullptr;
+	currentAnimationModel = nullptr;
+	timer = new Timer();
 }
 
 MultipleAnimationObject::~MultipleAnimationObject()
 {
-
+	delete timer;
 }
 
 void MultipleAnimationObject::Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
@@ -47,17 +47,41 @@ std::vector<glm::mat4> MultipleAnimationObject::Interpolate(float animationTimeT
 void MultipleAnimationObject::AddAnimation(AnimationModel* model)
 {
 	animationModels.push_back(model);
-	animationModel = animationModels[currentAnimationIndex];
+	currentAnimationModel = animationModels[currentAnimationIndex];
 }
 
 void MultipleAnimationObject::IncrementIndex()
 {
 	currentAnimationIndex++;
-	animationModel = animationModels[currentAnimationIndex];
+
+	CheckCurrentIndexRange();
+
+	currentAnimationModel = animationModels[currentAnimationIndex];
 }
 
 void MultipleAnimationObject::SetAnimationIndex(int index)
 {
 	currentAnimationIndex = index;
-	animationModel = animationModels[currentAnimationIndex];
+
+	CheckCurrentIndexRange();
+
+	currentAnimationModel = animationModels[currentAnimationIndex];
+}
+
+void MultipleAnimationObject::CheckCurrentIndexRange()
+{
+	if (currentAnimationIndex < 0)
+		currentAnimationIndex = static_cast<int>(animationModels.size()) - 1;
+
+	else if (currentAnimationIndex >= static_cast<int>(animationModels.size()))
+		currentAnimationIndex = 0;
+}
+
+void MultipleAnimationObject::ChangeCurrentAnimationWithTime()
+{
+	const float animationDuration = static_cast<float>(
+		currentAnimationModel->GetScene()->mAnimations[0]->mDuration);
+
+	if(timer->CheckTime(animationDuration))
+		IncrementIndex();
 }

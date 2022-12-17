@@ -1,11 +1,12 @@
 #pragma once
 #include "Object.h"
 
-class MultipleAnimationObject : public Object
+class Timer;
+
+class MultipleAnimationObject final : public Object
 {
 public:
 	MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
-
 	~MultipleAnimationObject() override;
 
 	void Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
@@ -17,9 +18,12 @@ public:
 	void AddAnimation(AnimationModel* model);
 	void IncrementIndex();
 	void SetAnimationIndex(int index);
+	void CheckCurrentIndexRange();
+	void ChangeCurrentAnimationWithTime();
 
 	std::vector<AnimationModel*> animationModels;
-	AnimationModel* animationModel;
+	AnimationModel* currentAnimationModel;
 private:
 	int currentAnimationIndex = 0;
+	Timer* timer;
 };

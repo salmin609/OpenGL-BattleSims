@@ -162,44 +162,18 @@ int main()
         ImGui::Begin("ImGui");
 
         static int item_current_idx = 0; // Here we store our selection data as an index.
-        const char* swatItems[] = { "SWAT_RifleAim", "SWAT_RifleCrouch", "SWAT_RifleIdle",
-			"SWAT_RifleWalk", "SWAT_Run", "SWAT_SteppingBackward", "SWAT_Strafing", "SWAT_TurnLeft",
-			"SWAT_CrawlBackward", "SWAT_Death", "SWAT_Reload", "SWAT_Reload2", "SWAT_Smash",
-        };
-        const char* amyItems[] = { "AMY_Excited", "AMY_Floating", "AMY_HappyIdle",
-			"AMY_Jogging", "AMY_Singing", "AMY_StandingUp", "AMY_Surprised", "AMY_TalkingOnPhone",
-			"AMY_TwistDance"
-        };
-        const char* knightsItems[] = { "KNIGHT_Attack",  "KNIGHT_Block",
-            "KNIGHT_BlockIdle", "KNIGHT_CrouchBlockIdle", "KNIGHT_Death", "KNIGHT_Idle", "KNIGHT_Idle2",
-            "KNIGHT_Impact", "KNIGHT_PowerUp", "KNIGHT_Run", "KNIGHT_Slash"
-        };
-        const char* michelleItems[] = { "MICHELLE_BreakDance",  "MICHELLE_BreakDanceReady",
-			"MICHELLE_Dancing", "MICHELLE_DancingTwerk", "MICHELLE_Flair", "MICHELLE_HipHopDance1", "MICHELLE_HipHopDance2",
-			"MICHELLE_HipHopDance3", "MICHELLE_HipHopDance4", "MICHELLE_RumbaDance", "MICHELLE_Twist",
-            "MICHELLE_WaveHipHop"
-        };
+        const char* items[] = { "SWAT", "AMY", "KNIGHT", "MICHELLE", "ADAM"};
 
-        const char* adamItems[] = { "ADAM_ComboPunch",  "ADAM_ElbowPunch",
-			"ADAM_Idle", "ADAM_Idle2", "ADAM_Jab", "ADAM_MMAKick", "ADAM_Victory"
-        };
+        const int itemArraySize = ARRAYSIZE(items);
 
-        const int swatArraySize = IM_ARRAYSIZE(swatItems);
-        const int amyArraySize = IM_ARRAYSIZE(amyItems);
-        const int knightArraySize = IM_ARRAYSIZE(knightsItems);
-        const int michelleArraySize = IM_ARRAYSIZE(michelleItems);
-        const int adamArraySize = IM_ARRAYSIZE(adamItems);
-
-        int arrayOffset = 0;
-
-        if (ImGui::TreeNode("SWAT"))
+        if (ImGui::TreeNode("Models"))
         {
-            if (ImGui::BeginListBox("SWAT Animations"))
+            if (ImGui::BeginListBox("ModelList"))
             {
-                for (int n = 0; n < swatArraySize; n++)
+                for (int n = 0; n < itemArraySize; n++)
                 {
                     const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(swatItems[n], is_selected))
+                    if (ImGui::Selectable(items[n], is_selected))
                         item_current_idx = n;
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -208,131 +182,8 @@ int main()
                 }
                 ImGui::EndListBox();
             }
-            if(ImGui::Button("Add All"))
-            {
-	            for(int i = 0; i < swatArraySize; ++i)
-	            {
-                    graphic->PopulateObjs(200, i);
-	            }
-            }
-
             ImGui::TreePop();
         }
-        arrayOffset += swatArraySize;
-
-        if(ImGui::TreeNode("AMY"))
-        {
-	        if (ImGui::BeginListBox("AMY Animations"))
-	        {
-	            for (int n = arrayOffset; n < amyArraySize + arrayOffset; n++)
-	            {
-	                const bool is_selected = (item_current_idx == n);
-	                if (ImGui::Selectable(amyItems[n - arrayOffset], is_selected))
-	                    item_current_idx = n;
-
-	                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-	                if (is_selected)
-	                    ImGui::SetItemDefaultFocus();
-	            }
-	            ImGui::EndListBox();
-	        }
-            if (ImGui::Button("Add All"))
-            {
-                for (int i = arrayOffset; i < amyArraySize + arrayOffset; ++i)
-                {
-                    graphic->PopulateObjs(200, i);
-                }
-            }
-
-            ImGui::TreePop();
-        }
-        arrayOffset += amyArraySize;
-
-        if (ImGui::TreeNode("KNIGHT"))
-        {
-            if (ImGui::BeginListBox("KNIGHT Animations"))
-            {
-                for (int n = arrayOffset; n < knightArraySize + arrayOffset; n++)
-                {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(knightsItems[n - arrayOffset], is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndListBox();
-            }
-            if (ImGui::Button("Add All"))
-            {
-                for (int i = arrayOffset; i < knightArraySize + arrayOffset; ++i)
-                {
-                    graphic->PopulateObjs(200, i);
-                }
-            }
-
-            ImGui::TreePop();
-        }
-
-        arrayOffset += knightArraySize;
-
-        if (ImGui::TreeNode("MICHELLE"))
-        {
-            if (ImGui::BeginListBox("MICHELLE Animations"))
-            {
-                for (int n = arrayOffset; n < michelleArraySize + arrayOffset; n++)
-                {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(michelleItems[n - arrayOffset], is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndListBox();
-            }
-            if (ImGui::Button("Add All"))
-            {
-                for (int i = arrayOffset; i < michelleArraySize + arrayOffset; ++i)
-                {
-                    graphic->PopulateObjs(200, i);
-                }
-            }
-
-            ImGui::TreePop();
-        }
-
-        arrayOffset += michelleArraySize;
-
-        if (ImGui::TreeNode("ADAM"))
-        {
-            if (ImGui::BeginListBox("ADAM Animations"))
-            {
-                for (int n = arrayOffset; n < adamArraySize + arrayOffset; n++)
-                {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(adamItems[n - arrayOffset], is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndListBox();
-            }
-            if (ImGui::Button("Add All"))
-            {
-                for (int i = arrayOffset; i < adamArraySize + arrayOffset; ++i)
-                {
-                    graphic->PopulateObjs(200, i);
-                }
-            }
-
-            ImGui::TreePop();
-        }
-
 
         ImGui::SliderInt("Amount", &addingNum, 200, 1000);
         if (ImGui::Button("Add objects"))

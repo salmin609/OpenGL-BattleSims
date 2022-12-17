@@ -157,8 +157,10 @@ const aiScene* AnimationModel::GetScene() const
 	return scene;
 }
 
-std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks)
+std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks) const
 {
+	assert(interpolationComputeShader != nullptr);
+
 	interpolationComputeShader->Use();
 	datas->BindInterpolationBuffer();
 	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));

@@ -17,7 +17,7 @@ class Shader;
 class BillBoardObject
 {
 public:
-	BillBoardObject(Shader* shader_, glm::vec3 pos_, glm::vec3 scale_, glm::vec3 rot_, float angle_, FrameBuffer* fb_);
+	BillBoardObject(Shader* shader_, const glm::vec3& pos_, FrameBuffer* fb_);
 	~BillBoardObject();
 	void Render(glm::mat4 projMat, glm::mat4 viewMat, Frustum* frustum);
 

@@ -12,6 +12,7 @@
 #include <glm/vec3.hpp>
 #include <glm/detail/type_vec.hpp>
 
+class Timer;
 class Texture;
 class MaterialManager;
 struct Frustum;
@@ -114,7 +115,7 @@ public:
 
 	GLFWwindow* window;
 	Camera* cam;
-
+	Timer* timer;
 	int posOffset = 0;
 	float deltaTime, lastFrame;
 	bool camLock = true;

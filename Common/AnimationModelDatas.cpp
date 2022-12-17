@@ -150,7 +150,7 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 		factorTimeStamps, offsetMatrixes, containOffsetMatrixes, boneIndexes, model);
 
 	int index = 0;
-	int factorVecSize = scalingFactor.size();
+	int factorVecSize = static_cast<int>(scalingFactor.size());
 
 	for (int i = 0; i < factorVecSize; ++i)
 	{
@@ -158,7 +158,7 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 		std::vector<glm::vec4> translationKeys = translationFactor[i];
 		std::vector<glm::vec4> rotationKeys = rotationFactor[i];
 		std::vector<float> timeStamps = factorTimeStamps[i];
-		int individualVecSize = scalingKeys.size();
+		int individualVecSize = static_cast<int>(scalingKeys.size());
 
 		keyFactorStartIndex.push_back(index);
 		for (int j = 0; j < individualVecSize; ++j)
@@ -178,13 +178,13 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 		keyFactorEndIndex.push_back(index);
 	}
 
-	const int totalOrderSize = transformOrder.size();
+	const int totalOrderSize = static_cast<int>(transformOrder.size());
 	int startIndex = 0;
 	for (int i = 0; i < totalOrderSize; ++i)
 	{
 		std::vector<int> order = transformOrder[i];
 
-		const int orderSize = order.size();
+		const int orderSize = static_cast<int>(order.size());
 
 		orderStartIndex.push_back(startIndex);
 		for (int j = 0; j < orderSize; ++j)

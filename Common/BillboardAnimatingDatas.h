@@ -6,9 +6,7 @@
  */
 
 #pragma once
-#include <map>
-#include <string>
-#include "glm/vec3.hpp"
+
 
 class MultipleAnimationObject;
 class SingleAnimationObject;
@@ -27,10 +25,7 @@ public:
 	MultipleAnimationObject* mObj_);
 	~BillboardAnimatingDatas();
 
-	//AnimationModel* model;
 	FrameBuffer* frameBuffer;
-	//Object* obj;
-	//SingleAnimationObject* obj;
 	MultipleAnimationObject* obj;
 
 	Camera* cam;

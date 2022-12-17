@@ -22,7 +22,7 @@
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
-#include "MultipleAnimationObject.h"
+#include "Timer.hpp"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
 {
@@ -51,6 +51,8 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	frustum = new Frustum();
 	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
+
+	timer = new Timer();
 
 }
 
@@ -86,34 +88,16 @@ void Graphic::PopulateObjsPos()
 
 void Graphic::PopulateObjs(int num, int obj)
 {
-	//need to modify obj
-
-	if (obj >= 0 && obj <= static_cast<int>(objKind::SWAT_Smash))
-		obj = 0;
-	else if (obj >= static_cast<int>(objKind::AMY_Excited) && obj <= static_cast<int>(objKind::AMY_TwistDance))
-		obj = 1;
-	else if (obj >= static_cast<int>(objKind::KNIGHT_Attack1) && obj <= static_cast<int>(objKind::KNIGHT_Slash))
-		obj = 2;
-	else if (obj >= static_cast<int>(objKind::MICHELLE_BreakDance) && obj <= static_cast<int>(objKind::MICHELLE_WaveHipHop))
-		obj = 3;
-	else if (obj >= static_cast<int>(objKind::ADAM_ComboPunch) && obj <= static_cast<int>(objKind::ADAM_Victory))
-		obj = 4;
-
-
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
-	//data->obj->SetAnimationIndex(1);
 	data->inUse = true;
 	FrameBuffer* fb = data->frameBuffer;
 
 	for (int i = 0; i < num; ++i)
 	{
-		glm::vec3 pos = objsPos[posOffset + i];
+		const glm::vec3& pos = objsPos[posOffset + i];
 
 		bos.push_back(new BillBoardObject(billboardShader,
-			pos,
-			glm::vec3(100.f, 100.f, 1.f),
-			glm::vec3(1.f, 1.f, 1.f), 1.f,
-			fb));
+			pos, fb));
 	}
 
 	posOffset += num;
@@ -148,13 +132,15 @@ void Graphic::Draw()
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, windowWidth, windowHeight);
-	const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
 
 	const glm::mat4 projMat = glm::perspective(glm::radians(currentCam->Zoom), (float)windowWidth / (float)windowHeight,
 		0.1f, 10000.f);
 
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
+
+
+	boManager->ChangeAnimationIndex();
 
 	boManager->GenBillboard(projMat);
 
@@ -172,7 +158,7 @@ void Graphic::Draw()
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
-#if 1
+#if 0
 	for (const auto& obj : objs)
 	{
 		//AnimationModel* animationModel = obj->animationModel;

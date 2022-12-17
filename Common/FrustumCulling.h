@@ -8,8 +8,7 @@
 #pragma once
 #include <glm/detail/func_geometric.hpp>
 
-#include "Camera.hpp"
-
+class Camera;
 
 struct Plan
 {

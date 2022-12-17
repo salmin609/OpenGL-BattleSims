@@ -37,7 +37,7 @@ public:
 	          std::vector<glm::mat4> transforms);
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;
-	std::vector<glm::mat4> Interpolate(float animationTimeTicks);
+	std::vector<glm::mat4> Interpolate(float animationTimeTicks) const;
 	void PopulateTransforms(std::vector<glm::mat4>& transforms);
 	
 	AnimationModelDatas* datas;

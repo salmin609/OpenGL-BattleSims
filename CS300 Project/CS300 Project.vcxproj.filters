@@ -215,6 +215,9 @@
     <ClInclude Include="..\Common\MultipleAnimationObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Timer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\frag.glsl">

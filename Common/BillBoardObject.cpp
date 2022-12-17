@@ -10,22 +10,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Buffer.hpp"
 #include "FrameBuffer.h"
 #include "FrustumCulling.h"
 #include "Shader.h"
 #include "Texture.h"
 
 
-BillBoardObject::BillBoardObject(Shader* shader_, glm::vec3 pos_, glm::vec3 scale_, glm::vec3 rot_, float angle_, FrameBuffer* fb_)
+BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_, FrameBuffer* fb_)
 {
 	pos = pos_;
-
-
 	shader = shader_;
 	fb = fb_;
-	//scale = scale_;
-
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 }
@@ -47,7 +42,6 @@ void BillBoardObject::Render(glm::mat4 projMat, glm::mat4 viewMat, Frustum* frus
 		fb->texture->Bind(0);
 
 		glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
-		//modelMat = glm::scale(modelMat, scale);
 
 		shader->SendUniformMatGLM("projMat", &projMat);
 		shader->SendUniformMatGLM("viewMat", &viewMat);

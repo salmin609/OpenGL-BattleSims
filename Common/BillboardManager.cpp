@@ -143,6 +143,16 @@ void BillboardManager::ResetFrameBufferWidthHeight(int w, int h)
 	}
 }
 
+void BillboardManager::ChangeAnimationIndex()
+{
+	const int boDatasSize = static_cast<int>(boDatas.size());
+
+	for(int i = 0 ; i < boDatasSize; ++i)
+	{
+		boDatas[i]->obj->ChangeCurrentAnimationWithTime();
+	}
+}
+
 Camera* BillboardManager::GetBoObjCamera(int index)
 {
 	return boDatas[index]->cam;
@@ -167,7 +177,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	const glm::mat4 viewMat = datas->cam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	AnimationModel* model = datas->obj->animationModel;
+	AnimationModel* model = datas->obj->currentAnimationModel;
 	const aiAnimation* animation = model->GetScene()->mAnimations[0];
 	const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
 	const float animationT = static_cast<float>(diff) / 1000.f;

@@ -29,8 +29,10 @@ public:
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
 	void ResetFrameBufferWidthHeight(int w, int h);
+	void ChangeAnimationIndex();
 	Camera* GetBoObjCamera(int index);
 	BillboardAnimatingDatas* GetAnimData(int index);
+
 
 	std::vector<BillboardAnimatingDatas*> boDatas;
 	std::map<std::string, MeshDatas*> meshDatas;

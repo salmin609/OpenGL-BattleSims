@@ -229,6 +229,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\Skybox.h" />
     <ClInclude Include="..\Common\StringParser.h" />
     <ClInclude Include="..\Common\Texture.h" />
+    <ClInclude Include="..\Common\Timer.hpp" />
     <ClInclude Include="..\Common\VertexBoneData.hpp" />
     <ClInclude Include="..\ThirdParty\Imgui\imconfig.h" />
     <ClInclude Include="..\ThirdParty\Imgui\imgui.h" />
