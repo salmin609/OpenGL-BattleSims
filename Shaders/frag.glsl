@@ -20,7 +20,7 @@ void main()
 
 	//Means None
 
-	float ambientStrength = 0.3;
+	float ambientStrength = 0.5;
 	vec3 lightColor = vec3(1.5, 1.5, 1.5);
 	vec3 lightPos = fragPos + vec3(0.f, 10.f, 5.f);
 
