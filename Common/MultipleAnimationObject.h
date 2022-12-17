@@ -4,9 +4,7 @@
 class MultipleAnimationObject : public Object
 {
 public:
-	MultipleAnimationObject(AnimationModel* model,
-		glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal,
-		float instancingOffset_);
+	MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
 
 	~MultipleAnimationObject() override;
 
@@ -18,6 +16,7 @@ public:
 	std::vector<glm::mat4> Interpolate(float animationTimeTicks) override;
 	void AddAnimation(AnimationModel* model);
 	void IncrementIndex();
+	void SetAnimationIndex(int index);
 
 	std::vector<AnimationModel*> animationModels;
 	AnimationModel* animationModel;

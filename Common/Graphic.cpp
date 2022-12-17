@@ -22,6 +22,7 @@
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
+#include "MultipleAnimationObject.h"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
 {
@@ -85,7 +86,22 @@ void Graphic::PopulateObjsPos()
 
 void Graphic::PopulateObjs(int num, int obj)
 {
+	//need to modify obj
+
+	if (obj >= 0 && obj <= static_cast<int>(objKind::SWAT_Smash))
+		obj = 0;
+	else if (obj >= static_cast<int>(objKind::AMY_Excited) && obj <= static_cast<int>(objKind::AMY_TwistDance))
+		obj = 1;
+	else if (obj >= static_cast<int>(objKind::KNIGHT_Attack1) && obj <= static_cast<int>(objKind::KNIGHT_Slash))
+		obj = 2;
+	else if (obj >= static_cast<int>(objKind::MICHELLE_BreakDance) && obj <= static_cast<int>(objKind::MICHELLE_WaveHipHop))
+		obj = 3;
+	else if (obj >= static_cast<int>(objKind::ADAM_ComboPunch) && obj <= static_cast<int>(objKind::ADAM_Victory))
+		obj = 4;
+
+
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
+	//data->obj->SetAnimationIndex(1);
 	data->inUse = true;
 	FrameBuffer* fb = data->frameBuffer;
 

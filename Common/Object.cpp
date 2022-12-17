@@ -9,12 +9,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Object::Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, float instancingOffset_)
+Object::Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal)
 {
 	pos = posVal;
 	rot = rotVal;
 	scale = scaleVal;
-	instancingOffset = instancingOffset_;
 }
 
 Object::~Object()

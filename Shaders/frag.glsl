@@ -15,17 +15,11 @@ layout(binding = 2) uniform sampler2D gNormal;
 
 void main()
 {
-	vec3 Normal = normalize(Normal0);
-	bool found = false;
-
-	//Means None
-
-	float ambientStrength = 0.5;
-	vec3 lightColor = vec3(1.5, 1.5, 1.5);
+	float ambientStrength = 0.5f;
+	vec3 lightColor = vec3(1.5f, 1.5f, 1.5f);
 	vec3 lightPos = fragPos + vec3(0.f, 10.f, 5.f);
 
 	vec3 diffuseColor = texture2D(gDiffuse, TexCoord0.xy).rgb;
-	//vec3 normalColor = texture2D(gNormal, TexCoord0.xy).rgb;
 
 	vec3 ambient = ambientStrength * diffuseColor;
 
@@ -41,5 +35,4 @@ void main()
 
 	vec3 result = ambient + diffuse + specular;
 	FragColor = vec4(result, 1.0f);
-
 }

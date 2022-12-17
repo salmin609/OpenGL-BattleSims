@@ -107,7 +107,6 @@ void AnimationModel::InitMaterial()
  */
 void AnimationModel::Draw(
 	const glm::mat4& objMat, const glm::mat4& projViewMat, float animationT, int transformsOffset,
-	float instancingOffset,
 	std::vector<glm::mat4> transforms)
 {
 	assert(shader != nullptr);
@@ -122,7 +121,6 @@ void AnimationModel::Draw(
 	datas->gBonesBuffer->BindStorage(4);
 	shader->SendUniformInt("transformIndex", transformsOffset);
 	shader->SendUniformFloat("timeTicks", animationT);
-	shader->SendUniformFloat("instancingOffset", instancingOffset);
 	shader->SendUniformMatGLM("model", &modelMat);
 	
 

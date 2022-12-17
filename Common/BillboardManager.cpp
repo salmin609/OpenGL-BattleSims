@@ -30,48 +30,86 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 
 	windowW = windowWidth;
 	windowH = windowHeight;
+
+	boCamera = new Camera(glm::vec3(2281.67f, 48.9464f, 610.049f),
+		glm::vec3(0.20865f, 0.97778f, -0.0202643f),
+		-4.9f, -12.1f);
 	PopulateBoDatas(objPaths);
 }
 
 BillboardManager::~BillboardManager()
 {
 	for(const auto& meshData : meshDatas)
-	{
 		delete meshData.second;
-	}
 
 	for (const auto boData : boDatas)
 		delete boData;
+
+	delete boCamera;
 }
 
 void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 {
 	const size_t objPathsSize = objPaths.size();
 	glm::vec3 objPos(20.f, 0.f, -80.f);
+
+	std::vector<AnimationModel*> models;
+	std::string prevKind;
+
 	for(size_t i = 0; i < objPathsSize; ++i)
 	{
-		std::string objPath = objPaths[i];
+		const std::string objPath = objPaths[i];
 		std::vector<std::string> vec = split(objPath, "_");
 		std::vector<std::string> finalParsed = split(vec[0], "/");
+		std::string modelKind = finalParsed[finalParsed.size() - 1];
 
-		std::string kindString = finalParsed[finalParsed.size() - 1];
+		if(!models.empty())
+		{
+			if(prevKind != modelKind)
+			{
+				animModels.push_back(models);
+				models.clear();
+			}
+		}
 
 		MeshDatas* reusableMeshDatas = nullptr;
 
-		auto found = meshDatas.find(kindString);
+		auto found = meshDatas.find(modelKind);
 
 		if(found != meshDatas.end())
 			reusableMeshDatas = found->second;
 
-		boDatas.push_back(new BillboardAnimatingDatas(objPath, boShader, boComputeShader,
-			objPos,
-			new Camera(glm::vec3(2281.67f, 48.9464f, 610.049f),
-				glm::vec3(0.20865f, 0.97778f, -0.0202643f),
-				-4.9f, -12.1f), windowW, windowH,
-			reusableMeshDatas));
+		AnimationModel* newModel = new AnimationModel(boShader, objPath, boComputeShader, reusableMeshDatas);
+		//animModels.push_back(newModel);
+		models.push_back(newModel);
+
 
 		if(found == meshDatas.end())
-			meshDatas.insert(std::pair<std::string, MeshDatas*>(kindString, boDatas[i]->model->datas->meshDatas));
+			meshDatas.insert(std::pair<std::string, MeshDatas*>(modelKind, newModel->datas->meshDatas));
+
+		prevKind = modelKind;
+
+	}
+	animModels.push_back(models);
+
+	const size_t animModelsSize = animModels.size();
+
+	for(size_t i = 0; i < animModelsSize; ++i)
+	{
+		MultipleAnimationObject* mObj = new MultipleAnimationObject(objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f));
+
+		std::vector<AnimationModel*> modelVec = animModels[i];
+
+		const size_t modelVecSize = modelVec.size();
+
+		for(size_t j = 0; j < modelVecSize; ++j)
+		{
+			AnimationModel* animModel = modelVec[j];
+
+			mObj->AddAnimation(animModel);
+		}
+
+		boDatas.push_back(new BillboardAnimatingDatas(boCamera, windowW, windowH, mObj));
 	}
 }
 

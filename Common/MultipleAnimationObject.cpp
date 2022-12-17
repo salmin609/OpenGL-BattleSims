@@ -4,11 +4,12 @@
 
 #include "AnimationModel.h"
 
-MultipleAnimationObject::MultipleAnimationObject(AnimationModel* model, glm::vec3 posVal, glm::vec3 rotVal,
-                                                 glm::vec3 scaleVal, float instancingOffset_) : Object(posVal, rotVal, scaleVal, instancingOffset_)
+MultipleAnimationObject::MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal,
+                                                 glm::vec3 scaleVal) : Object(posVal, rotVal, scaleVal)
 {
-	animationModels.push_back(model);
-	animationModel = animationModels[currentAnimationIndex];
+	//animationModels.push_back(model);
+	//animationModel = animationModels[currentAnimationIndex];
+	animationModel = nullptr;
 }
 
 MultipleAnimationObject::~MultipleAnimationObject()
@@ -19,8 +20,8 @@ MultipleAnimationObject::~MultipleAnimationObject()
 void MultipleAnimationObject::Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
 	std::vector<glm::mat4> transforms)
 {
-	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset,
-		instancingOffset, transforms);
+	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset, 
+		transforms);
 }
 
 aiAnimation* MultipleAnimationObject::GetAiAnimation()
@@ -52,5 +53,11 @@ void MultipleAnimationObject::AddAnimation(AnimationModel* model)
 void MultipleAnimationObject::IncrementIndex()
 {
 	currentAnimationIndex++;
+	animationModel = animationModels[currentAnimationIndex];
+}
+
+void MultipleAnimationObject::SetAnimationIndex(int index)
+{
+	currentAnimationIndex = index;
 	animationModel = animationModels[currentAnimationIndex];
 }

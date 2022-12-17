@@ -19,7 +19,7 @@ class AnimationModel;
 class Object
 {
 public:
-	Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, float instancingOffset_);
+	Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
 	virtual ~Object();
 	glm::mat4 GetModelMatrix();
 	virtual void Draw(
@@ -31,7 +31,5 @@ public:
 	virtual void ResetAnimationStartTime() = 0;
 	virtual std::vector<glm::mat4> Interpolate(float animationTimeTicks) = 0;
 	glm::vec3 pos, rot, scale;
-	unsigned animationIndex;
-	float instancingOffset;
 private:
 };

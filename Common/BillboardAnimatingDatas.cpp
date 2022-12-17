@@ -15,28 +15,25 @@
 #include "SingleAnimationObject.h"
 
 BillboardAnimatingDatas::BillboardAnimatingDatas(
-	std::string objPath, Shader* objShader, Shader* interpolationShader,
-	glm::vec3 objPos, Camera* cam_, int windowW, int windowH,
-	MeshDatas* reusableMeshData)
+	Camera* cam_, int windowW, int windowH
+	, MultipleAnimationObject* mObj_)
 {
-	model = new AnimationModel(objShader, objPath, interpolationShader, reusableMeshData);
-	
+	//model = new AnimationModel(objShader, objPath, interpolationShader, reusableMeshData);
+	//model = model_;
+
 	frameBuffer = new FrameBuffer(windowW, windowH);
 	//obj = new SingleAnimationObject(model, objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f),
 	//	false, 0.f);
 
-	obj = new MultipleAnimationObject(model, objPos, 
-		glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f)
-		,0.f);
+	obj = mObj_;
 
 	cam = cam_;
 }
 
 BillboardAnimatingDatas::~BillboardAnimatingDatas()
 {
-	delete model;
+	//delete model;
 	delete frameBuffer;
-	delete cam;
 	delete obj;
 
 }

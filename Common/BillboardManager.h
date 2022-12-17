@@ -12,6 +12,7 @@
 #include <vector>
 #include "glm/mat4x4.hpp"
 
+class AnimationModel;
 class Floor;
 class MeshDatas;
 class Texture;
@@ -33,10 +34,13 @@ public:
 
 	std::vector<BillboardAnimatingDatas*> boDatas;
 	std::map<std::string, MeshDatas*> meshDatas;
+	std::vector<std::vector<AnimationModel*>> animModels;
 
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
 		,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const;
+
+	Camera* boCamera;
 
 	Shader* boShader;
 	Shader* boComputeShader;

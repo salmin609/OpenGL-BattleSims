@@ -23,13 +23,11 @@ class AnimationModel;
 class BillboardAnimatingDatas
 {
 public:
-	BillboardAnimatingDatas(
-		std::string objPath, Shader* objShader, Shader* interpolationShader,
-		glm::vec3 objPos, Camera* cam_, int windowW, int windowH,
-		MeshDatas* reusableMeshData);
+	BillboardAnimatingDatas(Camera* cam_, int windowW, int windowH,
+	MultipleAnimationObject* mObj_);
 	~BillboardAnimatingDatas();
 
-	AnimationModel* model;
+	//AnimationModel* model;
 	FrameBuffer* frameBuffer;
 	//Object* obj;
 	//SingleAnimationObject* obj;
