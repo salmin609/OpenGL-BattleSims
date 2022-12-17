@@ -6,7 +6,7 @@ class MultipleAnimationObject : public Object
 public:
 	MultipleAnimationObject(AnimationModel* model,
 		glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal,
-		bool isInstance_, float instancingOffset_);
+		float instancingOffset_);
 
 	~MultipleAnimationObject() override;
 

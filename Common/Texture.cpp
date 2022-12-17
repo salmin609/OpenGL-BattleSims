@@ -80,10 +80,20 @@ bool Texture::Load()
 	return false;
 }
 
-void Texture::Bind(GLenum textureUnit)
+void Texture::Bind(unsigned slot)
 {
-	glActiveTexture(textureUnit);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(target, textureObj);
+}
+
+void Texture::Bind(unsigned shaderId, unsigned slot, const std::string samplerName)
+{
+	const unsigned location = glGetUniformLocation(shaderId, samplerName.c_str());
+	glUseProgram(shaderId);
+	glUniform1i(static_cast<GLint>(location), static_cast<GLint>(slot));
+
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, textureObj);
 }
 
 void Texture::SaveImg()

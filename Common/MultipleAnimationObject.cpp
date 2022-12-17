@@ -5,7 +5,7 @@
 #include "AnimationModel.h"
 
 MultipleAnimationObject::MultipleAnimationObject(AnimationModel* model, glm::vec3 posVal, glm::vec3 rotVal,
-                                                 glm::vec3 scaleVal, bool isInstance_, float instancingOffset_) : Object(posVal, rotVal, scaleVal, isInstance_, instancingOffset_)
+                                                 glm::vec3 scaleVal, float instancingOffset_) : Object(posVal, rotVal, scaleVal, instancingOffset_)
 {
 	animationModels.push_back(model);
 	animationModel = animationModels[currentAnimationIndex];
@@ -20,7 +20,7 @@ void MultipleAnimationObject::Draw(const glm::mat4& projViewMat, float animation
 	std::vector<glm::mat4> transforms)
 {
 	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset,
-		instancingOffset, transforms, isInstance);
+		instancingOffset, transforms);
 }
 
 aiAnimation* MultipleAnimationObject::GetAiAnimation()

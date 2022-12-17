@@ -20,21 +20,23 @@
 #include "Texture.h"
 #include "AnimationModelDatas.h"
 #include "Buffer.hpp"
+//#include "Graphic.h"
+
 
 #define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_GenSmoothNormals |  aiProcess_JoinIdenticalVertices )
 
-/*
- * Create VAO for object,
- *
- * Create Assimp::Importer to read / Parse files.
- *
- * AnimationModelDatas
- * Store all infos about model (positions, normals, textureCoords, index)
- * Also, I use Shader Storage Buffer Object to store boneIndexes, weights, BoneStartIndex, BoneEndIndex, so it stores index of ssbo.
- *
- * After that, Reserve VectorSpace,
- * Read positions / texCoords / normals hierarchical, Also, Find & load texture files.
- */
+ /*
+  * Create VAO for object,
+  *
+  * Create Assimp::Importer to read / Parse files.
+  *
+  * AnimationModelDatas
+  * Store all infos about model (positions, normals, textureCoords, index)
+  * Also, I use Shader Storage Buffer Object to store boneIndexes, weights, BoneStartIndex, BoneEndIndex, so it stores index of ssbo.
+  *
+  * After that, Reserve VectorSpace,
+  * Read positions / texCoords / normals hierarchical, Also, Find & load texture files.
+  */
 AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader* interpolationShader,
 	MeshDatas* reusableMeshDatas)
 {
@@ -47,11 +49,11 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 	numIndices = 0;
 
 	glGenVertexArrays(1, &vao);
-	
+
 	startTime = std::chrono::system_clock::now();
 	filePath = _filePath;
 	importer = new Importer();
-	
+
 	scene = importer->ReadFile(filePath.c_str(),
 		ASSIMP_LOAD_FLAGS);
 
@@ -61,7 +63,7 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 
 	datas->ReserveSpace(scene);
 
-	if(datas->needNewMesh)
+	if (datas->needNewMesh)
 	{
 		std::cout << "Initialize Mesh " << _filePath << std::endl;
 		AnimatingFunctions::MeshInitializing::InitAllMeshes(this);
@@ -99,15 +101,14 @@ void AnimationModel::InitMaterial()
 
 /*
  * Store all animation transformation datas in transforms vector,
- * read hierarchical transformation from all nodes, 
+ * read hierarchical transformation from all nodes,
  * and pass infos to shader uniform.
  *
  */
 void AnimationModel::Draw(
 	const glm::mat4& objMat, const glm::mat4& projViewMat, float animationT, int transformsOffset,
 	float instancingOffset,
-	std::vector<glm::mat4> transforms,
-	bool isInstance)
+	std::vector<glm::mat4> transforms)
 {
 	assert(shader != nullptr);
 
@@ -115,86 +116,45 @@ void AnimationModel::Draw(
 	Select();
 
 	glm::mat4 matrix = projViewMat * objMat;
+	glm::mat4 modelMat = objMat;
 	shader->SendUniformMatGLM("gWVP", &matrix);
 	datas->gBonesBuffer->WriteData<glm::mat4>(transforms.data());
 	datas->gBonesBuffer->BindStorage(4);
-	shader->SendUniformInt("displayTexture", (int)isTextured);
 	shader->SendUniformInt("transformIndex", transformsOffset);
 	shader->SendUniformFloat("timeTicks", animationT);
 	shader->SendUniformFloat("instancingOffset", instancingOffset);
+	shader->SendUniformMatGLM("model", &modelMat);
+	
+
+	if (datas->diffuseTexture != nullptr)
+		datas->diffuseTexture->Bind(shader->GetShaderId(), 0, "gDiffuse");
+
+	if (datas->specularTexture != nullptr)
+		datas->specularTexture->Bind(shader->GetShaderId(), 1, "gSpecular");
+
+	if (datas->normalTexture != nullptr)
+		datas->normalTexture->Bind(shader->GetShaderId(), 2, "gNormal");
 
 	const unsigned meshesSize = datas->meshes.size();
 	for (unsigned i = 0; i < meshesSize; ++i)
 	{
-		unsigned materialIndex = datas->meshes[i].MaterialIndex;
-		//assert(materialIndex < datas->materials.size());
+		glDrawElementsBaseVertex(GL_TRIANGLES, static_cast<GLsizei>(datas->meshes[i].NumIndices),
+			GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * datas->meshes[i].BaseIndex)
+			, static_cast<GLsizei>(datas->meshes[i].BaseVertex));
 
-		//MaterialManagement::diffuseTextures[datas->materialPath]->Bind(0);
-		//Texture* findTexture = MaterialManagement::diffuseTextures[datas->materialPath];
-		//std::pair<std::string, Texture*> founded;
-		//auto founded = *MaterialManagement::diffuseTextures.find(datas->materialPath);
-		//Texture* findTexture = MaterialManagement::diffuseTextures[datas->materialPath];
-
-		if(datas->diffuseTexture != nullptr)
-			datas->diffuseTexture->Bind(GL_TEXTURE0);
-		else
-		{
-			int a = 0;
-		}
-
-		
-		/*else
-		{
-			int a = 0;
-		}*/
-
-		//if(MaterialManagement::diffuseTextures.find(datas->materialPath) != MaterialManagement::diffuseTextures.end())
-		//{
-		//	//find
-		//	int a = 0;
-		//	Texture* texture = MaterialManagement::diffuseTextures.find(datas->materialPath)->second;
-
-		//	int b = 0;
-		//}
-
-		/*if(findTexture != nullptr)
-		{
-			findTexture->Bind(0);
-			
-		}*/
-
-		//if (datas->materials[materialIndex].pDiffuse)
-		//{
-		//	datas->materials[materialIndex].pDiffuse->Bind(0);
-		//}
-
-		//if (datas->materials[materialIndex].pSpecular)
-		//{
-		//	//datas->materials[materialIndex].pSpecular->Bind(GL_TEXTURE1);
-		//}
-
-		if(isInstance)
-			glDrawElementsInstancedBaseVertex(GL_TRIANGLES, datas->meshes[i].NumIndices,
-				GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * datas->meshes[i].BaseIndex),
-				10, datas->meshes[i].BaseVertex);
-		else
-			glDrawElementsBaseVertex(GL_TRIANGLES, datas->meshes[i].NumIndices,
-				GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * datas->meshes[i].BaseIndex)
-				, datas->meshes[i].BaseVertex);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
+		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	glBindVertexArray(0);
 
 }
 
-aiNode* AnimationModel::GetRootNode()
+aiNode* AnimationModel::GetRootNode() const
 {
 	return rootNode;
 }
 
-const aiScene* AnimationModel::GetScene()
+const aiScene* AnimationModel::GetScene() const
 {
 	return scene;
 }
@@ -203,11 +163,11 @@ std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks)
 {
 	interpolationComputeShader->Use();
 	datas->BindInterpolationBuffer();
-	interpolationComputeShader->SendUniformInt("inTransformsSize", datas->nodeTransforms.size());
+	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));
 	interpolationComputeShader->SendUniformFloat("animationTimeTicks", animationTimeTicks);
 
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	glDispatchCompute(datas->transformOrder.size(), 1, 1);
+	glDispatchCompute(static_cast<GLuint>(datas->transformOrder.size()), 1, 1);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glUseProgram(0);

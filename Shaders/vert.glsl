@@ -7,11 +7,13 @@ layout(location = 2) in vec3 normal;
 out vec2 TexCoord0;
 out vec3 Normal0;
 out vec3 LocalPos0;
+out vec3 fragPos;
 
 uniform mat4 gWVP;
 uniform int transformIndex;
 uniform float timeTicks;
 uniform float instancingOffset;
+uniform mat4 model;
 
 
 layout(std430, binding = 0) buffer boneDatas
@@ -54,6 +56,7 @@ void main()
     posL.z += (gl_InstanceID * instancingOffset);
 
     gl_Position = gWVP * posL;
+    fragPos = vec3(model * vec4(position, 1.0));
 
     TexCoord0 = texCoord;
     Normal0 = normal;

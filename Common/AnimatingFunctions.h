@@ -44,11 +44,12 @@ namespace AnimatingFunctions
 		//static std::map<std::string, Texture*> diffuseTextures;
 		void InitMaterials(const std::string filename, AnimationModel* model);
 		void LoadTextures(const aiMaterial* material, const std::string filename, int index, AnimationModel* model);
-		void LoadDiffuseTexture(const aiMaterial* material, const std::string filename, int index, AnimationModel* model);
-		//void LoadSpecularTexture(const aiMaterial* material, const std::string filename, int index, AnimationModel* model);
+		void LoadDiffuseTexture(const aiMaterial* material, AnimationModel* model);
+		void LoadSpecularTexture(const aiMaterial* material, AnimationModel* model);
+		void LoadNormalTexture(const aiMaterial* material, AnimationModel* model);
 		//void LoadColors(const aiMaterial* material, int index, AnimationModel* model);
 
-		bool TextureExist(const std::string& filename, int& index);
+		bool TextureExist(const std::string& filename, int& index, const std::vector<MaterialInfos>& textures);
 	}
 	namespace BoneLoading
 	{

@@ -22,7 +22,8 @@ public:
 	Texture(GLenum textureTarget, const std::string fileName);
 	void LoadEmptyTexture(int width, int height);
 	bool Load();
-	void Bind(GLenum textureUnit);
+	void Bind(unsigned slot);
+	void Bind(unsigned shaderId, unsigned slot, const std::string samplerName);
 	void SaveImg();
 	GLuint GetTextureObj();
 private:

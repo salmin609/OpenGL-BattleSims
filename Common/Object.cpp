@@ -9,15 +9,12 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Object::Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, bool isInstance_, float instancingOffset_)
+Object::Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, float instancingOffset_)
 {
-	//animationModel = model;
 	pos = posVal;
 	rot = rotVal;
 	scale = scaleVal;
 	instancingOffset = instancingOffset_;
-	isInstance = isInstance_;
-	//animationIndex = animationIndex_;
 }
 
 Object::~Object()
@@ -35,24 +32,3 @@ glm::mat4 Object::GetModelMatrix()
 
 	return modelMat;
 }
-
-
-//void Object::Draw(
-//	const glm::mat4& projViewMat, float animationT, int transformsOffset,
-//	std::vector<glm::mat4> transforms)
-//{
-//	animationModel->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset,
-//		instancingOffset, transforms, isInstance);
-//}
-//
-//std::chrono::system_clock::time_point Object::GetAnimationStartTime() const
-//{
-//	return animationModel->startTime;
-//}
-//
-//void Object::ResetAnimationStartTime()
-//{
-//	animationModel->startTime = std::chrono::system_clock::now();
-//}
-//
-//

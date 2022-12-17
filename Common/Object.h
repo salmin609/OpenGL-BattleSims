@@ -19,7 +19,7 @@ class AnimationModel;
 class Object
 {
 public:
-	Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, bool isInstance_, float instancingOffset_);
+	Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, float instancingOffset_);
 	virtual ~Object();
 	glm::mat4 GetModelMatrix();
 	virtual void Draw(
@@ -30,11 +30,8 @@ public:
 	virtual std::chrono::system_clock::time_point GetAnimationStartTime() const = 0;
 	virtual void ResetAnimationStartTime() = 0;
 	virtual std::vector<glm::mat4> Interpolate(float animationTimeTicks) = 0;
-	//AnimationModel* animationModel;
 	glm::vec3 pos, rot, scale;
 	unsigned animationIndex;
 	float instancingOffset;
-	bool isInstance;
 private:
-	//float scale;
 };

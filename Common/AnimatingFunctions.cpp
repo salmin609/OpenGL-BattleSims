@@ -121,7 +121,9 @@ namespace AnimatingFunctions
 	}
 	namespace MaterialInitializing
 	{
-		std::vector<MaterialInfos> textures;
+		std::vector<MaterialInfos> diffuseTextures;
+		std::vector<MaterialInfos> specularTextures;
+		std::vector<MaterialInfos> normalTextures;
 
 		//std::map<std::string, Texture*> diffuseTextures;
 		void InitMaterials(const std::string filename, AnimationModel* model)
@@ -141,23 +143,39 @@ namespace AnimatingFunctions
 		{
 			aiString path;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
-			std::string p(path.data);
-
+			const std::string diffusePath(path.data);
 			int matIndex = 0;
-			if(TextureExist(p, matIndex))
+
+			if(TextureExist(diffusePath, matIndex, diffuseTextures))
 			{
-				model->datas->diffuseTexture = textures[matIndex].texture;
-				model->isTextured = AnimationModel::TextureInfos::TEXTURED;
+				model->datas->diffuseTexture = diffuseTextures[matIndex].texture;
 			}
 			else
-				LoadDiffuseTexture(material, filename, index, model);
+				LoadDiffuseTexture(material, model);
+
+			material->GetTexture(aiTextureType_SPECULAR, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
+			const std::string specularPath(path.data);
+
+			if (TextureExist(specularPath, matIndex, specularTextures))
+			{
+				model->datas->specularTexture = specularTextures[matIndex].texture;
+			}
+			else
+				LoadSpecularTexture(material, model);
+
+			//material->GetTexture(aiTextureType_NORMALS, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
+			//const std::string normalPath(path.data);
+
+			//if (TextureExist(normalPath, matIndex, normalTextures))
+			//{
+			//	model->datas->normalTexture = normalTextures[matIndex].texture;
+			//}
+			//else
+			//	LoadNormalTexture(material, model);
 		}
 
-		void LoadDiffuseTexture(const aiMaterial* material, const std::string filename, int index, AnimationModel* model)
+		void LoadDiffuseTexture(const aiMaterial* material, AnimationModel* model)
 		{
-			//model->datas->materials[index].pDiffuse = nullptr;
-
-
 			const unsigned textureCount = material->GetTextureCount(aiTextureType_DIFFUSE);
 
 			if(textureCount > 0)
@@ -168,57 +186,38 @@ namespace AnimatingFunctions
 				{
 					std::string p(path.data);
 
-					//std::string delimiter = "\\";
-					//std::string delimiter = "/";
-					//std::vector<std::string> vec = split(p, delimiter);
-
-					/*if (p.substr(0, 2) == ".\\") {
-						p = p.substr(2, p.size() - 2);
-					}*/
-
-					//std::string fullPath = filename + "/" + p;
-					//std::string filePath = "../Models/" + vec[vec.size() - 1];
 					std::string filePath = "../Models/" + p;
-					//model->datas->materials[index].pDiffuse = new Texture(GL_TEXTURE_2D, filePath);
 					Texture* newDiffuseTexture = new Texture(GL_TEXTURE_2D, filePath);
 
-					//if(!model->datas->materials[index].pDiffuse->Load())
 					if (!newDiffuseTexture->Load())
 					{
 						std::cout << "Failed to Load diffuse texture" << std::endl;
-						model->isTextured = AnimationModel::TextureInfos::NONE;
-						//exit(0);
 					}
 					else
 					{
 						std::cout << "Load diffuse texture : " << filePath << std::endl;
-						model->isTextured = AnimationModel::TextureInfos::TEXTURED;
-						//matManager.insert(std::make_pair(p, newDiffuseTexture));
 						model->datas->materialPath = p;
 						model->datas->diffuseTexture = newDiffuseTexture;
 
 						MaterialInfos mInfo{ p, newDiffuseTexture };
-						textures.push_back(mInfo);
+						diffuseTextures.push_back(mInfo);
 					}
 				}
 			}
 			else
 			{
-				std::cout << "No texture" << std::endl;
-				model->isTextured = AnimationModel::TextureInfos::NONE;
-
+				std::cout << "No Diffuse texture" << std::endl;
 			}
-
 		}
 
-		bool TextureExist(const std::string& filename, int& index)
+		bool TextureExist(const std::string& filename, int& index, const std::vector<MaterialInfos>& textures)
 		{
 			const size_t texturesSize = textures.size();
 
 			for(size_t i = 0; i < texturesSize; ++i)
 			{
 				//texture exist
-				index = i;
+				index = static_cast<int>(i);
 				if (textures[i].path == filename)
 					return true;
 			}
@@ -226,80 +225,78 @@ namespace AnimatingFunctions
 			return false;
 		}
 
-		//void LoadSpecularTexture(const aiMaterial* material, const std::string filename, int index, AnimationModel* model)
-		//{
-		//	model->datas->materials[index].pSpecular = nullptr;
-
-		//	if(material->GetTextureCount(aiTextureType_SPECULAR) > 0)
-		//	{
-		//		aiString path;
-
-		//		if(material->GetTexture(aiTextureType_SPECULAR, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
-		//		{
-		//			std::string p(path.data);
-
-		//			std::string delimiter = "\\";
-		//			std::vector<std::string> vec = split(p, delimiter);
-
-		//			/*if (p.substr(0, 2) == ".\\") {
-		//				p = p.substr(2, p.size() - 2);
-		//			}*/
-
-		//			std::string fullPath = filename + "/" + p;
-		//			std::string filePath = "../Models/" + vec[vec.size() - 1];
-
-		//			//model->datas->materials[index].pSpecular = new Texture(GL_TEXTURE_2D, vec[vec.size() - 1]);
-		//			model->datas->materials[index].pSpecular = new Texture(GL_TEXTURE_2D, filePath);
-
-		//			if (!model->datas->materials[index].pSpecular->Load())
-		//			{
-		//				std::cout << "Failed to Load Specular texture" << std::endl;
-		//				//exit(0);
-		//			}
-		//			else
-		//				std::cout << "Load specular texture : " << fullPath << std::endl;
-		//		}
-		//	}
-		//}
-
-		/*void LoadColors(const aiMaterial* material, int index, AnimationModel* model)
+		void LoadSpecularTexture(const aiMaterial* material, AnimationModel* model)
 		{
-			aiColor3D ambientColor(0.f, 0.f, 0.f);
-			glm::vec3 oneVec(1.f, 1.f, 1.f);
+			const unsigned textureCount = material->GetTextureCount(aiTextureType_SPECULAR);
 
-			int shadingModel = 0;
-
-			if (material->Get(AI_MATKEY_SHADING_MODEL, shadingModel) == AI_SUCCESS)
-				std::cout << "Shading Model : " << shadingModel << std::endl;
-
-			if (material->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor) == AI_SUCCESS)
+			if (textureCount > 0)
 			{
-				model->datas->materials[index].ambientColor.r = ambientColor.r;
-				model->datas->materials[index].ambientColor.g = ambientColor.g;
-				model->datas->materials[index].ambientColor.b = ambientColor.b;
+				aiString path;
+
+				if (material->GetTexture(aiTextureType_SPECULAR, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
+				{
+					std::string p(path.data);
+
+					std::string filePath = "../Models/" + p;
+					Texture* newSpecularTexture = new Texture(GL_TEXTURE_2D, filePath);
+
+					if (!newSpecularTexture->Load())
+					{
+						std::cout << "Failed to Load specular texture" << std::endl;
+					}
+					else
+					{
+						std::cout << "Load specular texture : " << filePath << std::endl;
+						model->datas->materialPath = p;
+						model->datas->specularTexture = newSpecularTexture;
+
+						MaterialInfos mInfo{ p, newSpecularTexture };
+						specularTextures.push_back(mInfo);
+					}
+				}
 			}
 			else
-				model->datas->materials[index].ambientColor = oneVec;
-
-			aiColor3D diffuseColor(0.f, 0.f, 0.f);
-
-			if(material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == AI_SUCCESS)
 			{
-				model->datas->materials[index].diffuseColor.r = diffuseColor.r;
-				model->datas->materials[index].diffuseColor.g = diffuseColor.g;
-				model->datas->materials[index].diffuseColor.b = diffuseColor.b;
+				std::cout << "No Specular texture" << std::endl;
 			}
+		}
 
-			aiColor3D specularColor(0.f, 0.f, 0.f);
+		void LoadNormalTexture(const aiMaterial* material, AnimationModel* model)
+		{
+			const unsigned textureCount = material->GetTextureCount(aiTextureType_NORMALS);
 
-			if(material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == AI_SUCCESS)
+			if (textureCount > 0)
 			{
-				model->datas->materials[index].specularColor.r = specularColor.r;
-				model->datas->materials[index].specularColor.g = specularColor.g;
-				model->datas->materials[index].specularColor.b = specularColor.b;
+				aiString path;
+
+				if (material->GetTexture(aiTextureType_NORMALS, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
+				{
+					std::string p(path.data);
+
+					std::string filePath = "../Models/" + p;
+					Texture* newNormalTexture = new Texture(GL_TEXTURE_2D, filePath);
+
+					if (!newNormalTexture->Load())
+					{
+						std::cout << "Failed to Load normal texture" << std::endl;
+					}
+					else
+					{
+						std::cout << "Load normal texture : " << filePath << std::endl;
+						model->datas->materialPath = p;
+						model->datas->normalTexture = newNormalTexture;
+
+						MaterialInfos mInfo{ p, newNormalTexture};
+						normalTextures.push_back(mInfo);
+					}
+				}
 			}
-			
-		}*/
+			else
+			{
+				std::cout << "No normal texture" << std::endl;
+			}
+		}
+
 	}
 	namespace BoneLoading
 	{

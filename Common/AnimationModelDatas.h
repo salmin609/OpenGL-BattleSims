@@ -44,6 +44,8 @@ public:
 	std::vector<BasicMeshEntry> meshes;
 	std::string materialPath;
 	Texture* diffuseTexture = nullptr;
+	Texture* specularTexture = nullptr;
+	Texture* normalTexture = nullptr;
 
 	Buffer* gBonesBuffer;
 	MeshDatas* meshDatas;
