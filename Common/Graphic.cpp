@@ -91,14 +91,17 @@ void Graphic::PopulateObjs(int num, int obj)
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 	data->inUse = true;
 
+	
+
 	for (int i = 0; i < num; ++i)
 	{
-		int animationIndex = rand() % animationCount;
+		const int animationIndex = rand() % animationCount;
+		const int timeDiffSlot = rand() % data->diffTimeAnimCount;
 
 		const glm::vec3& pos = objsPos[posOffset + i];
 
 		bos.push_back(new BillBoardObject(billboardShader,
-			pos, data->frameBuffers[animationIndex]));
+			pos, data->frameBuffers[timeDiffSlot][animationIndex]));
 	}
 
 	posOffset += num;
@@ -118,7 +121,6 @@ void Graphic::DeleteObjs(int num)
 		posOffset = 0;
 
 	bos.resize(posOffset);
-
 
 	totalRenderingAmount -= num;
 }

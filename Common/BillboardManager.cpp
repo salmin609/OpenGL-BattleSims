@@ -151,28 +151,35 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
                                          ,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const
 {
 	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
+	float diffInTime = 30.f;
 
-	for(int i = 0; i < animationsSize; ++i)
+
+	for(int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
-		datas->frameBuffers[i]->Bind();
+		for (int j = 0; j < animationsSize; ++j)
+		{
+			datas->frameBuffers[i][j]->Bind();
 
-		glClearColor(0.f, 0.f, 0.f, 0.f);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClearColor(0.f, 0.f, 0.f, 0.f);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		const glm::mat4 viewMat = datas->cam->GetViewMatrix();
-		const glm::mat4 projViewMat = projMat * viewMat;
+			const glm::mat4 viewMat = datas->cam->GetViewMatrix();
+			const glm::mat4 projViewMat = projMat * viewMat;
 
-		AnimationModel* model = datas->obj->animationModels[i];
-		const aiAnimation* animation = model->GetScene()->mAnimations[0];
-		const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
-		const float animationT = static_cast<float>(diff) / 1000.f;
+			AnimationModel* model = datas->obj->animationModels[j];
+			const aiAnimation* animation = model->GetScene()->mAnimations[0];
+			const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
+			float animationT = static_cast<float>(diff) / 1000.f;
+			animationT += static_cast<float>(i) * diffInTime;
 
-		const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-		const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-		datas->obj->Draw(projViewMat, animationT, 0, model->Interpolate(animationTimeTicks));
+			const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+			const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
+			datas->obj->Draw(projViewMat, animationT, 0, model->Interpolate(animationTimeTicks));
 
-		datas->frameBuffers[i]->UnBind();
+			datas->frameBuffers[i][j]->UnBind();
+		}
 	}
+	
 }

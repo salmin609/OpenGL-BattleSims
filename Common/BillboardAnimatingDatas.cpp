@@ -18,6 +18,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(
 	Camera* cam_, int windowW, int windowH
 	, MultipleAnimationObject* mObj_)
 {
+	diffTimeAnimCount = 1;
 	//model = new AnimationModel(objShader, objPath, interpolationShader, reusableMeshData);
 	//model = model_;
 
@@ -30,10 +31,18 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(
 
 	const int animationsCount = static_cast<int>(obj->animationModels.size());
 
-	for(int i = 0 ; i < animationsCount; ++i)
+	std::vector<FrameBuffer*> fbs;
+
+	for(int i = 0; i < diffTimeAnimCount; ++i)
 	{
-		frameBuffers.push_back(new FrameBuffer(windowW, windowH));
+		for (int j = 0; j < animationsCount; ++j)
+		{
+			fbs.push_back(new FrameBuffer(windowW, windowH));
+		}
+		frameBuffers.push_back(fbs);
+		fbs.clear();
 	}
+	
 
 	cam = cam_;
 }
@@ -43,9 +52,13 @@ BillboardAnimatingDatas::~BillboardAnimatingDatas()
 	//delete model;
 	const int animationsCount = static_cast<int>(obj->animationModels.size());
 
-	for (int i = 0; i < animationsCount; ++i)
+
+	for (int i = 0; i < diffTimeAnimCount; ++i)
 	{
-		delete frameBuffers[i];
+		for(int j = 0; j < animationsCount; ++j)
+		{
+			delete frameBuffers[i][j];
+		}
 	}
 	delete obj;
 

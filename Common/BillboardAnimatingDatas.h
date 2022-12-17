@@ -27,11 +27,12 @@ public:
 	~BillboardAnimatingDatas();
 
 	//FrameBuffer* frameBuffer;
-	std::vector<FrameBuffer*> frameBuffers;
+	std::vector<std::vector<FrameBuffer*>> frameBuffers;
 	MultipleAnimationObject* obj;
 
 	Camera* cam;
 	bool inUse = false;
+	int diffTimeAnimCount;
 private:
 
 
