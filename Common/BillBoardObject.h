@@ -22,6 +22,7 @@ public:
 	void Render(glm::mat4 projMat, glm::mat4 viewMat, Frustum* frustum);
 
 	glm::vec3 pos;
+	int animationIndex = 0;
 private:
 	unsigned vao;
 	Shader* shader;

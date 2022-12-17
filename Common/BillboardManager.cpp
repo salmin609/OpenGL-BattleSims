@@ -16,11 +16,9 @@
 #include "Floor.hpp"
 #include "FrameBuffer.h"
 #include "Graphic.h"
-#include "Object.h"
 #include "StringParser.h"
 #include "MeshDatas.h"
 #include "MultipleAnimationObject.h"
-#include "SingleAnimationObject.h"
 
 BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_, 
                                    int windowWidth, int windowHeight, const std::vector<std::string>& objPaths)
@@ -127,23 +125,8 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 	}
 }
 
-void BillboardManager::ResetFrameBufferWidthHeight(int w, int h)
-{
-	const size_t bosSize = boDatas.size();
 
-	//Delete frameBuffer
-	for(size_t i = 0; i < bosSize; ++i)
-	{
-		delete boDatas[i]->frameBuffer;
-	}
-
-	for (size_t i = 0; i < bosSize; ++i)
-	{
-		boDatas[i]->frameBuffer = new FrameBuffer(w, h);
-	}
-}
-
-void BillboardManager::ChangeAnimationIndex()
+void BillboardManager::ChangeAnimationIndexByTime()
 {
 	const int boDatasSize = static_cast<int>(boDatas.size());
 
@@ -167,24 +150,29 @@ BillboardAnimatingDatas* BillboardManager::GetAnimData(int index)
 void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_point& current
                                          ,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const
 {
-	datas->frameBuffer->Bind();
+	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
 
-	glClearColor(0.f, 0.f, 0.f, 0.f);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	for(int i = 0; i < animationsSize; ++i)
+	{
+		datas->frameBuffers[i]->Bind();
 
-	const glm::mat4 viewMat = datas->cam->GetViewMatrix();
-	const glm::mat4 projViewMat = projMat * viewMat;
+		glClearColor(0.f, 0.f, 0.f, 0.f);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	AnimationModel* model = datas->obj->currentAnimationModel;
-	const aiAnimation* animation = model->GetScene()->mAnimations[0];
-	const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
-	const float animationT = static_cast<float>(diff) / 1000.f;
+		const glm::mat4 viewMat = datas->cam->GetViewMatrix();
+		const glm::mat4 projViewMat = projMat * viewMat;
 
-	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-	datas->obj->Draw(projViewMat, animationT, 0, model->Interpolate(animationTimeTicks));
+		AnimationModel* model = datas->obj->animationModels[i];
+		const aiAnimation* animation = model->GetScene()->mAnimations[0];
+		const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
+		const float animationT = static_cast<float>(diff) / 1000.f;
 
-	datas->frameBuffer->UnBind();
+		const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+		const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
+		datas->obj->Draw(projViewMat, animationT, 0, model->Interpolate(animationTimeTicks));
+
+		datas->frameBuffers[i]->UnBind();
+	}
 }

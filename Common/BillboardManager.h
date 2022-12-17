@@ -28,8 +28,7 @@ public:
 	~BillboardManager();
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
-	void ResetFrameBufferWidthHeight(int w, int h);
-	void ChangeAnimationIndex();
+	void ChangeAnimationIndexByTime();
 	Camera* GetBoObjCamera(int index);
 	BillboardAnimatingDatas* GetAnimData(int index);
 

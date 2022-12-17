@@ -8,8 +8,6 @@
 
 #include "Graphic.h"
 #include <chrono>
-#include <assimp/scene.h>
-
 #include "Shader.h"
 #include "Camera.hpp"
 #include <GLFW/glfw3.h>
@@ -22,6 +20,7 @@
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
+#include "MultipleAnimationObject.h"
 #include "Timer.hpp"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
@@ -52,7 +51,6 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
-	timer = new Timer();
 
 }
 
@@ -89,15 +87,18 @@ void Graphic::PopulateObjsPos()
 void Graphic::PopulateObjs(int num, int obj)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
+
+	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 	data->inUse = true;
-	FrameBuffer* fb = data->frameBuffer;
 
 	for (int i = 0; i < num; ++i)
 	{
+		int animationIndex = rand() % animationCount;
+
 		const glm::vec3& pos = objsPos[posOffset + i];
 
 		bos.push_back(new BillBoardObject(billboardShader,
-			pos, fb));
+			pos, data->frameBuffers[animationIndex]));
 	}
 
 	posOffset += num;
@@ -138,9 +139,6 @@ void Graphic::Draw()
 
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
-
-
-	boManager->ChangeAnimationIndex();
 
 	boManager->GenBillboard(projMat);
 
@@ -210,7 +208,7 @@ void Graphic::SetWindowWidthHeight(int w, int h)
 
 void Graphic::ResetFrameBufferWidthHeight(int w, int h) const
 {
-	boManager->ResetFrameBufferWidthHeight(w, h);
+	//boManager->ResetFrameBufferWidthHeight(w, h);
 }
 
 void Graphic::PopulateObjPaths()

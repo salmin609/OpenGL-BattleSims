@@ -79,8 +79,12 @@ void MultipleAnimationObject::CheckCurrentIndexRange()
 
 void MultipleAnimationObject::ChangeCurrentAnimationWithTime()
 {
-	const float animationDuration = static_cast<float>(
+	float animationDuration = static_cast<float>(
 		currentAnimationModel->GetScene()->mAnimations[0]->mDuration);
+
+	if (animationDuration < 2.f)
+		animationDuration = 2.f;
+
 
 	if(timer->CheckTime(animationDuration))
 		IncrementIndex();

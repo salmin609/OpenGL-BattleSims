@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <vector>
 
 
 class MultipleAnimationObject;
@@ -25,7 +26,8 @@ public:
 	MultipleAnimationObject* mObj_);
 	~BillboardAnimatingDatas();
 
-	FrameBuffer* frameBuffer;
+	//FrameBuffer* frameBuffer;
+	std::vector<FrameBuffer*> frameBuffers;
 	MultipleAnimationObject* obj;
 
 	Camera* cam;

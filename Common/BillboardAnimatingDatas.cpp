@@ -21,11 +21,19 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(
 	//model = new AnimationModel(objShader, objPath, interpolationShader, reusableMeshData);
 	//model = model_;
 
-	frameBuffer = new FrameBuffer(windowW, windowH);
+	//frameBuffer = new FrameBuffer(windowW, windowH);
+	
 	//obj = new SingleAnimationObject(model, objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f),
 	//	false, 0.f);
 
 	obj = mObj_;
+
+	const int animationsCount = static_cast<int>(obj->animationModels.size());
+
+	for(int i = 0 ; i < animationsCount; ++i)
+	{
+		frameBuffers.push_back(new FrameBuffer(windowW, windowH));
+	}
 
 	cam = cam_;
 }
@@ -33,7 +41,12 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(
 BillboardAnimatingDatas::~BillboardAnimatingDatas()
 {
 	//delete model;
-	delete frameBuffer;
+	const int animationsCount = static_cast<int>(obj->animationModels.size());
+
+	for (int i = 0; i < animationsCount; ++i)
+	{
+		delete frameBuffers[i];
+	}
 	delete obj;
 
 }

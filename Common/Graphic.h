@@ -136,8 +136,6 @@ public:
 	SkyBox* skybox;
 
 	Frustum* frustum;
-
-
 private:
 
 	Shader* shader;
