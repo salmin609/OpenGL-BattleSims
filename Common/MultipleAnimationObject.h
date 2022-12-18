@@ -16,7 +16,7 @@ public:
 	MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
 	~MultipleAnimationObject() override;
 
-	void Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
+	void Draw(const glm::mat4& projViewMat,
 		std::vector<glm::mat4> transforms) override;
 	aiAnimation* GetAiAnimation() override;
 	std::chrono::system_clock::time_point GetAnimationStartTime() const override;

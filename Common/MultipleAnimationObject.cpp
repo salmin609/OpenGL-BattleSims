@@ -24,10 +24,10 @@ MultipleAnimationObject::~MultipleAnimationObject()
 	delete timer;
 }
 
-void MultipleAnimationObject::Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
+void MultipleAnimationObject::Draw(const glm::mat4& projViewMat,
 	std::vector<glm::mat4> transforms)
 {
-	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset, 
+	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, 
 		transforms);
 }
 

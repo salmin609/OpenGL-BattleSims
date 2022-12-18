@@ -23,7 +23,7 @@ public:
 	virtual ~Object();
 	glm::mat4 GetModelMatrix();
 	virtual void Draw(
-		const glm::mat4& projViewMat, float animationT, int transformsOffset,
+		const glm::mat4& projViewMat,
 		std::vector<glm::mat4> transforms) = 0;
 	virtual aiAnimation* GetAiAnimation() = 0;
 	

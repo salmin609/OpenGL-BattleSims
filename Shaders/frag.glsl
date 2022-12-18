@@ -8,10 +8,6 @@ out vec4 FragColor;
 
 layout(binding = 0) uniform sampler2D gDiffuse;
 layout(binding = 1) uniform sampler2D gSpecular;
-layout(binding = 2) uniform sampler2D gNormal;
-
-
-
 
 void main()
 {

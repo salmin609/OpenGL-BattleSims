@@ -22,10 +22,10 @@ SingleAnimationObject::~SingleAnimationObject()
 {
 }
 
-void SingleAnimationObject::Draw(const glm::mat4& projViewMat, float animationT, int transformsOffset,
+void SingleAnimationObject::Draw(const glm::mat4& projViewMat,
 	std::vector<glm::mat4> transforms)
 {
-	animationModel->Draw(GetModelMatrix(), projViewMat, animationT, transformsOffset,
+	animationModel->Draw(GetModelMatrix(), projViewMat,
 		transforms);
 }
 

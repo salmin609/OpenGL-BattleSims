@@ -86,6 +86,8 @@ AnimationModel::~AnimationModel()
 
 void AnimationModel::Select()
 {
+	shader->Use();
+
 	glBindVertexArray(vao);
 	datas->Bind();
 }
@@ -106,12 +108,11 @@ void AnimationModel::InitMaterial()
  *
  */
 void AnimationModel::Draw(
-	const glm::mat4& objMat, const glm::mat4& projViewMat, float animationT, int transformsOffset,
+	const glm::mat4& objMat, const glm::mat4& projViewMat,
 	std::vector<glm::mat4> transforms)
 {
 	assert(shader != nullptr);
 
-	shader->Use();
 	Select();
 
 	glm::mat4 matrix = projViewMat * objMat;
@@ -119,8 +120,6 @@ void AnimationModel::Draw(
 	shader->SendUniformMatGLM("gWVP", &matrix);
 	datas->gBonesBuffer->WriteData<glm::mat4>(transforms.data());
 	datas->gBonesBuffer->BindStorage(4);
-	shader->SendUniformInt("transformIndex", transformsOffset);
-	shader->SendUniformFloat("timeTicks", animationT);
 	shader->SendUniformMatGLM("model", &modelMat);
 	
 
@@ -130,17 +129,12 @@ void AnimationModel::Draw(
 	if (datas->specularTexture != nullptr)
 		datas->specularTexture->Bind(shader->GetShaderId(), 1, "gSpecular");
 
-	if (datas->normalTexture != nullptr)
-		datas->normalTexture->Bind(shader->GetShaderId(), 2, "gNormal");
-
 	const unsigned meshesSize = datas->meshes.size();
 	for (unsigned i = 0; i < meshesSize; ++i)
 	{
 		glDrawElementsBaseVertex(GL_TRIANGLES, static_cast<GLsizei>(datas->meshes[i].NumIndices),
 			GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * datas->meshes[i].BaseIndex)
 			, static_cast<GLsizei>(datas->meshes[i].BaseVertex));
-
-		//glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	glBindVertexArray(0);

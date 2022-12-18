@@ -112,6 +112,7 @@ public:
 
 	void ResetFrameBufferWidthHeight(int w, int h) const;
 	void PopulateObjPaths();
+	void ResetCamAngle();
 
 	GLFWwindow* window;
 	Camera* cam;

@@ -14,6 +14,8 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
+#include <assimp/anim.h>
+
 #include "BillBoardObject.h"
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
@@ -44,6 +46,11 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 		glm::vec3(0.26682f, 1.f, 0.0932965f),
 		50.8f, -14.0999f);
 
+
+	//BillboardAnimatingDatas* data = boManager->boDatas[0];
+	//currentCam = data->cam;
+	//objs.push_back(data->obj);
+
 	currentCam = cam;
 
 	frustum = new Frustum();
@@ -55,6 +62,8 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	PopulateObjs(3000, 2);
 	PopulateObjs(3000, 3);
 	PopulateObjs(3000, 4);
+
+	
 }
 
 Graphic::~Graphic()
@@ -161,7 +170,9 @@ void Graphic::Draw()
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
-#if 0
+#if 1
+	const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
+
 	for (const auto& obj : objs)
 	{
 		//AnimationModel* animationModel = obj->animationModel;
@@ -171,7 +182,7 @@ void Graphic::Draw()
 
 		const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
 		const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-		obj->Draw(projViewMat, animationT, 0, obj->Interpolate(animationTimeTicks));
+		obj->Draw(projViewMat, obj->Interpolate(animationTimeTicks));
 	}
 #endif
 }
@@ -390,4 +401,11 @@ void Graphic::PopulateObjPaths()
 		path += ".dae";
 		objPaths.push_back(path);
 	}
+}
+
+void Graphic::ResetCamAngle()
+{
+	currentCam->Yaw = 0.f;
+	currentCam->Pitch = 0.f;
+	
 }

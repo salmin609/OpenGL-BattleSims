@@ -151,7 +151,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
                                          ,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const
 {
 	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
-	const float diffInTime = 60.f;
 
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glEnable(GL_BLEND);
@@ -169,17 +168,34 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 			const AnimationModel* model = datas->obj->animationModels[j];
 			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const long long diff = 
-				std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
-			float animationT = static_cast<float>(diff) / 1000.f;
-			animationT += static_cast<float>(i) * diffInTime;
 
-			const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-			const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-			datas->obj->Draw(projViewMat, animationT, 0, model->Interpolate(animationTimeTicks));
+			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, i, 
+				static_cast<float>(animation->mTicksPerSecond), 
+				static_cast<float>(animation->mDuration));
+
+			const std::vector<glm::mat4> transformMat = model->Interpolate(animationTimeTicks);
+
+			datas->obj->Draw(projViewMat, transformMat);
 
 			datas->frameBuffers[i][j]->UnBind();
 		}
 	}
 	
+}
+
+float BillboardManager::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
+	const std::chrono::system_clock::time_point& modelStartTime,
+	int index, float ticksPerSecond, float duration) const
+{
+	const long long diff =
+		std::chrono::duration_cast<std::chrono::milliseconds>(current - modelStartTime).count();
+	float animationT = static_cast<float>(diff) / 1000.f;
+
+	//make diff in animation
+	animationT += static_cast<float>(index) * 60.f;
+
+	const float timeInTicks = animationT * ticksPerSecond;
+	const float animationTimeTicks = fmod(timeInTicks, duration);
+
+	return animationTimeTicks;
 }

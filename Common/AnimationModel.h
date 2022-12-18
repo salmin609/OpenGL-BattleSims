@@ -33,7 +33,6 @@ public:
 	void CheckBuffers();
 	void InitMaterial();
 	void Draw(const glm::mat4& objMat, const glm::mat4& projViewMat,
-	          float animationT, int transformsOffset,
 	          std::vector<glm::mat4> transforms);
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;

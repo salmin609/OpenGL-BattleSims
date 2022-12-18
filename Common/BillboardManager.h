@@ -40,7 +40,9 @@ public:
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
 		,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const;
-
+	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
+		const std::chrono::system_clock::time_point& modelStartTime,
+		int index, float ticksPerSecond, float duration) const;
 	Camera* boCamera;
 
 	Shader* boShader;

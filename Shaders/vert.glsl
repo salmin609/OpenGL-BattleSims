@@ -10,7 +10,6 @@ out vec3 LocalPos0;
 out vec3 fragPos;
 
 uniform mat4 gWVP;
-uniform int transformIndex;
 uniform float timeTicks;
 uniform float instancingOffset;
 uniform mat4 model;
@@ -42,14 +41,14 @@ void main()
     int startIndex = indexStart[gl_VertexID];
     int endIndex = indexEnd[gl_VertexID];
 
-    mat4 boneTransform = gBones[bones[startIndex] + transformIndex] * weights[startIndex];
+    mat4 boneTransform = gBones[bones[startIndex]] * weights[startIndex];
 
     for (int i = startIndex + 1; i < endIndex; ++i)
     {
         int boneId = bones[i];
         float weight = weights[i];
 
-        boneTransform += gBones[boneId + transformIndex] * weight;
+        boneTransform += gBones[boneId] * weight;
     }
 
     vec4 posL = boneTransform * vec4(position, 1.0);

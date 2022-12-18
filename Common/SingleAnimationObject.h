@@ -19,7 +19,7 @@ public:
 		bool isInstance_, float instancingOffset_);
 	~SingleAnimationObject() override;
 	void Draw(
-		const glm::mat4& projViewMat, float animationT, int transformsOffset,
+		const glm::mat4& projViewMat,
 		std::vector<glm::mat4> transforms) override;
 
 	std::chrono::system_clock::time_point GetAnimationStartTime() const override;
