@@ -151,26 +151,26 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
                                          ,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const
 {
 	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
-	float diffInTime = 30.f;
+	const float diffInTime = 60.f;
 
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	const glm::mat4 viewMat = datas->cam->GetViewMatrix();
+	const glm::mat4 projViewMat = projMat * viewMat;
 
 	for(int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		for (int j = 0; j < animationsSize; ++j)
 		{
 			datas->frameBuffers[i][j]->Bind();
-
-			glClearColor(0.f, 0.f, 0.f, 0.f);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			const glm::mat4 viewMat = datas->cam->GetViewMatrix();
-			const glm::mat4 projViewMat = projMat * viewMat;
-
-			AnimationModel* model = datas->obj->animationModels[j];
+			const AnimationModel* model = datas->obj->animationModels[j];
 			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
+			const long long diff = 
+				std::chrono::duration_cast<std::chrono::milliseconds>(current - model->startTime).count();
 			float animationT = static_cast<float>(diff) / 1000.f;
 			animationT += static_cast<float>(i) * diffInTime;
 

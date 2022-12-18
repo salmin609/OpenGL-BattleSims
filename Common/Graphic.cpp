@@ -21,7 +21,6 @@
 #include "Skybox.h"
 #include "Floor.hpp"
 #include "MultipleAnimationObject.h"
-#include "Timer.hpp"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
 {
@@ -51,7 +50,11 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
-
+	PopulateObjs(3000, 0);
+	PopulateObjs(3000, 1);
+	PopulateObjs(3000, 2);
+	PopulateObjs(3000, 3);
+	PopulateObjs(3000, 4);
 }
 
 Graphic::~Graphic()
