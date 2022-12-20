@@ -12,6 +12,7 @@
 #include <glm/vec3.hpp>
 #include <glm/detail/type_vec.hpp>
 
+class Line;
 class Timer;
 class Texture;
 class MaterialManager;
@@ -143,7 +144,9 @@ private:
 	Shader* billboardShader;
 	Shader* floorShader;
 	Shader* interpolationComputeShader;
+	Shader* lineShader;
 	int windowWidth;
 	int windowHeight;
+	Line* floorLine;
 };
 

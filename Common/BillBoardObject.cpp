@@ -23,31 +23,32 @@ BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_, FrameBu
 	fb = fb_;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
+
+	spv = new SphereBV(pos, 0.1f);
 }
 
 BillBoardObject::~BillBoardObject()
 {
 	glDeleteVertexArrays(1, &vao);
+	delete spv;
 }
 
-void BillBoardObject::Render(glm::mat4 projMat, glm::mat4 viewMat, Frustum* frustum)
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, Frustum* frustum) const
 {
-	SphereBV spv(pos, 0.5f);
-
-	if(spv.isOnFrustum(*frustum))
+	if(spv->isOnFrustum(*frustum))
 	{
 		shader->Use();
 		glBindVertexArray(vao);
 
 		fb->texture->Bind(0);
 
-		glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
+		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
 
-		shader->SendUniformMatGLM("projMat", &projMat);
-		shader->SendUniformMatGLM("viewMat", &viewMat);
-		shader->SendUniformMatGLM("modelMat", &modelMat);
+		shader->SendUniformMatGLM("projMat", projMat);
+		shader->SendUniformMatGLM("viewMat", viewMat);
+		shader->SendUniformMatGLM("modelMat", modelMat);
 
-		glDrawArrays(GL_POINTS, 0, 4);
+		glDrawArrays(GL_POINTS, 0, 1);
 
 		glBindVertexArray(0);
 	}

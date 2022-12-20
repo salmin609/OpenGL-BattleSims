@@ -186,6 +186,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\FrustumCulling.cpp" />
     <ClCompile Include="..\Common\Graphic.cpp" />
     <ClCompile Include="..\Common\Interpolation.cpp" />
+    <ClCompile Include="..\Common\Line.cpp" />
     <ClCompile Include="..\Common\MeshDatas.cpp" />
     <ClCompile Include="..\Common\MultipleAnimationObject.cpp" />
     <ClCompile Include="..\Common\Object.cpp" />
@@ -218,6 +219,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\FrustumCulling.h" />
     <ClInclude Include="..\Common\Graphic.h" />
     <ClInclude Include="..\Common\Interpolation.h" />
+    <ClInclude Include="..\Common\Line.h" />
     <ClInclude Include="..\Common\Material.h" />
     <ClInclude Include="..\Common\MeshDatas.h" />
     <ClInclude Include="..\Common\MultipleAnimationObject.h" />
@@ -249,6 +251,8 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <None Include="..\Shaders\floorFragment.glsl" />
     <None Include="..\Shaders\floorVertex.glsl" />
     <None Include="..\Shaders\frag.glsl" />
+    <None Include="..\Shaders\lineFrag.glsl" />
+    <None Include="..\Shaders\lineVert.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
     <None Include="..\Shaders\vert.glsl" />

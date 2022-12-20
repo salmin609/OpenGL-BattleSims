@@ -5,7 +5,7 @@ layout(triangle_strip, max_vertices = 4) out;
 out vec2 ex_TexCoor;
 
 
-void build_house(vec4 position)
+void BuildSquare(vec4 position)
 {
     float scale = 50.f;
 
@@ -25,6 +25,7 @@ void build_house(vec4 position)
     EndPrimitive();
 }
 
-void main() {
-    build_house(gl_in[0].gl_Position);
+void main() 
+{
+    BuildSquare(gl_in[0].gl_Position);
 }

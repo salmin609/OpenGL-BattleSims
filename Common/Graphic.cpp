@@ -14,7 +14,6 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
-#include <assimp/anim.h>
 
 #include "BillBoardObject.h"
 #include "BillboardAnimatingDatas.h"
@@ -22,6 +21,7 @@
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
+#include "Line.h"
 #include "MultipleAnimationObject.h"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
@@ -31,6 +31,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	billboardShader = new Shader("../Shaders/billboardVert.glsl", "../Shaders/billboardFrag.glsl", 
 		"../Shaders/billboardGeometry.glsl");
 	interpolationComputeShader = new Shader("../Shaders/computeShader.glsl");
+	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 
 	floor = new Floor(floorShader);
 	floor->pos = glm::vec3(660.f, 0.f, 670.f);
@@ -45,6 +46,9 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f), 
 		glm::vec3(0.26682f, 1.f, 0.0932965f),
 		50.8f, -14.0999f);
+
+	floorLine = new Line(lineShader);
+
 
 
 	//BillboardAnimatingDatas* data = boManager->boDatas[0];
@@ -75,6 +79,11 @@ Graphic::~Graphic()
 	delete skybox;
 	delete frustum;
 	delete currentCam;
+	delete shader;
+	delete interpolationComputeShader;
+	delete lineShader;
+	delete billboardShader;
+	delete floorLine;
 }
 
 void Graphic::PopulateObjsPos()
@@ -102,9 +111,7 @@ void Graphic::PopulateObjs(int num, int obj)
 
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 	data->inUse = true;
-
 	
-
 	for (int i = 0; i < num; ++i)
 	{
 		const int animationIndex = rand() % animationCount;
@@ -156,7 +163,7 @@ void Graphic::Draw()
 
 	boManager->GenBillboard(projMat);
 
-	floor->Draw(projViewMat);
+	//floor->Draw(projViewMat);
 
 	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 		glm::radians(currentCam->Zoom), 0.1f, 2000.f);
@@ -167,10 +174,11 @@ void Graphic::Draw()
 	}
 
 	skybox->Draw(projMat, viewMat);
+	floorLine->Draw(projViewMat);
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
-#if 1
+#if 0
 	const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
 
 	for (const auto& obj : objs)
@@ -405,7 +413,10 @@ void Graphic::PopulateObjPaths()
 
 void Graphic::ResetCamAngle()
 {
-	currentCam->Yaw = 0.f;
-	currentCam->Pitch = 0.f;
-	
+	//currentCam->Yaw = 0.f;
+	//currentCam->Pitch = 0.f;
+
+	*cam = Camera(currentCam->Position,
+		currentCam->Up,
+		0.f, 0.f);
 }

@@ -105,6 +105,9 @@
     <ClCompile Include="..\Common\MultipleAnimationObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\Graphic.h">
@@ -218,6 +221,9 @@
     <ClInclude Include="..\Common\Timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\frag.glsl">
@@ -248,6 +254,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shaders\SkyboxFragment.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shaders\lineVert.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shaders\lineFrag.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

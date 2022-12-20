@@ -9,6 +9,7 @@
 #pragma once
 #include <string>
 #include <GL/glew.h>
+#include "glm/mat4x4.hpp"
 
 class Shader 
 {
@@ -23,6 +24,7 @@ public:
 	void Use();
 	void SendUniformMat(std::string uniformName, void* val) const;
 	void SendUniformMatGLM(std::string uniformName, void* val) const;
+	void SendUniformMatGLM(const std::string& uniformName, glm::mat4 val) const;
 	void SendUniformInt(std::string uniformName, void* val) const;
 	void SendUniformInt(std::string uniformName, int val) const;
 	void SendUniformFloat(std::string uniformName, void* val) const;

@@ -50,14 +50,25 @@ float lastY = 600.0 / 2.0;
 float fov = 45.0f;
 bool camLock = true;
 Graphic* graphic;
+bool cursorHidden = true;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         camLock = !camLock;
 
-    if (key == GLFW_KEY_C && action == GLFW_PRESS)
-        graphic->ResetCamAngle();
+    //if (key == GLFW_KEY_C && action == GLFW_PRESS)
+        //graphic->ResetCamAngle();
+
+    if(key == GLFW_KEY_V && action == GLFW_PRESS)
+    {
+	    if(cursorHidden)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        cursorHidden = !cursorHidden;
+    }
 }
 
 
@@ -121,6 +132,8 @@ int main()
     glfwSetKeyCallback(window, &key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 //#if DEBUG
     ImGui::CreateContext();

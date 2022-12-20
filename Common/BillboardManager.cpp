@@ -169,9 +169,8 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			const AnimationModel* model = datas->obj->animationModels[j];
 			const aiAnimation* animation = model->GetScene()->mAnimations[0];
 
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, i, 
-				static_cast<float>(animation->mTicksPerSecond), 
-				static_cast<float>(animation->mDuration));
+			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation,
+				i);
 
 			const std::vector<glm::mat4> transformMat = model->Interpolate(animationTimeTicks);
 
@@ -184,18 +183,18 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 }
 
 float BillboardManager::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-	const std::chrono::system_clock::time_point& modelStartTime,
-	int index, float ticksPerSecond, float duration) const
+	const std::chrono::system_clock::time_point& startTime,
+	const aiAnimation* animation, int index) const
 {
 	const long long diff =
-		std::chrono::duration_cast<std::chrono::milliseconds>(current - modelStartTime).count();
+		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
 	float animationT = static_cast<float>(diff) / 1000.f;
 
 	//make diff in animation
 	animationT += static_cast<float>(index) * 60.f;
 
-	const float timeInTicks = animationT * ticksPerSecond;
-	const float animationTimeTicks = fmod(timeInTicks, duration);
+	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
 
 	return animationTimeTicks;
 }

@@ -12,6 +12,7 @@
 #include <vector>
 #include "glm/mat4x4.hpp"
 
+struct aiAnimation;
 class AnimationModel;
 class Floor;
 class MeshDatas;
@@ -41,8 +42,8 @@ private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
 		,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const;
 	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-		const std::chrono::system_clock::time_point& modelStartTime,
-		int index, float ticksPerSecond, float duration) const;
+		const std::chrono::system_clock::time_point& startTime,
+		const aiAnimation* animation, int index) const;
 	Camera* boCamera;
 
 	Shader* boShader;

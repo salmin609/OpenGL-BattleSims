@@ -320,6 +320,12 @@ void Shader::SendUniformMatGLM(std::string uniformName, void* val) const
 	glUniformMatrix4fv(loc, 1, GL_FALSE, valInFloat);
 }
 
+void Shader::SendUniformMatGLM(const std::string& uniformName, glm::mat4 val) const
+{
+	const int loc = glGetUniformLocation(programId, uniformName.c_str());
+	glUniformMatrix4fv(loc, 1, GL_FALSE, &val[0][0]);
+}
+
 void Shader::SendUniformInt(std::string uniformName, void* val) const
 {
 	const int loc = glGetUniformLocation(programId, uniformName.c_str());

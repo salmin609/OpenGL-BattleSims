@@ -9,6 +9,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+struct SphereBV;
 struct Frustum;
 class FrameBuffer;
 class Buffer;
@@ -19,12 +20,13 @@ class BillBoardObject
 public:
 	BillBoardObject(Shader* shader_, const glm::vec3& pos_, FrameBuffer* fb_);
 	~BillBoardObject();
-	void Render(glm::mat4 projMat, glm::mat4 viewMat, Frustum* frustum);
+	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot, Frustum* frustum) const;
 
 	glm::vec3 pos;
 	int animationIndex = 0;
 private:
-	unsigned vao;
+	unsigned vao{};
 	Shader* shader;
 	FrameBuffer* fb;
+	SphereBV* spv;
 };
