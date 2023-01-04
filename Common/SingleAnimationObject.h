@@ -15,8 +15,7 @@ class SingleAnimationObject : public Object
 {
 public:
 	SingleAnimationObject(AnimationModel* model, 
-		glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal, 
-		bool isInstance_, float instancingOffset_);
+		glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
 	~SingleAnimationObject() override;
 	void Draw(
 		const glm::mat4& projViewMat,

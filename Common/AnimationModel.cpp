@@ -129,7 +129,7 @@ void AnimationModel::Draw(
 	if (datas->specularTexture != nullptr)
 		datas->specularTexture->Bind(shader->GetShaderId(), 1, "gSpecular");
 
-	const unsigned meshesSize = datas->meshes.size();
+	const unsigned meshesSize = static_cast<unsigned>(datas->meshes.size());
 	for (unsigned i = 0; i < meshesSize; ++i)
 	{
 		glDrawElementsBaseVertex(GL_TRIANGLES, static_cast<GLsizei>(datas->meshes[i].NumIndices),

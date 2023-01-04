@@ -53,7 +53,7 @@ Line::Line(Shader* shader)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	linePosBuffer = new Buffer(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec3), GL_STATIC_DRAW, points.data());
+	linePosBuffer = new Buffer(GL_ARRAY_BUFFER, static_cast<int>(points.size()) * sizeof(glm::vec3), GL_STATIC_DRAW, points.data());
 	linePosBuffer->Bind();
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), static_cast<GLvoid*>(0));

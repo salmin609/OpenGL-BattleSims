@@ -28,7 +28,6 @@
 #include "Shader.h"
 
 #include "AnimationModel.h"
-#include "Floor.hpp"
 #include "imgui_impl_glfw.h"
 
 #include "Imgui/imgui.h"
@@ -36,13 +35,11 @@
 
 //////////////////////////////////////////////////////////////////////
 
-
 int windowWidth = 1024;
 int windowHeight = 768;
 int displayIndex = 0;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 bool firstMouse = true;
 float lastX = 800.0f / 2.0;
@@ -54,6 +51,8 @@ bool cursorHidden = true;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    (scancode);
+    (mods);
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         camLock = !camLock;
 
@@ -131,7 +130,6 @@ int main()
 
     glfwSetKeyCallback(window, &key_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -220,7 +218,7 @@ int main()
         ImGui::End();
 //#endif
 
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         graphic->deltaTime = currentFrame - graphic->lastFrame;
         graphic->lastFrame = currentFrame;
 
@@ -255,6 +253,7 @@ int main()
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
+    (window);
     if(!camLock)
     {
 	    const float xpos = static_cast<float>(xposIn);
@@ -282,11 +281,3 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     }
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    fov -= static_cast<float>(yoffset);
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
-}

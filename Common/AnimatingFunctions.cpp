@@ -68,15 +68,15 @@ namespace AnimatingFunctions
 	{
 		void InitAllMeshes(AnimationModel* model)
 		{
-			unsigned size = model->datas->meshes.size();
+			unsigned size = static_cast<unsigned>(model->datas->meshes.size());
 
 			for (unsigned i = 0; i < size; ++i)
 			{
 				aiMesh* pMesh = model->GetScene()->mMeshes[i];
-				InitSingleMesh(pMesh, i, model);
+				InitSingleMesh(pMesh, model);
 			}
 		}
-		void InitSingleMesh(aiMesh* mesh, unsigned meshIndex, AnimationModel* model)
+		void InitSingleMesh(aiMesh* mesh, AnimationModel* model)
 		{
 			const aiVector3D zeroVec(0.0f, 0.0f, 0.0f);
 
@@ -134,12 +134,12 @@ namespace AnimatingFunctions
 			{
 				const aiMaterial* mat = scene->mMaterials[i];
 				
-				LoadTextures(mat, filename, i, model);
+				LoadTextures(mat, model);
 				//LoadColors(mat, i, model);
 			}
 		}
 
-		void LoadTextures(const aiMaterial* material, const std::string filename, int index, AnimationModel* model)
+		void LoadTextures(const aiMaterial* material, AnimationModel* model)
 		{
 			aiString path;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &path, nullptr, nullptr, nullptr, nullptr, nullptr);
@@ -302,7 +302,7 @@ namespace AnimatingFunctions
 	{
 		void InitAllBones(AnimationModel* model)
 		{
-			unsigned size = model->datas->meshes.size();
+			unsigned size = static_cast<unsigned>(model->datas->meshes.size());
 
 			for (unsigned i = 0; i < size; ++i)
 			{
@@ -380,9 +380,9 @@ namespace AnimatingFunctions
 
 			ReadNodeHierarchy(scene->mRootNode, identityMat, timeInSeconds, scene, model, animationIndex, nodeIndex);
 
-			const uint size = model->datas->boneInfos.size();
+			const unsigned size = static_cast<unsigned>(model->datas->boneInfos.size());
 
-			for (uint i = 0; i < size; ++i)
+			for (unsigned i = 0; i < size; ++i)
 			{
 				transforms[i] = model->datas->boneInfos[i].finalTransform;
 				PrintMatrix(transforms[i], "BT " + std::to_string(i));
@@ -505,7 +505,7 @@ namespace AnimatingFunctions
 				std::vector<float> timeStamps;
 
 				std::vector<glm::vec4> scalingVec;
-				for(int i = 0; i < pNodeAnim->mNumScalingKeys; ++i)
+				for(unsigned i = 0; i < pNodeAnim->mNumScalingKeys; ++i)
 				{
 					aiVector3D scaling = pNodeAnim->mScalingKeys[i].mValue;
 					glm::vec4 scalingValue{scaling.x, scaling.y, scaling.z, 0.f};
@@ -515,7 +515,7 @@ namespace AnimatingFunctions
 				scalingFactor.push_back(scalingVec);
 
 				std::vector<glm::vec4> translationVec;
-				for (int i = 0; i < pNodeAnim->mNumPositionKeys; ++i)
+				for (unsigned i = 0; i < pNodeAnim->mNumPositionKeys; ++i)
 				{
 					aiVector3D translation = pNodeAnim->mPositionKeys[i].mValue;
 					glm::vec4 translationValue{ translation.x, translation.y, translation.z , 0.f};
@@ -524,7 +524,7 @@ namespace AnimatingFunctions
 				translationFactor.push_back(translationVec);
 
 				std::vector<glm::vec4> rotationVec;
-				for (int i = 0; i < pNodeAnim->mNumRotationKeys; ++i)
+				for (unsigned i = 0; i < pNodeAnim->mNumRotationKeys; ++i)
 				{
 					aiQuaternion quaternion = pNodeAnim->mRotationKeys[i].mValue;
 					glm::vec4 quaternionValue{ quaternion.x, quaternion.y, quaternion.z, quaternion.w};
@@ -582,9 +582,8 @@ namespace AnimatingFunctions
 			int transformIndex = 0;
 			const glm::mat4 identityMat = glm::mat4(1.f);
 
-			CheckNodeHierarchyTransforms(scene->mRootNode, scene, finalTransforms, model, transformIndex,
-				identityMat);
-			const uint size = model->datas->boneInfos.size();
+			CheckNodeHierarchyTransforms(scene->mRootNode, scene, finalTransforms, model, transformIndex);
+			const unsigned size = static_cast<unsigned>(model->datas->boneInfos.size());
 
 			for (uint i = 0; i < size; ++i)
 			{
@@ -597,7 +596,7 @@ namespace AnimatingFunctions
 
 		void CheckNodeHierarchyTransforms(const aiNode* node, const aiScene* scene,
 			std::vector<glm::mat4> finalTransforms, AnimationModel* model,
-			int& transformIndex, const glm::mat4& parentTransform)
+			int& transformIndex)
 		{
 			const std::string nodeName(node->mName.data);
 			const glm::mat4 interpolatedTransform = finalTransforms[transformIndex];
@@ -615,8 +614,7 @@ namespace AnimatingFunctions
 			transformIndex++;
 
 			for (uint i = 0; i < node->mNumChildren; ++i)
-				CheckNodeHierarchyTransforms(node->mChildren[i], scene, finalTransforms, model, transformIndex,
-					globalTransform);
+				CheckNodeHierarchyTransforms(node->mChildren[i], scene, finalTransforms, model, transformIndex);
 		}
 	}
 

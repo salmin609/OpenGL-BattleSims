@@ -13,7 +13,7 @@
 
 
 SingleAnimationObject::SingleAnimationObject(AnimationModel* model, glm::vec3 posVal, glm::vec3 rotVal,
-                                             glm::vec3 scaleVal, bool isInstance_, const float instancingOffset_) : Object(posVal, rotVal, scaleVal)
+                                             glm::vec3 scaleVal) : Object(posVal, rotVal, scaleVal)
 {
 	animationModel = model;
 }

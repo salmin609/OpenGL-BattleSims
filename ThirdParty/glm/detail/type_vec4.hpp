@@ -32,6 +32,9 @@
 
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable : 4201)
+
 //#include "../fwd.hpp"
 #include "setup.hpp"
 #include "type_vec.hpp"
@@ -529,3 +532,5 @@ namespace detail
 #ifndef GLM_EXTERNAL_TEMPLATE
 #include "type_vec4.inl"
 #endif//GLM_EXTERNAL_TEMPLATE
+
+#pragma warning(pop)

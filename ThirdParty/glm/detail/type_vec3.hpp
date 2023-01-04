@@ -32,6 +32,9 @@
 
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable : 4201)
+
 //#include "../fwd.hpp"
 #include "type_vec.hpp"
 #ifdef GLM_SWIZZLE
@@ -423,3 +426,5 @@ namespace glm
 #ifndef GLM_EXTERNAL_TEMPLATE
 #include "type_vec3.inl"
 #endif//GLM_EXTERNAL_TEMPLATE
+
+#pragma warning(pop)

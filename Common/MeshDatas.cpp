@@ -35,18 +35,18 @@ void MeshDatas::ReserveSpace(int numVertices, int numIndices)
 
 void MeshDatas::PopulateBuffer()
 {
-	posBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), GL_STATIC_DRAW,
+	posBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(positions.size()), GL_STATIC_DRAW,
 		positions.data());
 
-	texBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec2) * texCoords.size(), GL_STATIC_DRAW,
+	texBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec2) * static_cast<int>(texCoords.size()), GL_STATIC_DRAW,
 		texCoords.data());
 
-	normalBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * normals.size(), GL_STATIC_DRAW,
+	normalBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(normals.size()), GL_STATIC_DRAW,
 		normals.data());
 
 	FeedLayout();
 
-	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(),
+	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * static_cast<int>(indices.size()),
 		GL_STATIC_DRAW, indices.data());
 }
 
@@ -64,7 +64,7 @@ void MeshDatas::FeedLayout()
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
 
-	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(),
+	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * static_cast<int>(indices.size()),
 		GL_STATIC_DRAW, indices.data());
 }
 

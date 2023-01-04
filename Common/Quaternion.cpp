@@ -8,9 +8,9 @@
 #include "Quaternion.h"
 #include <cmath>
 
-Quaternion::Quaternion(float x_, float y_, float z_, float w_)
+Quaternion::Quaternion(float x_, float y_, float z_, float w_) : x(x_), y(y_), z(z_), w(w_)
 {
-
+	
 }
 
 Quaternion::Quaternion(const aiQuaternion& val)

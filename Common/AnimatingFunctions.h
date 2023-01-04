@@ -21,8 +21,8 @@ struct aiNodeAnim;
 struct aiAnimation;
 struct aiNode;
 struct aiScene;
-struct AnimationModel;
-struct Texture;
+class AnimationModel;
+class Texture;
 
 namespace AnimatingFunctions
 {
@@ -32,7 +32,7 @@ namespace AnimatingFunctions
 	namespace MeshInitializing
 	{
 		void InitAllMeshes(AnimationModel* model);
-		void InitSingleMesh(aiMesh* mesh, unsigned meshIndex, AnimationModel* model);
+		void InitSingleMesh(aiMesh* mesh, AnimationModel* model);
 	}
 	namespace MaterialInitializing
 	{
@@ -43,7 +43,7 @@ namespace AnimatingFunctions
 		};
 		//static std::map<std::string, Texture*> diffuseTextures;
 		void InitMaterials(const std::string filename, AnimationModel* model);
-		void LoadTextures(const aiMaterial* material, const std::string filename, int index, AnimationModel* model);
+		void LoadTextures(const aiMaterial* material, AnimationModel* model);
 		void LoadDiffuseTexture(const aiMaterial* material, AnimationModel* model);
 		void LoadSpecularTexture(const aiMaterial* material, AnimationModel* model);
 		void LoadNormalTexture(const aiMaterial* material, AnimationModel* model);
@@ -86,6 +86,6 @@ namespace AnimatingFunctions
 
 		std::vector<glm::mat4> CheckNodeTransforms(const aiScene* scene, std::vector<glm::mat4> finalTransforms, AnimationModel* model);
 		void CheckNodeHierarchyTransforms(const aiNode* node, const aiScene* scene, std::vector<glm::mat4> finalTransforms, AnimationModel* model,
-			int& transformIndex, const glm::mat4& parentTransform);
+			int& transformIndex);
 	}
 }

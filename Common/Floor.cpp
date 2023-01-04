@@ -67,7 +67,7 @@ Floor::Floor(Shader* shader_)
 	glBindVertexArray(vao);
 
 	positionBuffer = new Buffer(GL_ARRAY_BUFFER,
-		vertices.size() * sizeof(float),
+		static_cast<int>(vertices.size()) * sizeof(float),
 		GL_STATIC_DRAW,
 		vertices.data());
 	glEnableVertexAttribArray(0);

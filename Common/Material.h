@@ -9,7 +9,7 @@
 
 #include <glm/vec3.hpp>
 
-struct Texture;
+class Texture;
 
 class Material
 {
