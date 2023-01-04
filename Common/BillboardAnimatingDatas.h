@@ -22,15 +22,18 @@ class AnimationModel;
 class BillboardAnimatingDatas
 {
 public:
-	BillboardAnimatingDatas(Camera* cam_, int windowW, int windowH,
+	BillboardAnimatingDatas(int windowW, int windowH,
 	MultipleAnimationObject* mObj_);
 	~BillboardAnimatingDatas();
 
 	//FrameBuffer* frameBuffer;
-	std::vector<std::vector<FrameBuffer*>> frameBuffers;
+	std::vector<std::vector<std::vector<FrameBuffer*>>> frameBuffers;
 	MultipleAnimationObject* obj;
 
-	Camera* cam;
+	//Camera* cam;
+	//std::vector<Camera*> cams;
+
+
 	bool inUse = false;
 	int diffTimeAnimCount;
 private:

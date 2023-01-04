@@ -490,7 +490,7 @@ namespace AnimatingFunctions
 			const aiAnimation* pAnimation = scene->mAnimations[0];
 			const aiNodeAnim* pNodeAnim = FindNodeAnimation(pAnimation, nodeName);
 
-			const glm::mat4 nodeTransform(AnimatingFunctions::mat4_cast(node->mTransformation));
+			const glm::mat4 nodeTransform(mat4_cast(node->mTransformation));
 
 			nodeTransforms.push_back(nodeTransform);
 
@@ -538,17 +538,10 @@ namespace AnimatingFunctions
 			else
 			{
 				nodeContainAnimation.push_back(0);
-
-				std::vector<glm::vec4> dummyScaling{glm::vec4{1.f, 1.f, 1.f, 0.f}};
-				std::vector<glm::vec4> dummyTranslation{ glm::vec4{0.f, 0.f, 0.f, 0.f} };
-				std::vector<glm::vec4> dummyRotation{ glm::vec4{0.f, 0.f, 0.f, 0.f} };
-				std::vector<float> dummyTimeStamp{ 0.f };
-
-				scalingFactor.push_back(dummyScaling);
-				translationFactor.push_back(dummyTranslation);
-				rotationFactor.push_back(dummyRotation);
-				factorTimeStamps.push_back(dummyTimeStamp);
-				
+				scalingFactor.push_back({ glm::vec4{1.f, 1.f, 1.f, 0.f} });
+				translationFactor.push_back({ glm::vec4{0.f, 0.f, 0.f, 0.f} });
+				rotationFactor.push_back({ glm::vec4{0.f, 0.f, 0.f, 0.f} });
+				factorTimeStamps.push_back({ 0.f });
 			}
 
 			if (model->datas->boneName2IndexMap.find(nodeName) != model->datas->boneName2IndexMap.end())

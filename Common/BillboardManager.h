@@ -21,16 +21,29 @@ class Camera;
 class Shader;
 class BillboardAnimatingDatas;
 
+enum class CamVectorOrder
+{
+	Front = 0,
+	Left,
+	Back,
+	Right,
+
+	End,
+};
+
+
 class BillboardManager
 {
 public:
+
+
 	BillboardManager(Shader* boShader_, Shader* boComputeShader_, int windowWidth, int windowHeight,
 		const std::vector<std::string>& objPaths);
 	~BillboardManager();
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
 	void ChangeAnimationIndexByTime();
-	Camera* GetBoObjCamera(int index);
+	Camera* GetBoObjCamera(int camIndex);
 	BillboardAnimatingDatas* GetAnimData(int index);
 
 
@@ -44,7 +57,8 @@ private:
 	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
 		const std::chrono::system_clock::time_point& startTime,
 		const aiAnimation* animation, int index) const;
-	Camera* boCamera;
+	//Camera* boCamera;
+	std::vector<Camera*> boCams;
 
 	Shader* boShader;
 	Shader* boComputeShader;

@@ -8,43 +8,40 @@
 #include "BillboardAnimatingDatas.h"
 
 #include "AnimationModel.h"
+#include "BillboardManager.h"
 #include "Camera.hpp"
 #include "FrameBuffer.h"
 #include "MultipleAnimationObject.h"
 #include "Object.h"
-#include "SingleAnimationObject.h"
 
-BillboardAnimatingDatas::BillboardAnimatingDatas(
-	Camera* cam_, int windowW, int windowH
+BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 	, MultipleAnimationObject* mObj_)
 {
-	diffTimeAnimCount = 1;
-	//model = new AnimationModel(objShader, objPath, interpolationShader, reusableMeshData);
-	//model = model_;
 
-	//frameBuffer = new FrameBuffer(windowW, windowH);
-	
-	//obj = new SingleAnimationObject(model, objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f),
-	//	false, 0.f);
+	//In order to get various time difference, change this variable value
+	diffTimeAnimCount = 1;
 
 	obj = mObj_;
-
 	const int animationsCount = static_cast<int>(obj->animationModels.size());
 
-	std::vector<FrameBuffer*> fbs;
+	//1 : different times
+	//2 : different animations
+	//3 : different angles
 
 	for(int i = 0; i < diffTimeAnimCount; ++i)
 	{
-		for (int j = 0; j < animationsCount; ++j)
+		std::vector<std::vector<FrameBuffer*>> fbs1;
+		for(int j = 0; j < animationsCount; ++j)
 		{
-			fbs.push_back(new FrameBuffer(windowW, windowH));
+			std::vector<FrameBuffer*> fbs2;
+			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			{
+				fbs2.push_back(new FrameBuffer(windowW, windowH));
+			}
+			fbs1.push_back(fbs2);
 		}
-		frameBuffers.push_back(fbs);
-		fbs.clear();
+		frameBuffers.push_back(fbs1);
 	}
-	
-
-	cam = cam_;
 }
 
 BillboardAnimatingDatas::~BillboardAnimatingDatas()
@@ -57,7 +54,10 @@ BillboardAnimatingDatas::~BillboardAnimatingDatas()
 	{
 		for(int j = 0; j < animationsCount; ++j)
 		{
-			delete frameBuffers[i][j];
+			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			{
+				delete frameBuffers[i][j][k];
+			}
 		}
 	}
 	delete obj;

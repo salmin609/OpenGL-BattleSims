@@ -24,6 +24,7 @@
 #include "Line.h"
 #include "MultipleAnimationObject.h"
 #include "ModelKinds.hpp"
+#include "assimp/anim.h"
 
 Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
 {
@@ -53,9 +54,9 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 
 
-	//BillboardAnimatingDatas* data = boManager->boDatas[0];
-	//currentCam = data->cam;
-	//objs.push_back(data->obj);
+	/*BillboardAnimatingDatas* data = boManager->boDatas[0];
+	currentCam = boManager->GetBoObjCamera(static_cast<int>(CamOrder::Back));
+	objs.push_back(data->obj);*/
 
 	currentCam = cam;
 
@@ -64,10 +65,10 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
 	PopulateObjs(3000, 0);
-	PopulateObjs(3000, 1);
-	PopulateObjs(3000, 2);
-	PopulateObjs(3000, 3);
-	PopulateObjs(3000, 4);
+	//PopulateObjs(3000, 1);
+	//PopulateObjs(3000, 2);
+	//PopulateObjs(3000, 3);
+	//PopulateObjs(3000, 4);
 
 	
 }
@@ -80,7 +81,8 @@ Graphic::~Graphic()
 	delete boManager;
 	delete skybox;
 	delete frustum;
-	delete currentCam;
+	delete cam;
+	//delete currentCam;
 	delete shader;
 	delete interpolationComputeShader;
 	delete lineShader;
@@ -104,7 +106,7 @@ void Graphic::PopulateObjsPos()
 
 		objsPos.push_back(pos);
 	}
-	PopulateObjs(200, int(objKind::SWAT_RifleAimIdle));
+	//PopulateObjs(200, int(objKind::SWAT_RifleAimIdle));
 }
 
 void Graphic::PopulateObjs(int num, int obj)
@@ -122,7 +124,7 @@ void Graphic::PopulateObjs(int num, int obj)
 		const glm::vec3& pos = objsPos[posOffset + i];
 
 		bos.push_back(new BillBoardObject(billboardShader,
-			pos, data->frameBuffers[timeDiffSlot][animationIndex]));
+			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
 	}
 
 	posOffset += num;
@@ -149,9 +151,6 @@ void Graphic::DeleteObjs(int num)
 
 void Graphic::Draw()
 {
-	if(currentCam != cam)
-		PrintCameraStatement(currentCam);
-
 	glClearColor(0.29f, 0.31f, 0.34f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -178,21 +177,25 @@ void Graphic::Draw()
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
-#if 0
-	const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
-
-	for (const auto& obj : objs)
+	if(!objs.empty())
 	{
-		//AnimationModel* animationModel = obj->animationModel;
-		const aiAnimation* animation = obj->GetAiAnimation();
-		const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - obj->GetAnimationStartTime()).count();
-		const float animationT = static_cast<float>(diff) / 1000.f;
+		if (currentCam != cam)
+			PrintCameraStatement(currentCam);
 
-		const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-		const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-		obj->Draw(projViewMat, obj->Interpolate(animationTimeTicks));
+		const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
+
+		for (const auto& obj : objs)
+		{
+			//AnimationModel* animationModel = obj->animationModel;
+			const aiAnimation* animation = obj->GetAiAnimation();
+			const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - obj->GetAnimationStartTime()).count();
+			const float animationT = static_cast<float>(diff) / 1000.f;
+
+			const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+			const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
+			obj->Draw(projViewMat, obj->Interpolate(animationTimeTicks));
+		}
 	}
-#endif
 }
 
 void Graphic::ProcessInput()

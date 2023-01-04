@@ -6,23 +6,35 @@
  */
 
 #include "BillBoardObject.h"
+
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Camera.hpp"
 #include "FrameBuffer.h"
 #include "FrustumCulling.h"
 #include "Shader.h"
 #include "Texture.h"
 
+float pi = 3.14159;
 
-BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_, FrameBuffer* fb_)
+float Convert(float radian)
+{
+	return(radian * (180 / pi));
+}
+
+BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_, 
+	std::vector<FrameBuffer*> fb_, Camera* cam_)
 {
 	pos = pos_;
 	shader = shader_;
-	fb = fb_;
+	//fb = fb_;
+	fbs = fb_;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
+	cam = cam_;
 
 	spv = new SphereBV(pos, 0.1f);
 }
@@ -40,7 +52,32 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		shader->Use();
 		glBindVertexArray(vao);
 
-		fb->texture->Bind(0);
+
+		//TODO: need to figure out angle from current cam and use various cam angles
+
+		const glm::vec3 camToPos = pos - cam->Position;
+		const glm::vec3 camLook = cam->Front;
+
+		//float cosTheta = (glm::dot(camToPos, camLook)) / (glm::length(camToPos) * glm::length(camLook));
+		//float sinTheta = glm::length(glm::cross(camToPos, camLook)) / (glm::length(camToPos) * glm::length(camLook));
+		////float angle = acos(cosTheta);
+		//float angle = asin(sinTheta);
+
+		//float angleInDegree = Convert(angle);
+		//std::cout << "angle : " << angleInDegree << std::endl;
+
+		float dot = glm::dot(camToPos, camLook);
+
+		if (dot > 0)
+			std::cout << "<90deg" << std::endl;
+		else if (dot < 0)
+			std::cout << ">90deg" << std::endl;
+		else
+			std::cout << "90deg" << std::endl;
+
+		fbs[0]->texture->Bind(0);
+
+
 
 		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
 
