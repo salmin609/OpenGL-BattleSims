@@ -75,23 +75,37 @@ void BillBoardObject::SetFrameBufferAngleTarget() const
 	const float angle = acos(cosTheta);
 	const float angleInDegree = Convert(angle);
 
+	//std::cout << "angle : " << angleInDegree << std::endl;
+
 	//TODO : Need to figure more flexible angle view
-	if (pos.x > cam->Position.x)
-	{
-		if (angleInDegree >= 0 && angleInDegree <= 45)
-			fbs[static_cast<int>(CamVectorOrder::RightFront)]->texture->Bind(0);
-		else if (angleInDegree >= 135 && angleInDegree <= 180)
-			fbs[static_cast<int>(CamVectorOrder::LeftFront)]->texture->Bind(0);
-		else
-			fbs[static_cast<int>(CamVectorOrder::Front)]->texture->Bind(0);
-	}
+
+	//right
+	if(angleInDegree >= 0.f && angleInDegree <= 22.5f)
+		fbs[static_cast<int>(CamVectorOrder::Right)]->texture->Bind(0);
+	//left
+	else if(angleInDegree >= 157.5f && angleInDegree <= 180.f)
+		fbs[static_cast<int>(CamVectorOrder::Left)]->texture->Bind(0);
 	else
 	{
-		if (angleInDegree >= 0 && angleInDegree <= 45)
-			fbs[static_cast<int>(CamVectorOrder::RightBack)]->texture->Bind(0);
-		else if (angleInDegree >= 135 && angleInDegree <= 180)
-			fbs[static_cast<int>(CamVectorOrder::LeftBack)]->texture->Bind(0);
+		if (pos.x > cam->Position.x)
+		{
+			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f )
+				fbs[static_cast<int>(CamVectorOrder::RightFront)]->texture->Bind(0);
+			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
+				fbs[static_cast<int>(CamVectorOrder::LeftFront)]->texture->Bind(0);
+			else
+				fbs[static_cast<int>(CamVectorOrder::Front)]->texture->Bind(0);
+		}
 		else
-			fbs[static_cast<int>(CamVectorOrder::Back)]->texture->Bind(0);
+		{
+			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
+				fbs[static_cast<int>(CamVectorOrder::RightBack)]->texture->Bind(0);
+			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
+				fbs[static_cast<int>(CamVectorOrder::LeftBack)]->texture->Bind(0);
+			else
+				fbs[static_cast<int>(CamVectorOrder::Back)]->texture->Bind(0);
+		}
 	}
+
+	
 }
