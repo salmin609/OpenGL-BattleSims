@@ -24,9 +24,12 @@ class BillboardAnimatingDatas;
 enum class CamVectorOrder
 {
 	Front = 0,
-	Left,
+	LeftFront,
+	RightFront,
 	Back,
-	Right,
+
+	LeftBack,
+	RightBack,
 
 	End,
 };

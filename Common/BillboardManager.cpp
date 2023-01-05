@@ -29,24 +29,31 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 	windowW = windowWidth;
 	windowH = windowHeight;
 
-	/*boCamera = new Camera(glm::vec3(2281.67f, 48.9464f, 610.049f),
-		glm::vec3(0.20865f, 0.97778f, -0.0202643f),
-		-4.9f, -12.1f);*/
+	//TODO: Need to slight modify 
 	boCams.push_back(new Camera(glm::vec3(2281.67f, 48.9464f, 610.049f),
-		glm::vec3(0.20865f, 0.97778f, -0.0202643f),
+		glm::vec3(0.f, 1.f, 0.f),
 		-4.9f, -12.1f));
 
-	boCams.push_back(new Camera(glm::vec3(2404.7f, 40.5768f, 501.198f),
-		glm::vec3(0.f, 1.f, 0.f),
-		-266.4f, -7.5f));
+	boCams.push_back(new Camera(glm::vec3(2361.98f, 38.4892f, 510.779f),
+		glm::vec3(0.0575869f, 0.987688f, 0.145449f),
+		-291.6f, -9.f));
+
+	boCams.push_back(new Camera(glm::vec3(2358.58f, 38.8295f, 688.597f),
+		glm::vec3(0.0817912f, 0.982935f, -0.164767f),
+		-63.6f, -10.6f));
 
 	boCams.push_back(new Camera(glm::vec3(2504.97f, 37.6267f, 597.099f),
 		glm::vec3(0.f, 1.f, 0.f),
 		-180.3f, -6.1f));
 
-	boCams.push_back(new Camera(glm::vec3(2395.16f, 38.6731f, 696.246f),
+	boCams.push_back(new Camera(glm::vec3(2479.03f, 36.195f, 691.263f),
 		glm::vec3(0.f, 1.f, 0.f),
-		-87.5f, -7.59999f));
+		-491.9f, -7.3f));
+
+	boCams.push_back(new Camera(glm::vec3(2491.48f, 32.1739f, 521.391f),
+		glm::vec3(0.f, 1.f, 0.f),
+		-579.299f, -4.9f));
+	
 
 	PopulateBoDatas(objPaths);
 }

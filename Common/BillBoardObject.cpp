@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "BillboardManager.h"
 #include "Camera.hpp"
 #include "FrameBuffer.h"
 #include "FrustumCulling.h"
@@ -35,6 +36,7 @@ BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 	cam = cam_;
+	direction = glm::vec3(0.f, 0.f, -1.f);
 
 	spv = new SphereBV(pos, 0.1f);
 }
@@ -52,32 +54,7 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		shader->Use();
 		glBindVertexArray(vao);
 
-
-		//TODO: need to figure out angle from current cam and use various cam angles
-
-		const glm::vec3 camToPos = pos - cam->Position;
-		const glm::vec3 camLook = cam->Front;
-
-		//float cosTheta = (glm::dot(camToPos, camLook)) / (glm::length(camToPos) * glm::length(camLook));
-		//float sinTheta = glm::length(glm::cross(camToPos, camLook)) / (glm::length(camToPos) * glm::length(camLook));
-		////float angle = acos(cosTheta);
-		//float angle = asin(sinTheta);
-
-		//float angleInDegree = Convert(angle);
-		//std::cout << "angle : " << angleInDegree << std::endl;
-
-		float dot = glm::dot(camToPos, camLook);
-
-		if (dot > 0)
-			std::cout << "<90deg" << std::endl;
-		else if (dot < 0)
-			std::cout << ">90deg" << std::endl;
-		else
-			std::cout << "90deg" << std::endl;
-
-		fbs[0]->texture->Bind(0);
-
-
+		SetFrameBufferAngleTarget();
 
 		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
 
@@ -88,5 +65,33 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		glDrawArrays(GL_POINTS, 0, 1);
 
 		glBindVertexArray(0);
+	}
+}
+
+void BillBoardObject::SetFrameBufferAngleTarget() const
+{
+	const glm::vec3 camToPos = pos - cam->Position;
+	const float cosTheta = (glm::dot(camToPos, direction)) / (glm::length(camToPos) * glm::length(direction));
+	const float angle = acos(cosTheta);
+	const float angleInDegree = Convert(angle);
+
+	//TODO : Need to figure more flexible angle view
+	if (pos.x > cam->Position.x)
+	{
+		if (angleInDegree >= 0 && angleInDegree <= 45)
+			fbs[static_cast<int>(CamVectorOrder::RightFront)]->texture->Bind(0);
+		else if (angleInDegree >= 135 && angleInDegree <= 180)
+			fbs[static_cast<int>(CamVectorOrder::LeftFront)]->texture->Bind(0);
+		else
+			fbs[static_cast<int>(CamVectorOrder::Front)]->texture->Bind(0);
+	}
+	else
+	{
+		if (angleInDegree >= 0 && angleInDegree <= 45)
+			fbs[static_cast<int>(CamVectorOrder::RightBack)]->texture->Bind(0);
+		else if (angleInDegree >= 135 && angleInDegree <= 180)
+			fbs[static_cast<int>(CamVectorOrder::LeftBack)]->texture->Bind(0);
+		else
+			fbs[static_cast<int>(CamVectorOrder::Back)]->texture->Bind(0);
 	}
 }

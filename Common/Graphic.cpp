@@ -47,7 +47,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	PopulateObjsPos();
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f), 
-		glm::vec3(0.26682f, 1.f, 0.0932965f),
+		glm::vec3(0.f, 1.f, 0.f),
 		50.8f, -14.0999f);
 
 	floorLine = new Line(lineShader);
@@ -55,7 +55,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 
 	/*BillboardAnimatingDatas* data = boManager->boDatas[0];
-	currentCam = boManager->GetBoObjCamera(static_cast<int>(CamOrder::Back));
+	currentCam = boManager->GetBoObjCamera(static_cast<int>(CamVectorOrder::RightFront));
 	objs.push_back(data->obj);*/
 
 	currentCam = cam;

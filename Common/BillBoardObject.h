@@ -24,12 +24,14 @@ public:
 		Camera* cam_);
 	~BillBoardObject();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot, Frustum* frustum) const;
+	void SetFrameBufferAngleTarget() const;
 
 	glm::vec3 pos;
 	int animationIndex = 0;
 private:
 	unsigned vao{};
 	Shader* shader;
+	glm::vec3 direction;
 	//FrameBuffer* fb;
 	std::vector<FrameBuffer*> fbs;
 	SphereBV* spv;
