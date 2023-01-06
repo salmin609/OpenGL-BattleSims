@@ -54,9 +54,9 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 
 
-	/*BillboardAnimatingDatas* data = boManager->boDatas[0];
-	currentCam = boManager->GetBoObjCamera(static_cast<int>(CamVectorOrder::LeftBack));
-	objs.push_back(data->obj);*/
+	//BillboardAnimatingDatas* data = boManager->boDatas[0];
+	//currentCam = boManager->GetBoObjCamera(static_cast<int>(CamVectorOrder::Left));
+	//objs.push_back(data->obj);
 
 	currentCam = cam;
 

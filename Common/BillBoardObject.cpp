@@ -19,7 +19,7 @@
 #include "Shader.h"
 #include "Texture.h"
 
-float pi = 3.14159;
+float pi = 3.14159f;
 
 float Convert(float radian)
 {

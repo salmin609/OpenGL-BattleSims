@@ -20,14 +20,13 @@ Object::~Object()
 {
 }
 
-glm::mat4 Object::GetModelMatrix()
+glm::mat4 Object::GetModelMatrix() const
 {
 	glm::mat4 modelMat = glm::mat4(1.f);
 
-	modelMat = glm::scale(modelMat, scale);
-
-	modelMat = glm::rotate(modelMat, 1.5708f, rot);
+	//modelMat = glm::rotate(modelMat, 1.5708f, rot);
 	modelMat = glm::translate(modelMat, pos);
+	modelMat = glm::scale(modelMat, scale);
 
 	return modelMat;
 }

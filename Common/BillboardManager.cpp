@@ -29,45 +29,46 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 	windowW = windowWidth;
 	windowH = windowHeight;
 
+	glm::vec3 camUpVec = glm::vec3(0.f, 1.f, 0.f);
 	//TODO: Need to slight modify
 	//front
-	boCams.push_back(new Camera(glm::vec3(2281.67f, 48.9464f, 610.049f),
-		glm::vec3(0.f, 1.f, 0.f),
-		-4.9f, -12.1f));
+	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, 100.f),
+		camUpVec,
+		-90.f, -7.f));
 
 	//back
-	boCams.push_back(new Camera(glm::vec3(2504.97f, 37.6267f, 597.099f),
-		glm::vec3(0.f, 1.f, 0.f),
-		-180.3f, -6.1f));
+	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, -100.f),
+		camUpVec,
+		90.f, -7.f));
 
 	//left
-	boCams.push_back(new Camera(glm::vec3(2395.03f, 40.8007f, 469.752f),
-		glm::vec3(-0.000248875f, 0.989776f, 0.142629f),
-		90.1f, -8.20001f));
+	boCams.push_back(new Camera(glm::vec3(-90.f, 45.f, 0.f),
+		camUpVec,
+		0.f, -7.f));
 	//right
-	boCams.push_back(new Camera(glm::vec3(2397.98f, 47.8767f, 731.28f),
-		glm::vec3(0.00466186f, 0.981627f, -0.190752f),
-		-88.6f, -11.f));
+	boCams.push_back(new Camera(glm::vec3(90.f, 45.f, 0.f),
+		camUpVec,
+		180.f, -7.f));
 
 	//leftfront
-	boCams.push_back(new Camera(glm::vec3(2340.53f, 45.0763f, 475.073f),
-		glm::vec3(0.0694263f, 0.982595f, 0.172299f),
-		-293.8f, -10.7f));
+	boCams.push_back(new Camera(glm::vec3(-75.f, 45.f, 75.f),
+		camUpVec,
+		-45.f, -7.f));
 
 	//rightfront
-	boCams.push_back(new Camera(glm::vec3(2340.38f, 46.89f, 725.429f),
-		glm::vec3(0.0856022f, 0.981293f, -0.172444f),
-		-63.6f, -11.1f));
+	boCams.push_back(new Camera(glm::vec3(75.f, 45.f, 75.f),
+		camUpVec,
+		225.f, -7.f));
 
 	//leftback
-	boCams.push_back(new Camera(glm::vec3(2483.67f, 47.9343f, 706.051f),
-		glm::vec3(-0.126298f, 0.981471f, -0.144093f),
-		-485.9f, -11.f));
+	boCams.push_back(new Camera(glm::vec3(-75.f, 45.f, -75.f),
+		camUpVec,
+		45.f, -7.f));
 
 	//rightback
-	boCams.push_back(new Camera(glm::vec3(2503.77f, 42.3205f, 519.317f),
-		glm::vec3(-0.1453f, 0.983572f, 0.107121f),
-		-576.399f, -10.4f));
+	boCams.push_back(new Camera(glm::vec3(75.f, 45.f, -75.f),
+		camUpVec,
+		135.f, -7.f));
 	
 
 	PopulateBoDatas(objPaths);
@@ -89,7 +90,7 @@ BillboardManager::~BillboardManager()
 void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 {
 	const size_t objPathsSize = objPaths.size();
-	glm::vec3 objPos(20.f, 0.f, -80.f);
+	const glm::vec3 objPos(0.f, 10.f, 0.f);
 
 	std::vector<AnimationModel*> models;
 	std::string prevKind;

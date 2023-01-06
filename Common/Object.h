@@ -21,7 +21,7 @@ class Object
 public:
 	Object(glm::vec3 posVal, glm::vec3 rotVal, glm::vec3 scaleVal);
 	virtual ~Object();
-	glm::mat4 GetModelMatrix();
+	glm::mat4 GetModelMatrix() const;
 	virtual void Draw(
 		const glm::mat4& projViewMat,
 		std::vector<glm::mat4> transforms) = 0;
