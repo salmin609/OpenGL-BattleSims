@@ -109,7 +109,7 @@ void AnimationModel::InitMaterial()
  */
 void AnimationModel::Draw(
 	const glm::mat4& objMat, const glm::mat4& projViewMat,
-	std::vector<glm::mat4> transforms)
+	const std::vector<glm::mat4>& transforms)
 {
 	assert(shader != nullptr);
 	Select();
@@ -117,7 +117,7 @@ void AnimationModel::Draw(
 	glm::mat4 matrix = projViewMat * objMat;
 	glm::mat4 modelMat = objMat;
 	shader->SendUniformMatGLM("gWVP", &matrix);
-	datas->gBonesBuffer->WriteData<glm::mat4>(transforms.data());
+	datas->gBonesBuffer->WriteData<glm::mat4>((void*)&transforms[0]);
 	datas->gBonesBuffer->BindStorage(4);
 	shader->SendUniformMatGLM("model", &modelMat);
 
@@ -171,5 +171,3 @@ void AnimationModel::PopulateTransforms(std::vector<glm::mat4>& transforms)
 {
 	datas->PopulateTransforms(transforms);
 }
-
-

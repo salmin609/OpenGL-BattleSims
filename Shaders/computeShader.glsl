@@ -313,7 +313,6 @@ void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	
-
 	if (index > inTransformsSize)
 		return;
 
@@ -337,6 +336,4 @@ void main(void)
 
 	//Return final transform which is applied offsetMatrix
 	SetFinalTransforms(nodeTransform, int(index));
-
-	//outNodeTransforms[index] = nodeTransform;
 }

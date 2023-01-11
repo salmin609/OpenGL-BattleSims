@@ -228,7 +228,13 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 		}
 	}
 
-	if(once)
+	SaveAngleTextures(datas);
+
+}
+
+void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
+{
+	if (once)
 	{
 		glBlitNamedFramebuffer(datas->frameBuffers[0][0][0]->GetFrameBufferId(), check->GetFrameBufferId(),
 			0, 0, windowW, windowH,
@@ -273,13 +279,11 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 		check->SavePNG();
 		once = false;
 	}
-	
-
 }
 
 float BillboardManager::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-	const std::chrono::system_clock::time_point& startTime,
-	const aiAnimation* animation, int index) const
+                                              const std::chrono::system_clock::time_point& startTime,
+                                              const aiAnimation* animation, int index) const
 {
 	const long long diff =
 		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();

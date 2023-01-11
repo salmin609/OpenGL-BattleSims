@@ -14,7 +14,6 @@ uniform float timeTicks;
 uniform float instancingOffset;
 uniform mat4 model;
 
-
 layout(std430, binding = 0) buffer boneDatas
 {
     int bones[];
@@ -31,8 +30,8 @@ layout(std430, binding = 3) buffer indexEndDatas
 {
     int indexEnd[];
 };
-
-layout(std430, binding = 4) buffer transformDatas{
+layout(std430, binding = 4) buffer transformDatas
+{
     mat4 gBones[];
 };
 

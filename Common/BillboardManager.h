@@ -63,6 +63,7 @@ public:
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
 		,const glm::mat4& projMat, BillboardAnimatingDatas* datas);
+	void SaveAngleTextures(BillboardAnimatingDatas* datas);
 	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
 		const std::chrono::system_clock::time_point& startTime,
 		const aiAnimation* animation, int index) const;

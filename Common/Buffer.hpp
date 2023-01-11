@@ -64,7 +64,7 @@ void Buffer::WriteData(void* data)
 
 	for (int i = 0; i < sizeCheck; ++i)
 	{
-		writeVal[i] = reinterpret_cast<T*>(data)[i];
+		writeVal[i] = static_cast<T*>(data)[i];
 	}
 	glUnmapBuffer(type);
 }
