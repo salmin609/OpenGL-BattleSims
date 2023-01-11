@@ -32,8 +32,9 @@ private:
 	unsigned vao{};
 	Shader* shader;
 	glm::vec3 direction;
-	//FrameBuffer* fb;
 	std::vector<FrameBuffer*> fbs;
 	SphereBV* spv;
 	Camera* cam;
+
+
 };

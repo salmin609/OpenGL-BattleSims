@@ -31,7 +31,6 @@ BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
 {
 	pos = pos_;
 	shader = shader_;
-	//fb = fb_;
 	fbs = fb_;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
@@ -54,7 +53,10 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		shader->Use();
 		glBindVertexArray(vao);
 
-		SetFrameBufferAngleTarget();
+		if(static_cast<int>(CamVectorOrder::End) > 7)
+			SetFrameBufferAngleTarget();
+		else
+			fbs[0]->texture->Bind(0);
 
 		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
 
@@ -71,13 +73,11 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 void BillBoardObject::SetFrameBufferAngleTarget() const
 {
 	const glm::vec3 camToPos = pos - cam->Position;
-	const float cosTheta = (glm::dot(camToPos, direction)) / (glm::length(camToPos) * glm::length(direction));
+	const float cosTheta = glm::dot(camToPos, direction) / (glm::length(camToPos) * glm::length(direction));
 	const float angle = acos(cosTheta);
 	const float angleInDegree = Convert(angle);
 
 	//std::cout << "angle : " << angleInDegree << std::endl;
-
-	//TODO : Need to figure more flexible angle view
 
 	//right
 	if(angleInDegree >= 0.f && angleInDegree <= 22.5f)

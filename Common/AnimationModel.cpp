@@ -112,7 +112,6 @@ void AnimationModel::Draw(
 	std::vector<glm::mat4> transforms)
 {
 	assert(shader != nullptr);
-
 	Select();
 
 	glm::mat4 matrix = projViewMat * objMat;
@@ -121,7 +120,6 @@ void AnimationModel::Draw(
 	datas->gBonesBuffer->WriteData<glm::mat4>(transforms.data());
 	datas->gBonesBuffer->BindStorage(4);
 	shader->SendUniformMatGLM("model", &modelMat);
-	
 
 	if (datas->diffuseTexture != nullptr)
 		datas->diffuseTexture->Bind(shader->GetShaderId(), 0, "gDiffuse");
@@ -133,7 +131,7 @@ void AnimationModel::Draw(
 	for (unsigned i = 0; i < meshesSize; ++i)
 	{
 		glDrawElementsBaseVertex(GL_TRIANGLES, static_cast<GLsizei>(datas->meshes[i].NumIndices),
-			GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * datas->meshes[i].BaseIndex)
+			GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(unsigned int) * datas->meshes[i].BaseIndex)
 			, static_cast<GLsizei>(datas->meshes[i].BaseVertex));
 	}
 

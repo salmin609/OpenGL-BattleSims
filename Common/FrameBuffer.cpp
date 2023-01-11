@@ -73,3 +73,8 @@ void FrameBuffer::ReadValue()
     delete[] pBuffer;
 }
 
+unsigned FrameBuffer::GetFrameBufferId()
+{
+    return frameBuffer;
+}
+

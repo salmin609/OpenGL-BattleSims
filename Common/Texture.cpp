@@ -109,6 +109,7 @@ void Texture::SaveImg()
 	
 	glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, outBuffer.data());
 
+	stbi_flip_vertically_on_write(true);
 	//stbi_write_jpg("test.jpg", imageWidth, imageHeight, imageBPP, outBuffer.data(), 100);
 	stbi_write_png("test.png", imageWidth, imageHeight, imageBPP, outBuffer.data(), 0);
 }

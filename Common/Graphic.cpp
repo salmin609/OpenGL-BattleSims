@@ -60,12 +60,14 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 	currentCam = cam;
 
+	fov = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
+
 	frustum = new Frustum();
-	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
+	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
-	PopulateObjs(3000, 0);
-	//PopulateObjs(3000, 1);
+	PopulateObjs(1000, 0);
+	//PopulateObjs(1000, 1);
 	//PopulateObjs(3000, 2);
 	//PopulateObjs(3000, 3);
 	//PopulateObjs(3000, 4);
@@ -156,7 +158,8 @@ void Graphic::Draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, windowWidth, windowHeight);
 
-	const glm::mat4 projMat = glm::perspective(glm::radians(currentCam->Zoom), (float)windowWidth / (float)windowHeight,
+	const glm::mat4 projMat = glm::perspective(glm::radians(currentCam->Zoom), 
+		static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 		0.1f, 10000.f);
 
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
@@ -164,7 +167,7 @@ void Graphic::Draw()
 
 	boManager->GenBillboard(projMat);
 
-	frustum->ResetFrustumPlans(*currentCam, static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
+	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 2000.f);
 
 	for (const auto& bo : bos)

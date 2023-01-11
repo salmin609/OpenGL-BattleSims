@@ -12,6 +12,7 @@
 #include <vector>
 #include "glm/mat4x4.hpp"
 
+class FrameBuffer;
 struct aiAnimation;
 class AnimationModel;
 class Floor;
@@ -24,7 +25,8 @@ class BillboardAnimatingDatas;
 enum class CamVectorOrder
 {
 	Front = 0,
-	Back,
+
+	Back, 
 	Left,
 	Right,
 
@@ -33,8 +35,9 @@ enum class CamVectorOrder
 
 	LeftBack,
 	RightBack,
-
 	End,
+
+
 };
 
 
@@ -59,15 +62,18 @@ public:
 
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
-		,const glm::mat4& projMat, BillboardAnimatingDatas* datas) const;
+		,const glm::mat4& projMat, BillboardAnimatingDatas* datas);
 	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
 		const std::chrono::system_clock::time_point& startTime,
 		const aiAnimation* animation, int index) const;
 	//Camera* boCamera;
 	std::vector<Camera*> boCams;
-
+	std::vector<glm::mat4> boCamMats;
 	Shader* boShader;
 	Shader* boComputeShader;
 	int windowW, windowH;
+
+	FrameBuffer* check;
+	bool once = true;
 
 };

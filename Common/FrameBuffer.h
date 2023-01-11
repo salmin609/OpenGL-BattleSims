@@ -18,6 +18,7 @@ public:
 	void UnBind();
 	void SavePNG();
 	void ReadValue();
+	unsigned GetFrameBufferId();
 	Texture* texture;
 
 private:

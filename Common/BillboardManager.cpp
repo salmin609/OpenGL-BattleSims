@@ -69,9 +69,14 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 	boCams.push_back(new Camera(glm::vec3(75.f, 45.f, -75.f),
 		camUpVec,
 		135.f, -7.f));
-	
+
+	const int boCamsSize = static_cast<int>(boCams.size());
+	for(int i = 0; i < boCamsSize; ++i)
+		boCamMats.push_back(boCams[i]->GetViewMatrix());
 
 	PopulateBoDatas(objPaths);
+
+	check = new FrameBuffer(windowWidth * 3, windowHeight * 3);
 }
 
 BillboardManager::~BillboardManager()
@@ -189,7 +194,7 @@ BillboardAnimatingDatas* BillboardManager::GetAnimData(int index)
 
 
 void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_point& current
-	, const glm::mat4& projMat, BillboardAnimatingDatas* datas) const
+	, const glm::mat4& projMat, BillboardAnimatingDatas* datas)
 {
 	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
 
@@ -197,9 +202,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//const glm::mat4 viewMat = boCams[static_cast<int>(CamVectorOrder::Back)]->GetViewMatrix();
-	//const glm::mat4 projViewMat = projMat * viewMat;
-
+	
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		for (int j = 0; j < animationsSize; ++j)
@@ -213,8 +216,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				const glm::mat4 viewMat = boCams[k]->GetViewMatrix();
-				const glm::mat4 projViewMat = projMat * viewMat;
+				const glm::mat4 projViewMat = projMat * boCamMats[k];
 
 				datas->frameBuffers[i][j][k]->Bind();
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -225,6 +227,53 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			}
 		}
 	}
+
+	if(once)
+	{
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][0]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			0, 0, windowW, windowH,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][1]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			windowW, 0, 2 * windowW, windowH,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][2]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			windowW * 2, 0, 3 * windowW, windowH,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][3]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			0, windowH, windowW, windowH * 2,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][4]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			windowW, windowH, windowW * 2, windowH * 2,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][5]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			windowW * 2, windowH, windowW * 3, windowH * 2,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][6]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			0, windowH * 2, windowW, windowH * 3,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBlitNamedFramebuffer(datas->frameBuffers[0][0][7]->GetFrameBufferId(), check->GetFrameBufferId(),
+			0, 0, windowW, windowH,
+			windowW, windowH * 2, windowW * 2, windowH * 3,
+			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		check->SavePNG();
+		once = false;
+	}
+	
 
 }
 
