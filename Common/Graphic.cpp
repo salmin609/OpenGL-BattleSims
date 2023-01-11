@@ -66,7 +66,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
-	PopulateObjs(1000, 0);
+	PopulateObjs(10000, 0);
 	//PopulateObjs(1000, 1);
 	//PopulateObjs(3000, 2);
 	//PopulateObjs(3000, 3);
