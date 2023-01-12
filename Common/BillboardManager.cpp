@@ -166,8 +166,8 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 	{
 		BillboardAnimatingDatas* boData = boDatas[i];
 
-		if (boData->inUse)
-			GenerateBillboard(current, projMat, boData);
+		//if (boData->inUse)
+		GenerateBillboard(current, projMat, boData);
 	}
 }
 
@@ -179,6 +179,30 @@ void BillboardManager::ChangeAnimationIndexByTime()
 	for (int i = 0; i < boDatasSize; ++i)
 	{
 		boDatas[i]->obj->ChangeCurrentAnimationWithTime();
+	}
+}
+
+void BillboardManager::ResetFrameBufferUsage()
+{
+	const size_t boDatasSize = boDatas.size();
+
+	for(size_t a = 0; a < boDatasSize; ++a)
+	{
+		BillboardAnimatingDatas* boData = boDatas[a];
+
+		std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers = boData->frameBuffers;
+
+		for (int i = 0; i < boData->diffTimeAnimCount; ++i)
+		{
+			const int animationsSize = static_cast<int>(boData->obj->animationModels.size());
+			for (int j = 0; j < animationsSize; ++j)
+			{
+				for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+				{
+					frameBuffers[i][j][k]->isOnUsage = false;
+				}
+			}
+		}
 	}
 }
 
@@ -216,14 +240,20 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				const glm::mat4 projViewMat = projMat * boCamMats[k];
+				FrameBuffer* fb = datas->frameBuffers[i][j][k];
 
-				datas->frameBuffers[i][j][k]->Bind();
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				if(fb->isOnUsage)
+				{
+					const glm::mat4 projViewMat = projMat * boCamMats[k];
 
-				datas->obj->Draw(projViewMat, transformMat);
+					datas->frameBuffers[i][j][k]->Bind();
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				datas->frameBuffers[i][j][k]->UnBind();
+					datas->obj->Draw(projViewMat, transformMat);
+
+					datas->frameBuffers[i][j][k]->UnBind();
+				}
+
 			}
 		}
 	}

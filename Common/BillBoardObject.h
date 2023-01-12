@@ -23,6 +23,8 @@ public:
 	BillBoardObject(Shader* shader_, const glm::vec3& pos_, std::vector<FrameBuffer*> fb_,
 		Camera* cam_);
 	~BillBoardObject();
+	void CheckFrameBufferUsage(Frustum* frustum);
+	void SetFrameBufferUsage();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot, Frustum* frustum) const;
 	void SetFrameBufferAngleTarget() const;
 

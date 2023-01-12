@@ -20,7 +20,7 @@ public:
 	void ReadValue();
 	unsigned GetFrameBufferId();
 	Texture* texture;
-
+	bool isOnUsage = false;
 private:
 	unsigned frameBuffer, rbo;
 	int width, height;

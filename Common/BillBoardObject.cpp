@@ -46,6 +46,52 @@ BillBoardObject::~BillBoardObject()
 	delete spv;
 }
 
+void BillBoardObject::CheckFrameBufferUsage(Frustum* frustum)
+{
+	if(spv->isOnFrustum(*frustum))
+	{
+		SetFrameBufferUsage();
+	}
+}
+
+void BillBoardObject::SetFrameBufferUsage()
+{
+	const glm::vec3 camToPos = pos - cam->Position;
+	const float cosTheta = glm::dot(camToPos, direction) / (glm::length(camToPos) * glm::length(direction));
+	const float angle = acos(cosTheta);
+	const float angleInDegree = Convert(angle);
+
+	//std::cout << "angle : " << angleInDegree << std::endl;
+
+	//right
+	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
+		fbs[static_cast<int>(CamVectorOrder::Right)]->isOnUsage = true;
+	//left
+	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
+		fbs[static_cast<int>(CamVectorOrder::Left)]->isOnUsage = true;
+	else
+	{
+		if (pos.x > cam->Position.x)
+		{
+			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
+				fbs[static_cast<int>(CamVectorOrder::RightFront)]->isOnUsage = true;
+			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
+				fbs[static_cast<int>(CamVectorOrder::LeftFront)]->isOnUsage = true;
+			else
+				fbs[static_cast<int>(CamVectorOrder::Front)]->isOnUsage = true;
+		}
+		else
+		{
+			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
+				fbs[static_cast<int>(CamVectorOrder::RightBack)]->isOnUsage = true;
+			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
+				fbs[static_cast<int>(CamVectorOrder::LeftBack)]->isOnUsage = true;
+			else
+				fbs[static_cast<int>(CamVectorOrder::Back)]->isOnUsage = true;
+		}
+	}
+}
+
 void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, Frustum* frustum) const
 {
 	if(spv->isOnFrustum(*frustum))

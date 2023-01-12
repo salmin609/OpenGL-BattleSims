@@ -66,8 +66,8 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
 
-	PopulateObjs(10000, 0);
-	//PopulateObjs(1000, 1);
+	PopulateObjs(1000, 0);
+	PopulateObjs(1000, 1);
 	//PopulateObjs(3000, 2);
 	//PopulateObjs(3000, 3);
 	//PopulateObjs(3000, 4);
@@ -165,10 +165,13 @@ void Graphic::Draw()
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	boManager->GenBillboard(projMat);
-
 	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 2000.f);
+
+	for (const auto& bo : bos)
+		bo->CheckFrameBufferUsage(frustum);
+
+	boManager->GenBillboard(projMat);
 
 	for (const auto& bo : bos)
 	{
@@ -199,6 +202,8 @@ void Graphic::Draw()
 			obj->Draw(projViewMat, obj->Interpolate(animationTimeTicks));
 		}
 	}
+
+	boManager->ResetFrameBufferUsage();
 }
 
 void Graphic::ProcessInput()

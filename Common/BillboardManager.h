@@ -52,6 +52,7 @@ public:
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
 	void ChangeAnimationIndexByTime();
+	void ResetFrameBufferUsage();
 	Camera* GetBoObjCamera(int camIndex);
 	BillboardAnimatingDatas* GetAnimData(int index);
 
