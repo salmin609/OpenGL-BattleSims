@@ -84,8 +84,8 @@ int main()
     }
 
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    const int window_width = mode->width;
-    const int window_height = mode->height;
+    const int window_width = 1024;//mode->width;
+    const int window_height = 768;//mode->height;
 
     // Setting up OpenGL properties
     glfwWindowHint(GLFW_SAMPLES, 1); // change for anti-aliasing
