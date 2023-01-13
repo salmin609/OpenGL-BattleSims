@@ -42,7 +42,6 @@ enum class objKind
 	KNIGHT_Run,
 	KNIGHT_Slash,
 
-	END,
 
 
 	MICHELLE_BreakDance,
@@ -58,6 +57,8 @@ enum class objKind
 	MICHELLE_Twist,
 	MICHELLE_WaveHipHop,
 
+
+
 	ADAM_ComboPunch,
 	ADAM_ElbowPunch,
 	ADAM_Idle,
@@ -66,6 +67,7 @@ enum class objKind
 	ADAM_MMAKick,
 	ADAM_Victory,
 
+	END,
 
 };
 

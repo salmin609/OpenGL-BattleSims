@@ -3,15 +3,22 @@
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillBoardObject.h"
+#include "Buffer.hpp"
 #include "MultipleAnimationObject.h"
+#include "Shader.h"
 
 BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManager* boManager_,
-	Camera* currentCam_)
+                                               Camera* currentCam_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
 	currentCam = currentCam_;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(0);
+
 	PopulateObjsPos();
+	Populate();
 }
 
 BillboardObjectManager::~BillboardObjectManager()
@@ -54,6 +61,8 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 
 		bos.push_back(new BillBoardObject(boShader,
 			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
+
+		posDatas.push_back(pos);
 	}
 
 	posOffset += num;
@@ -63,9 +72,15 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 
 void BillboardObjectManager::Populate()
 {
-	PopulateObjs(1000, 0);
-	PopulateObjs(1000, 1);
-	PopulateObjs(1000, 2);
+	PopulateObjs(3000, 0);
+	PopulateObjs(3000, 1);
+	PopulateObjs(3000, 2);
+	PopulateObjs(3000, 3);
+	PopulateObjs(3000, 4);
+
+	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec3) * posDatas.size(), GL_DYNAMIC_DRAW,
+		posDatas.data());
+	boPosBuffer->BindStorage(0);
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum)
@@ -80,4 +95,11 @@ void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& v
 	{
 		bo->Render(projMat, viewMat, frustum);
 	}
+
+	//boShader->Use();
+	//glBindVertexArray(vao);
+	//boPosBuffer->BindStorage(0);
+
+	
+
 }

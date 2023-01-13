@@ -14,16 +14,12 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
-
-#include "BillBoardObject.h"
-#include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
 #include "Line.h"
-#include "MultipleAnimationObject.h"
 #include "ModelKinds.hpp"
 #include "assimp/anim.h"
 
@@ -37,9 +33,6 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 
 	floor = new Floor(floorShader);
-	floor->pos = glm::vec3(660.f, 0.f, 670.f);
-	floor->scale = glm::vec3(20000.f, 1.f, 20000.f);
-	floor->rot = glm::vec3(0.f, 1.f, 0.f);
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
 		50.8f, -14.0999f);
@@ -55,8 +48,9 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 	frustum = new Frustum();
 	frustum->ResetFrustumPlans(*currentCam, fov,
-		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
-	boObjsManager->Populate();
+		glm::radians(currentCam->Zoom), boObjsManager->zNear, 
+		boObjsManager->zFar);
+	//boObjsManager->Populate();
 }
 
 Graphic::~Graphic()
@@ -88,7 +82,8 @@ void Graphic::Draw()
 	const glm::mat4 projViewMat = projMat * viewMat;
 
 	frustum->ResetFrustumPlans(*currentCam, fov,
-		glm::radians(currentCam->Zoom), 0.1f, 2000.f);
+		glm::radians(currentCam->Zoom), boObjsManager->zNear,
+		boObjsManager->zFar);
 
 	boObjsManager->CheckFrameBufferUsage(frustum);
 	boManager->GenBillboard(projMat);

@@ -63,6 +63,10 @@ Floor::Floor(Shader* shader_)
 		-0.5f,  0.5f, -0.5f,
 	};
 
+	pos = glm::vec3(660.f, 0.f, 670.f);
+	scale = glm::vec3(20000.f, 1.f, 20000.f);
+	rot = glm::vec3(0.f, 1.f, 0.f);
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 

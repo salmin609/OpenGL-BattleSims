@@ -25,7 +25,7 @@ public:
 	~BillBoardObject();
 	void CheckFrameBufferUsage(Frustum* frustum);
 	void SetFrameBufferUsage();
-	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot, Frustum* frustum) const;
+	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot, Frustum* frustum);
 	void SetFrameBufferAngleTarget() const;
 
 	glm::vec3 pos;
@@ -37,6 +37,6 @@ private:
 	std::vector<FrameBuffer*> fbs;
 	SphereBV* spv;
 	Camera* cam;
-
+	bool onRender = false;
 
 };

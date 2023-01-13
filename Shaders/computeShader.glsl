@@ -133,18 +133,7 @@ vec4 QuaternionInterpolate(vec4 pStart, vec4 pEnd, float factor)
 
 mat4 TranslationMatrix(vec4 translationFactor)
 {
-	mat4 result;
-
-	for (int i = 0; i < 4; ++i)
-	{
-		for (int j = 0; j < 4; ++j)
-		{
-			result[i][j] = 0.f;
-
-			if (i == j)
-				result[i][j] = 1.f;
-		}
-	}
+	mat4 result = identityMat;
 
 	result[3][0] = translationFactor.x;
 	result[3][1] = translationFactor.y;
@@ -155,30 +144,13 @@ mat4 TranslationMatrix(vec4 translationFactor)
 
 mat4 ScalingMatrix(vec4 scalingFactor) 
 {
-	mat4 result;
+	mat4 result = identityMat;
 
-	for (int i = 0; i < 4; ++i)
-	{
-		for (int j = 0; j < 4; ++j)
-		{
-			result[i][j] = 0.f;
+	result[0][0] = scalingFactor.x;
+	result[1][1] = scalingFactor.y;
+	result[2][2] = scalingFactor.z;
+	result[3][3] = 1.f;
 
-			if (i == j)
-			{
-				if (i == 0)
-					result[i][j] = scalingFactor.x;
-
-				else if (i == 1)
-					result[i][j] = scalingFactor.y;
-
-				else if (i == 2)
-					result[i][j] = scalingFactor.z;
-
-				else if (i == 3)
-					result[i][j] = 1.f;
-			}
-		}
-	}
 	return result;
 }
 

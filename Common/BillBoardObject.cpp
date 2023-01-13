@@ -26,7 +26,7 @@ float Convert(float radian)
 	return(radian * (180 / pi));
 }
 
-BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_, 
+BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
 	std::vector<FrameBuffer*> fb_, Camera* cam_)
 {
 	pos = pos_;
@@ -48,14 +48,15 @@ BillBoardObject::~BillBoardObject()
 
 void BillBoardObject::CheckFrameBufferUsage(Frustum* frustum)
 {
-	if(spv->isOnFrustum(*frustum))
+	const float distance = glm::distance(pos, cam->Position);
+
+	if (distance < 1000.f)
 	{
-		const float distance = glm::distance(pos, cam->Position);
-
-		//std::cout << "distance : " << distance << std::endl;
-
-		if(distance < 500.f)
+		if (spv->isOnFrustum(*frustum))
+		{
 			SetFrameBufferUsage();
+			onRender = true;
+		}
 	}
 }
 
@@ -97,14 +98,14 @@ void BillBoardObject::SetFrameBufferUsage()
 	}
 }
 
-void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, Frustum* frustum) const
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, Frustum* frustum)
 {
-	if(spv->isOnFrustum(*frustum))
+	if (onRender)
 	{
 		shader->Use();
 		glBindVertexArray(vao);
 
-		if(static_cast<int>(CamVectorOrder::End) > 7)
+		if (static_cast<int>(CamVectorOrder::End) > 7)
 			SetFrameBufferAngleTarget();
 		else
 			fbs[0]->texture->Bind(0);
@@ -118,6 +119,7 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		glDrawArrays(GL_POINTS, 0, 1);
 
 		glBindVertexArray(0);
+		onRender = false;
 	}
 }
 
@@ -131,16 +133,16 @@ void BillBoardObject::SetFrameBufferAngleTarget() const
 	//std::cout << "angle : " << angleInDegree << std::endl;
 
 	//right
-	if(angleInDegree >= 0.f && angleInDegree <= 22.5f)
+	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
 		fbs[static_cast<int>(CamVectorOrder::Right)]->texture->Bind(0);
 	//left
-	else if(angleInDegree >= 157.5f && angleInDegree <= 180.f)
+	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
 		fbs[static_cast<int>(CamVectorOrder::Left)]->texture->Bind(0);
 	else
 	{
 		if (pos.x > cam->Position.x)
 		{
-			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f )
+			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
 				fbs[static_cast<int>(CamVectorOrder::RightFront)]->texture->Bind(0);
 			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
 				fbs[static_cast<int>(CamVectorOrder::LeftFront)]->texture->Bind(0);
@@ -158,5 +160,5 @@ void BillBoardObject::SetFrameBufferAngleTarget() const
 		}
 	}
 
-	
+
 }
