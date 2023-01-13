@@ -159,7 +159,7 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 
 void BillboardManager::GenBillboard(const glm::mat4& projMat)
 {
-	size_t boDatasSize = boDatas.size();
+	const size_t boDatasSize = boDatas.size();
 	const std::chrono::system_clock::time_point current = std::chrono::system_clock::now();
 
 	for (size_t i = 0; i < boDatasSize; ++i)
@@ -252,13 +252,14 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 					datas->obj->Draw(projViewMat, transformMat);
 
 					datas->frameBuffers[i][j][k]->UnBind();
+					fb->isOnUsage = false;
 				}
 
 			}
 		}
 	}
 
-	SaveAngleTextures(datas);
+	//SaveAngleTextures(datas);
 
 }
 

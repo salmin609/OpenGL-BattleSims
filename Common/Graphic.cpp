@@ -18,6 +18,7 @@
 #include "BillBoardObject.h"
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
+#include "BillboardObjectManager.h"
 #include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
@@ -39,117 +40,38 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	floor->pos = glm::vec3(660.f, 0.f, 670.f);
 	floor->scale = glm::vec3(20000.f, 1.f, 20000.f);
 	floor->rot = glm::vec3(0.f, 1.f, 0.f);
-
-	objPaths = ObjPaths();
-
-	boManager = new BillboardManager(shader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
-	skybox = new SkyBox();
-	PopulateObjsPos();
-
-	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f), 
+	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
 		50.8f, -14.0999f);
-
-	floorLine = new Line(lineShader);
-
-
-
-	//BillboardAnimatingDatas* data = boManager->boDatas[0];
-	//currentCam = boManager->GetBoObjCamera(static_cast<int>(CamVectorOrder::Left));
-	//objs.push_back(data->obj);
-
 	currentCam = cam;
 
+	objPaths = ObjPaths();
+	boManager = new BillboardManager(shader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
+	boObjsManager = new BillboardObjectManager(billboardShader, boManager, currentCam);
+	skybox = new SkyBox();
+
+	floorLine = new Line(lineShader);
 	fov = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
 
 	frustum = new Frustum();
 	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 1000.f);
-
-	PopulateObjs(1000, 0);
-	//PopulateObjs(1000, 1);
-	//PopulateObjs(3000, 2);
-	//PopulateObjs(3000, 3);
-	//PopulateObjs(3000, 4);
-
-	
+	boObjsManager->Populate();
 }
 
 Graphic::~Graphic()
 {
-	for (const auto bo : bos)
-		delete bo;
-
+	delete boObjsManager;
 	delete boManager;
 	delete skybox;
 	delete frustum;
 	delete cam;
-	//delete currentCam;
 	delete shader;
 	delete interpolationComputeShader;
 	delete lineShader;
 	delete billboardShader;
 	delete floorLine;
 }
-
-void Graphic::PopulateObjsPos()
-{
-	glm::vec3 pos = populateLastPosition;
-
-	for (int i = 0; i < 200000; ++i)
-	{
-		if (i % 200 == 0)
-		{
-			pos.x = 0.f;
-			pos.z += 20.f;
-		}
-
-		pos.x += 20.f;
-
-		objsPos.push_back(pos);
-	}
-	//PopulateObjs(200, int(objKind::SWAT_RifleAimIdle));
-}
-
-void Graphic::PopulateObjs(int num, int obj)
-{
-	BillboardAnimatingDatas* data = boManager->boDatas[obj];
-
-	const int animationCount = static_cast<int>(data->obj->animationModels.size());
-	data->inUse = true;
-	
-	for (int i = 0; i < num; ++i)
-	{
-		const int animationIndex = rand() % animationCount;
-		const int timeDiffSlot = rand() % data->diffTimeAnimCount;
-
-		const glm::vec3& pos = objsPos[posOffset + i];
-
-		bos.push_back(new BillBoardObject(billboardShader,
-			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
-	}
-
-	posOffset += num;
-
-	totalRenderingAmount += num;
-}
-
-void Graphic::DeleteObjs(int num)
-{
-	for (int i = posOffset - 1; i >= posOffset - num; --i)
-	{
-		delete bos[i];
-	}
-
-	posOffset -= num;
-	if (posOffset < 0)
-		posOffset = 0;
-
-	bos.resize(posOffset);
-
-	totalRenderingAmount -= num;
-}
-
 
 void Graphic::Draw()
 {
@@ -168,15 +90,9 @@ void Graphic::Draw()
 	frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), 0.1f, 2000.f);
 
-	for (const auto& bo : bos)
-		bo->CheckFrameBufferUsage(frustum);
-
+	boObjsManager->CheckFrameBufferUsage(frustum);
 	boManager->GenBillboard(projMat);
-
-	for (const auto& bo : bos)
-	{
-		bo->Render(projMat, viewMat, frustum);
-	}
+	boObjsManager->Render(projMat, viewMat, frustum);
 
 	skybox->Draw(projMat, viewMat);
 	floorLine->Draw(projViewMat);
@@ -202,8 +118,6 @@ void Graphic::Draw()
 			obj->Draw(projViewMat, obj->Interpolate(animationTimeTicks));
 		}
 	}
-
-	boManager->ResetFrameBufferUsage();
 }
 
 void Graphic::ProcessInput()
@@ -245,9 +159,6 @@ void Graphic::SetWindowWidthHeight(int w, int h)
 
 void Graphic::ResetCamAngle()
 {
-	//currentCam->Yaw = 0.f;
-	//currentCam->Pitch = 0.f;
-
 	*cam = Camera(currentCam->Position,
 		currentCam->Up,
 		0.f, 0.f);

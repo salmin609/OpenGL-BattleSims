@@ -108,6 +108,9 @@
     <ClCompile Include="..\Common\Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\BillboardObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\Graphic.h">
@@ -227,6 +230,9 @@
     <ClInclude Include="..\Common\ModelKinds.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\BillboardObjectManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\frag.glsl">
@@ -263,6 +269,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shaders\lineFrag.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shaders\BillboardObjectAngleCompute.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

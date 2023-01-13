@@ -52,7 +52,9 @@ void BillBoardObject::CheckFrameBufferUsage(Frustum* frustum)
 	{
 		const float distance = glm::distance(pos, cam->Position);
 
-		if(distance < 50.f)
+		//std::cout << "distance : " << distance << std::endl;
+
+		if(distance < 500.f)
 			SetFrameBufferUsage();
 	}
 }

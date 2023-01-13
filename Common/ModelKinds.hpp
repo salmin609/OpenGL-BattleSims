@@ -18,9 +18,6 @@ enum class objKind
 	SWAT_Reload2,
 	SWAT_Smash,
 
-	END,
-
-
 	AMY_Excited,
 	AMY_Floating,
 	AMY_HappyIdle,
@@ -44,6 +41,9 @@ enum class objKind
 	KNIGHT_PowerUp,
 	KNIGHT_Run,
 	KNIGHT_Slash,
+
+	END,
+
 
 	MICHELLE_BreakDance,
 	MICHELLE_BreakDanceReady,
