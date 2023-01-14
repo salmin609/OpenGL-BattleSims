@@ -81,6 +81,7 @@ private:
 	Shader* floorShader;
 	Shader* interpolationComputeShader;
 	Shader* lineShader;
+	Shader* bbCheckFrameBufferUsage;
 	int windowWidth;
 	int windowHeight;
 	Line* floorLine;

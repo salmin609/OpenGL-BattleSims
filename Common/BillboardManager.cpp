@@ -226,7 +226,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		for (int j = 0; j < animationsSize; ++j)
@@ -258,9 +257,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			}
 		}
 	}
-
-	//SaveAngleTextures(datas);
-
 }
 
 void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)

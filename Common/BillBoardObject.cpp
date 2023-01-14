@@ -71,44 +71,50 @@ void BillBoardObject::SetFrameBufferUsage()
 
 	//right
 	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
-		fbs[static_cast<int>(CamVectorOrder::Right)]->isOnUsage = true;
+		usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::Right)];
 	//left
 	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
-		fbs[static_cast<int>(CamVectorOrder::Left)]->isOnUsage = true;
+		usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::Left)];
 	else
 	{
 		if (pos.x > cam->Position.x)
 		{
 			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				fbs[static_cast<int>(CamVectorOrder::RightFront)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::RightFront)];
 			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
-				fbs[static_cast<int>(CamVectorOrder::LeftFront)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::LeftFront)];
 			else
-				fbs[static_cast<int>(CamVectorOrder::Front)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::Front)];
 		}
 		else
 		{
 			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				fbs[static_cast<int>(CamVectorOrder::RightBack)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::RightBack)];
 			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
-				fbs[static_cast<int>(CamVectorOrder::LeftBack)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::LeftBack)];
 			else
-				fbs[static_cast<int>(CamVectorOrder::Back)]->isOnUsage = true;
+				usingFrameBuffer = fbs[static_cast<int>(CamVectorOrder::Back)];
 		}
 	}
+
+	usingFrameBuffer->isOnUsage = true;
 }
 
-void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, Frustum* frustum)
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
-	if (onRender)
+	//if (onRender)
+	//{
+	if(usingFrameBuffer != nullptr)
 	{
+		
 		shader->Use();
 		glBindVertexArray(vao);
 
-		if (static_cast<int>(CamVectorOrder::End) > 7)
+		/*if (static_cast<int>(CamVectorOrder::End) > 7)
 			SetFrameBufferAngleTarget();
 		else
-			fbs[0]->texture->Bind(0);
+			fbs[0]->texture->Bind(0);*/
+		usingFrameBuffer->texture->Bind(0);
 
 		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
 
@@ -120,7 +126,11 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 
 		glBindVertexArray(0);
 		onRender = false;
+
+		usingFrameBuffer = nullptr;
 	}
+
+	//}
 }
 
 void BillBoardObject::SetFrameBufferAngleTarget() const

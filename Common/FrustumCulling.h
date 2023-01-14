@@ -65,5 +65,5 @@ struct SphereBV
 			isOnOrForwardPlan(camFrustum.nearFace) &&
 			isOnOrForwardPlan(camFrustum.topFace) &&
 			isOnOrForwardPlan(camFrustum.bottomFace));
-	};
+	}
 };

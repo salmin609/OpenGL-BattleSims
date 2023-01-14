@@ -46,7 +46,8 @@ class BillboardManager
 public:
 
 
-	BillboardManager(Shader* boShader_, Shader* boComputeShader_, int windowWidth, int windowHeight,
+	BillboardManager(Shader* boShader_, Shader* boComputeShader_, 
+		int windowWidth, int windowHeight,
 		const std::vector<std::string>& objPaths);
 	~BillboardManager();
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);

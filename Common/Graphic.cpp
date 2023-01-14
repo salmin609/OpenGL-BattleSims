@@ -31,6 +31,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 		"../Shaders/billboardGeometry.glsl");
 	interpolationComputeShader = new Shader("../Shaders/computeShader.glsl");
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
+	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
 
 	floor = new Floor(floorShader);
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
@@ -40,7 +41,7 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 
 	objPaths = ObjPaths();
 	boManager = new BillboardManager(shader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
-	boObjsManager = new BillboardObjectManager(billboardShader, boManager, currentCam);
+	boObjsManager = new BillboardObjectManager(billboardShader, boManager, bbCheckFrameBufferUsage, currentCam);
 	skybox = new SkyBox();
 
 	floorLine = new Line(lineShader);
@@ -85,9 +86,9 @@ void Graphic::Draw()
 		glm::radians(currentCam->Zoom), boObjsManager->zNear,
 		boObjsManager->zFar);
 
-	boObjsManager->CheckFrameBufferUsage(frustum);
+	boObjsManager->CheckFrameBufferUsage(frustum, currentCam, fov);
 	boManager->GenBillboard(projMat);
-	boObjsManager->Render(projMat, viewMat, frustum);
+	boObjsManager->Render(projMat, viewMat);
 
 	skybox->Draw(projMat, viewMat);
 	floorLine->Draw(projViewMat);
