@@ -109,7 +109,7 @@ void AnimationModel::InitMaterial()
  */
 void AnimationModel::Draw(
 	const glm::mat4& objMat, const glm::mat4& projViewMat,
-	std::vector<glm::mat4> transforms)
+	glm::mat4* transforms)
 {
 	assert(shader != nullptr);
 	Select();
@@ -117,7 +117,7 @@ void AnimationModel::Draw(
 	glm::mat4 matrix = projViewMat * objMat;
 	glm::mat4 modelMat = objMat;
 	shader->SendUniformMatGLM("gWVP", &matrix);
-	datas->gBonesBuffer->WriteData<glm::mat4>(transforms.data());
+	datas->gBonesBuffer->WriteData<glm::mat4>(transforms);
 	datas->gBonesBuffer->BindStorage(4);
 	shader->SendUniformMatGLM("model", &modelMat);
 
@@ -149,7 +149,8 @@ const aiScene* AnimationModel::GetScene() const
 	return scene;
 }
 
-std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks) const
+//std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks) const
+glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 {
 	assert(interpolationComputeShader != nullptr);
 
@@ -164,7 +165,7 @@ std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks) con
 
 	glUseProgram(0);
 
-	return datas->computeOutFinalTransforms->Check<glm::mat4>();
+	return datas->computeOutFinalTransforms->GetData<glm::mat4>();
 }
 
 void AnimationModel::PopulateTransforms(std::vector<glm::mat4>& transforms)

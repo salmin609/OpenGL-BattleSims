@@ -17,11 +17,11 @@ public:
 	~MultipleAnimationObject() override;
 
 	void Draw(const glm::mat4& projViewMat,
-		std::vector<glm::mat4> transforms) override;
+		glm::mat4* transforms) override;
 	aiAnimation* GetAiAnimation() override;
 	std::chrono::system_clock::time_point GetAnimationStartTime() const override;
 	void ResetAnimationStartTime() override;
-	std::vector<glm::mat4> Interpolate(float animationTimeTicks) override;
+	glm::mat4* Interpolate(float animationTimeTicks) override;
 	void AddAnimation(AnimationModel* model);
 	void IncrementIndex();
 	void SetAnimationIndex(int index);

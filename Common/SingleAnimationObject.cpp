@@ -23,7 +23,7 @@ SingleAnimationObject::~SingleAnimationObject()
 }
 
 void SingleAnimationObject::Draw(const glm::mat4& projViewMat,
-	std::vector<glm::mat4> transforms)
+	glm::mat4* transforms)
 {
 	animationModel->Draw(GetModelMatrix(), projViewMat,
 		transforms);
@@ -44,7 +44,7 @@ aiAnimation* SingleAnimationObject::GetAiAnimation()
 	return animationModel->GetScene()->mAnimations[0];
 }
 
-std::vector<glm::mat4> SingleAnimationObject::Interpolate(float animationTimeTicks)
+glm::mat4* SingleAnimationObject::Interpolate(float animationTimeTicks)
 {
 	return animationModel->Interpolate(animationTimeTicks);
 }

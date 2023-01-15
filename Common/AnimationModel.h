@@ -33,10 +33,11 @@ public:
 	void CheckBuffers();
 	void InitMaterial();
 	void Draw(const glm::mat4& objMat, const glm::mat4& projViewMat,
-		std::vector<glm::mat4> transforms);
+		glm::mat4* transforms);
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;
-	std::vector<glm::mat4> Interpolate(float animationTimeTicks) const;
+	//std::vector<glm::mat4> Interpolate(float animationTimeTicks) const;
+	glm::mat4* Interpolate(float animationTimeTicks) const;
 	void PopulateTransforms(std::vector<glm::mat4>& transforms);
 	
 	AnimationModelDatas* datas;

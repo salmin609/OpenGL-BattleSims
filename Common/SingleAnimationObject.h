@@ -19,12 +19,12 @@ public:
 	~SingleAnimationObject() override;
 	void Draw(
 		const glm::mat4& projViewMat,
-		std::vector<glm::mat4> transforms) override;
+		glm::mat4* transforms) override;
 
 	std::chrono::system_clock::time_point GetAnimationStartTime() const override;
 	void ResetAnimationStartTime() override;
 	aiAnimation* GetAiAnimation() override;
-	std::vector<glm::mat4> Interpolate(float animationTimeTicks) override;
+	glm::mat4* Interpolate(float animationTimeTicks) override;
 	AnimationModel* animationModel;
 
 private:

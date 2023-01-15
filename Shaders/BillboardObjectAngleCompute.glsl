@@ -33,18 +33,18 @@ struct Plan
 	float distance;
 };
 
-uniform vec3 topFaceNormal;
-uniform float topFaceDistance;
-uniform vec3 bottomFaceNormal;
-uniform float bottomFaceDistance;
-uniform vec3 rightFaceNormal;
-uniform float rightFaceDistance;
-uniform vec3 leftFaceNormal;
-uniform float leftFaceDistance;
-uniform vec3 farFaceNormal;
-uniform float farFaceDistance;
-uniform vec3 nearFaceNormal;
-uniform float nearFaceDistance;
+//uniform vec3 topFaceNormal;
+//uniform float topFaceDistance;
+//uniform vec3 bottomFaceNormal;
+//uniform float bottomFaceDistance;
+//uniform vec3 rightFaceNormal;
+//uniform float rightFaceDistance;
+//uniform vec3 leftFaceNormal;
+//uniform float leftFaceDistance;
+//uniform vec3 farFaceNormal;
+//uniform float farFaceDistance;
+//uniform vec3 nearFaceNormal;
+//uniform float nearFaceDistance;
 
 
 struct Frustum

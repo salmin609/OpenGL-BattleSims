@@ -235,7 +235,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation,
 				i);
-			const std::vector<glm::mat4> transformMat = model->Interpolate(animationTimeTicks);
+			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
@@ -255,6 +255,8 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 				}
 
 			}
+
+			delete[] transformMat;
 		}
 	}
 }

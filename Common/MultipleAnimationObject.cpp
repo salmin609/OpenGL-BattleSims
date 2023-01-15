@@ -25,7 +25,7 @@ MultipleAnimationObject::~MultipleAnimationObject()
 }
 
 void MultipleAnimationObject::Draw(const glm::mat4& projViewMat,
-	std::vector<glm::mat4> transforms)
+	glm::mat4* transforms)
 {
 	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, 
 		transforms);
@@ -46,7 +46,7 @@ void MultipleAnimationObject::ResetAnimationStartTime()
 	animationModels[currentAnimationIndex]->startTime = std::chrono::system_clock::now();
 }
 
-std::vector<glm::mat4> MultipleAnimationObject::Interpolate(float animationTimeTicks)
+glm::mat4* MultipleAnimationObject::Interpolate(float animationTimeTicks)
 {
 	return animationModels[currentAnimationIndex]->Interpolate(animationTimeTicks);
 }

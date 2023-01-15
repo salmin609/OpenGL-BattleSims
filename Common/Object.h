@@ -24,12 +24,12 @@ public:
 	glm::mat4 GetModelMatrix() const;
 	virtual void Draw(
 		const glm::mat4& projViewMat,
-		std::vector<glm::mat4> transforms) = 0;
+		glm::mat4* transforms) = 0;
 	virtual aiAnimation* GetAiAnimation() = 0;
 	
 	virtual std::chrono::system_clock::time_point GetAnimationStartTime() const = 0;
 	virtual void ResetAnimationStartTime() = 0;
-	virtual std::vector<glm::mat4> Interpolate(float animationTimeTicks) = 0;
+	virtual glm::mat4* Interpolate(float animationTimeTicks) = 0;
 	glm::vec3 pos, rot, scale;
 private:
 };
