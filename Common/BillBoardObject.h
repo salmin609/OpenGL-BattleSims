@@ -33,11 +33,11 @@ public:
 	bool onRender = false;
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*> fbs;
+	SphereBV* spv;
 
 private:
 	unsigned vao{};
 	Shader* shader;
 	glm::vec3 direction;
-	SphereBV* spv;
 	Camera* cam;
 };

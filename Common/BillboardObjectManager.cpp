@@ -67,7 +67,7 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 		bos.push_back(new BillBoardObject(boShader,
 			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
 
-		posDatas.push_back(pos);
+		posDatas.push_back(glm::vec4(pos, 1.f));
 	}
 
 	posOffset += num;
@@ -87,25 +87,16 @@ void BillboardObjectManager::Populate()
 		nullptr);
 	boFrameBufferUsageBuffer->BindStorage(0);
 
-	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec3) * posDatas.size(), GL_DYNAMIC_DRAW,
+	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * posDatas.size(), GL_DYNAMIC_DRAW,
 		posDatas.data());
 	boPosBuffer->BindStorage(1);
-
-	boIndexCheckBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * posDatas.size(), GL_DYNAMIC_DRAW,
-		nullptr);
-	boIndexCheckBuffer->BindStorage(2);
-	
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam, float fov)
 {
-	/*for (const auto& bo : bos)
-		bo->CheckFrameBufferUsage(frustum);*/
-
 	boFBusageComputeShader->Use();
 	boFrameBufferUsageBuffer->BindStorage(0);
 	boPosBuffer->BindStorage(1);
-	boIndexCheckBuffer->BindStorage(2);
 
 	boFBusageComputeShader->SendUniformVec3("camPos", &cam->Position);
 	boFBusageComputeShader->SendUniformVec3("camFront", &cam->Front);
@@ -136,16 +127,12 @@ void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam
 	glUseProgram(0);
 
 	const std::vector<int> boFBusage = boFrameBufferUsageBuffer->Check<int>();
-	const std::vector<int> boCheck = boIndexCheckBuffer->Check<int>();
-	const std::vector<glm::vec3> checkPos = boPosBuffer->Check<glm::vec3>();
 
 	const size_t bosSize = bos.size();
 
 	for(size_t i = 0; i < bosSize; ++i)
 	{
 		BillBoardObject* bo = bos[i];
-
-		//bo->onRender = boOnRender[i];
 
 		if (boFBusage[i] >= 0)
 		{

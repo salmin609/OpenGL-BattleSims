@@ -1,6 +1,6 @@
 #version 430 core
 
-layout(local_size_x = 150, local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 layout(binding = 0) buffer
 bufferOutFrameBufferUsage {
@@ -9,12 +9,12 @@ bufferOutFrameBufferUsage {
 
 layout(binding = 1) buffer
 bufferInBillboardPoses {
-	vec3 boPoses[];
+	vec4 boPoses[];
 };
 
 layout(binding = 2) buffer
-checkBuffer {
-	int check[];
+bufferCheck {
+	float check[];
 };
 
 uniform vec3 camPos;
@@ -82,10 +82,7 @@ Plan GetPlan(vec3 p1, vec3 norm)
 }
 
 
-float GetSignedDistanceToPlan(Plan plan, vec3 pos)
-{
-	return dot(plan.normal, pos) - plan.distance;
-}
+
 
 Frustum GetFrustumPlans()
 {
@@ -118,6 +115,11 @@ SphereBV GetSPV(vec3 pos, float rad)
 	spv.radius = rad;
 
 	return spv;
+}
+
+float GetSignedDistanceToPlan(Plan plan, vec3 pos)
+{
+	return dot(plan.normal, pos) - plan.distance;
 }
 
 bool isOnOrForwardPlan(Plan plan, SphereBV spv)
@@ -183,32 +185,17 @@ int GetUsingFrameBufferIndex(vec3 boPos)
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	check[index] = int(index);
-	vec3 boPos = boPoses[index];
+	frameBufferUsingIndex[index] = -1;
+	check[index] = -1.f;
 
+	vec4 boPosInVec4 = boPoses[index];
+	vec3 boPos = vec3(boPosInVec4.x, boPosInVec4.y, boPosInVec4.z);
 	SphereBV spv = GetSPV(boPos, 0.1f);
 
-	//Frustum camFrustum = GetFrustumPlans();
-	Frustum camFrustum;
-	camFrustum.topFace.normal = topFaceNormal;
-	camFrustum.topFace.distance = topFaceDistance;
-	camFrustum.bottomFace.normal = bottomFaceNormal;
-	camFrustum.bottomFace.distance = bottomFaceDistance;
-	camFrustum.rightFace.normal = rightFaceNormal;
-	camFrustum.rightFace.distance = rightFaceDistance;
-	camFrustum.leftFace.normal = leftFaceNormal;
-	camFrustum.leftFace.distance = leftFaceDistance;
-	camFrustum.farFace.normal = farFaceNormal;
-	camFrustum.farFace.distance = farFaceDistance;
-	camFrustum.nearFace.normal = nearFaceNormal;
-	camFrustum.nearFace.distance = nearFaceDistance;
+	Frustum camFrustum = GetFrustumPlans();
 
 	if (isOnFrustum(camFrustum, spv))
 	{
-		frameBufferUsingIndex[index] = 0;//GetUsingFrameBufferIndex(boPos);
-	}
-	else
-	{
-		frameBufferUsingIndex[index] = -1;
+		frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos);
 	}
 }

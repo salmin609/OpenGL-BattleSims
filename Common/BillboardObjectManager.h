@@ -38,6 +38,5 @@ private:
 	int totalRenderingAmount = 0;
 	Buffer* boPosBuffer;
 	Buffer* boFrameBufferUsageBuffer;
-	Buffer* boIndexCheckBuffer;
-	std::vector<glm::vec3> posDatas;
+	std::vector<glm::vec4> posDatas;
 };
