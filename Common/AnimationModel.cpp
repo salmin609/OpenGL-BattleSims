@@ -159,8 +159,9 @@ glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));
 	interpolationComputeShader->SendUniformFloat("animationTimeTicks", animationTimeTicks);
 
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glDispatchCompute(static_cast<GLuint>(datas->transformOrder.size()), 1, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glUseProgram(0);

@@ -17,8 +17,11 @@ public:
 	void BindStorage();
 	void BindStorageBuffer(int storageIndex, unsigned size);
 	void UnBind();
+
 	template <typename T>
 	void WriteData(void* data);
+
+	void GetData(void* data) const;
 	
 	unsigned GetId();
 	
@@ -73,6 +76,11 @@ void Buffer::WriteData(void* data)
 	memcpy(writeVal, data, size);
 
 	glUnmapBuffer(type);
+}
+
+inline void Buffer::GetData(void* data) const
+{
+	glGetBufferSubData(type, 0, size, data);
 }
 
 template <typename T>
@@ -169,9 +177,6 @@ inline void Buffer::BindStorageBuffer(int storageIndexVal, unsigned sizeVal)
 inline void Buffer::UnBind()
 {
 	glBindBuffer(type, 0);
-
-	//if(type == GL_SHADER_STORAGE_BUFFER)
-		
 }
 
 inline unsigned Buffer::GetId()

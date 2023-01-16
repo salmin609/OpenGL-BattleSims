@@ -94,6 +94,11 @@ void BillboardObjectManager::Populate()
 
 void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam, float fov)
 {
+	for (const auto& bo : bos)
+	{
+		bo->CheckFrameBufferUsage(frustum);
+	}
+
 	//boFBusageComputeShader->Use();
 	//boFrameBufferUsageBuffer->BindStorage(0);
 	//boPosBuffer->BindStorage(1);
@@ -108,32 +113,37 @@ void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam
 	//boFBusageComputeShader->SendUniformFloat("zFar", zFar);
 
 	//glDispatchCompute(static_cast<int>(posDatas.size()) / 128, 1, 1);
-	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	//glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-	//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	////glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
 
 	//glUseProgram(0);
 
-	int* boFBusage = boFrameBufferUsageBuffer->GetData<int>();
+	////int* boFBusage = boFrameBufferUsageBuffer->GetData<int>();
+	////int* boFBusage = new int[boFrameBufferUsageBuffer->GetSize()];
+	//void* boFBusage = nullptr;
+	//boFrameBufferUsageBuffer->GetData(boFBusage);
 
-	const size_t bosSize = bos.size();
+	//const size_t bosSize = bos.size();
 
-	for(size_t i = 0; i < bosSize; ++i)
-	{
-		BillBoardObject* bo = bos[i];
+	//for(size_t i = 0; i < bosSize; ++i)
+	//{
+	//	BillBoardObject* bo = bos[i];
 
-		//if (boFBusage[i] >= 0)
-		//{
-		//	bo->usingFrameBuffer = bo->fbs[boFBusage[i]];
-		//	bo->usingFrameBuffer->isOnUsage = true;
-		//}
-		//else
-		//	bo->usingFrameBuffer = nullptr;
-		bo->fbs[0]->isOnUsage = true;
-		bo->usingFrameBuffer = bo->fbs[0];
-	}
+	//	if (static_cast<int*>(boFBusage)[i] >= 0)
+	//	{
+	//		bo->usingFrameBuffer = bo->fbs[static_cast<int*>(boFBusage)[i]];
+	//		bo->usingFrameBuffer->isOnUsage = true;
+	//	}
+	//	else
+	//		bo->usingFrameBuffer = nullptr;
+	//	/*bo->fbs[0]->isOnUsage = true;
+	//	bo->usingFrameBuffer = bo->fbs[0];*/
+	//}
 
-	delete[] boFBusage;
+	//delete[] boFBusage;
 }
 
 void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
