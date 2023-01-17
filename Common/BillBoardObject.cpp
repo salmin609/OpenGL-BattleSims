@@ -55,7 +55,6 @@ void BillBoardObject::CheckFrameBufferUsage(Frustum* frustum)
 		if (spv->isOnFrustum(*frustum))
 		{
 			SetFrameBufferUsage();
-			onRender = true;
 		}
 	}
 }
@@ -102,18 +101,12 @@ void BillBoardObject::SetFrameBufferUsage()
 
 void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
-	//if (onRender)
-	//{
 	if(usingFrameBuffer != nullptr)
 	{
 		
 		shader->Use();
 		glBindVertexArray(vao);
 
-		/*if (static_cast<int>(CamVectorOrder::End) > 7)
-			SetFrameBufferAngleTarget();
-		else
-			fbs[0]->texture->Bind(0);*/
 		usingFrameBuffer->texture->Bind(0);
 
 		const glm::mat4 modelMat = glm::translate(glm::mat4(1.f), pos);
@@ -125,7 +118,6 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 		glDrawArrays(GL_POINTS, 0, 1);
 
 		glBindVertexArray(0);
-		onRender = false;
 
 		usingFrameBuffer = nullptr;
 	}
@@ -171,4 +163,10 @@ void BillBoardObject::SetFrameBufferAngleTarget() const
 	}
 
 
+}
+
+void BillBoardObject::SetFrameBufferIndex(int index)
+{
+	usingFrameBuffer = fbs[index];
+	usingFrameBuffer->isOnUsage = true;
 }

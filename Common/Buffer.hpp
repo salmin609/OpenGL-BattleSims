@@ -14,7 +14,7 @@ public:
 	Buffer(GLenum type, unsigned size, GLenum usage, void* data, int storageIndex_ = 0);
 	void Bind(unsigned uniformBufferSlot = 0);
 	void BindStorage(int index);
-	void BindStorage();
+	void BindStorage() const;
 	void BindStorageBuffer(int storageIndex, unsigned size);
 	void UnBind();
 
@@ -80,7 +80,11 @@ void Buffer::WriteData(void* data)
 
 inline void Buffer::GetData(void* data) const
 {
+	BindStorage();
+
 	glGetBufferSubData(type, 0, size, data);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, storageIndex, 0);
 }
 
 template <typename T>
@@ -164,7 +168,7 @@ inline void Buffer::BindStorage(int index)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, bufferId);
 }
 
-inline void Buffer::BindStorage()
+inline void Buffer::BindStorage() const
 {
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, storageIndex, bufferId);
 }

@@ -12,10 +12,7 @@ bufferInBillboardPoses {
 	vec4 boPoses[];
 };
 
-layout(binding = 2) buffer
-bufferCheck {
-	float check[];
-};
+
 
 uniform vec3 camPos;
 uniform vec3 camFront;
@@ -25,27 +22,15 @@ uniform float aspect;
 uniform float fovY;
 uniform float zNear;
 uniform float zFar;
+
 vec3 boDirection = vec3(0.f, 0.f, -1.f);
+uniform int bufferSize;
 
 struct Plan 
 {
 	vec3 normal;
 	float distance;
 };
-
-//uniform vec3 topFaceNormal;
-//uniform float topFaceDistance;
-//uniform vec3 bottomFaceNormal;
-//uniform float bottomFaceDistance;
-//uniform vec3 rightFaceNormal;
-//uniform float rightFaceDistance;
-//uniform vec3 leftFaceNormal;
-//uniform float leftFaceDistance;
-//uniform vec3 farFaceNormal;
-//uniform float farFaceDistance;
-//uniform vec3 nearFaceNormal;
-//uniform float nearFaceDistance;
-
 
 struct Frustum
 {
@@ -81,9 +66,6 @@ Plan GetPlan(vec3 p1, vec3 norm)
 	return result;
 }
 
-
-
-
 Frustum GetFrustumPlans()
 {
 	Frustum result;
@@ -105,8 +87,6 @@ Frustum GetFrustumPlans()
 
 	return result;
 }
-
-
 
 SphereBV GetSPV(vec3 pos, float rad)
 {
@@ -185,17 +165,22 @@ int GetUsingFrameBufferIndex(vec3 boPos)
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	frameBufferUsingIndex[index] = -1;
-	check[index] = -1.f;
 
+	if (index >= bufferSize)
+		return;
+
+	frameBufferUsingIndex[index] = -1;
 	vec4 boPosInVec4 = boPoses[index];
 	vec3 boPos = vec3(boPosInVec4.x, boPosInVec4.y, boPosInVec4.z);
-	SphereBV spv = GetSPV(boPos, 0.1f);
+	float distance = distance(boPos, camPos);
 
-	Frustum camFrustum = GetFrustumPlans();
-
-	if (isOnFrustum(camFrustum, spv))
+	if (distance < 1000.f)
 	{
-		frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos);
+		Frustum camFrustum = GetFrustumPlans();
+		SphereBV spv = GetSPV(boPos, 0.1f);
+
+		if (isOnFrustum(camFrustum, spv))
+			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos);
 	}
+		
 }

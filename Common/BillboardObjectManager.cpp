@@ -12,7 +12,7 @@
 
 BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManager* boManager_,
 												Shader* boFrameBufferUsageComputeShader,
-                                               Camera* currentCam_)
+                                               Camera* currentCam_): boFrameBufferUsageBuffer(nullptr)
 {
 	boShader = boShader_;
 	boManager = boManager_;
@@ -24,12 +24,16 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 
 	PopulateObjsPos();
 	Populate();
+
+	boFBusageDatas = new int[boFrameBufferUsageBuffer->GetSize()];
 }
 
 BillboardObjectManager::~BillboardObjectManager()
 {
 	for (const auto bo : bos)
 		delete bo;
+
+	delete[] boFBusageDatas;
 }
 
 void BillboardObjectManager::PopulateObjsPos()
@@ -94,56 +98,38 @@ void BillboardObjectManager::Populate()
 
 void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam, float fov)
 {
-	for (const auto& bo : bos)
+	boFBusageComputeShader->Use();
+	boFrameBufferUsageBuffer->BindStorage(0);
+	boPosBuffer->BindStorage(1);
+
+	boFBusageComputeShader->SendUniformVec3("camPos", &cam->Position);
+	boFBusageComputeShader->SendUniformVec3("camFront", &cam->Front);
+	boFBusageComputeShader->SendUniformVec3("camRight", &cam->Right);
+	boFBusageComputeShader->SendUniformVec3("camUp", &cam->Up);
+	boFBusageComputeShader->SendUniformFloat("aspect", &fov);
+	boFBusageComputeShader->SendUniformFloat("fovY", glm::radians(cam->Zoom));
+	boFBusageComputeShader->SendUniformFloat("zNear", zNear);
+	boFBusageComputeShader->SendUniformFloat("zFar", zFar);
+	boFBusageComputeShader->SendUniformInt("bufferSize", static_cast<int>(posDatas.size()));
+
+	glDispatchCompute(static_cast<int>(posDatas.size()) / 128, 1, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glUseProgram(0);
+
+	boFrameBufferUsageBuffer->GetData(boFBusageDatas);
+
+	const size_t bosSize = bos.size();
+
+	for(size_t i = 0; i < bosSize; ++i)
 	{
-		bo->CheckFrameBufferUsage(frustum);
+		BillBoardObject* bo = bos[i];
+
+		if (boFBusageDatas[i] >= 0)
+			bo->SetFrameBufferIndex(boFBusageDatas[i]);
+		else
+			bo->usingFrameBuffer = nullptr;
 	}
-
-	//boFBusageComputeShader->Use();
-	//boFrameBufferUsageBuffer->BindStorage(0);
-	//boPosBuffer->BindStorage(1);
-
-	//boFBusageComputeShader->SendUniformVec3("camPos", &cam->Position);
-	//boFBusageComputeShader->SendUniformVec3("camFront", &cam->Front);
-	//boFBusageComputeShader->SendUniformVec3("camRight", &cam->Right);
-	//boFBusageComputeShader->SendUniformVec3("camUp", &cam->Up);
-	//boFBusageComputeShader->SendUniformFloat("aspect", &fov);
-	//boFBusageComputeShader->SendUniformFloat("fovY", glm::radians(cam->Zoom));
-	//boFBusageComputeShader->SendUniformFloat("zNear", zNear);
-	//boFBusageComputeShader->SendUniformFloat("zFar", zFar);
-
-	//glDispatchCompute(static_cast<int>(posDatas.size()) / 128, 1, 1);
-	//glMemoryBarrier(GL_ALL_BARRIER_BITS);
-
-	////glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-	//glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
-
-	//glUseProgram(0);
-
-	////int* boFBusage = boFrameBufferUsageBuffer->GetData<int>();
-	////int* boFBusage = new int[boFrameBufferUsageBuffer->GetSize()];
-	//void* boFBusage = nullptr;
-	//boFrameBufferUsageBuffer->GetData(boFBusage);
-
-	//const size_t bosSize = bos.size();
-
-	//for(size_t i = 0; i < bosSize; ++i)
-	//{
-	//	BillBoardObject* bo = bos[i];
-
-	//	if (static_cast<int*>(boFBusage)[i] >= 0)
-	//	{
-	//		bo->usingFrameBuffer = bo->fbs[static_cast<int*>(boFBusage)[i]];
-	//		bo->usingFrameBuffer->isOnUsage = true;
-	//	}
-	//	else
-	//		bo->usingFrameBuffer = nullptr;
-	//	/*bo->fbs[0]->isOnUsage = true;
-	//	bo->usingFrameBuffer = bo->fbs[0];*/
-	//}
-
-	//delete[] boFBusage;
 }
 
 void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)

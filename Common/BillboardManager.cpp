@@ -142,18 +142,16 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 	{
 		MultipleAnimationObject* mObj = new MultipleAnimationObject(objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f));
 
-		std::vector<AnimationModel*> modelVec = animModels[i];
+		std::vector<AnimationModel*>& modelVec = animModels[i];
 
-		const size_t modelVecSize = modelVec.size();
-
-		for (size_t j = 0; j < modelVecSize; ++j)
+		for(const auto& model : modelVec)
 		{
-			AnimationModel* animModel = modelVec[j];
-
-			mObj->AddAnimation(animModel);
+			mObj->AddAnimation(model);
 		}
 
-		boDatas.push_back(new BillboardAnimatingDatas(windowW, windowH, mObj));
+		BillboardAnimatingDatas* boData = new BillboardAnimatingDatas(windowW, windowH, mObj);
+
+		boDatas.push_back(boData);
 	}
 }
 

@@ -27,10 +27,10 @@ public:
 	void SetFrameBufferUsage();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot);
 	void SetFrameBufferAngleTarget() const;
+	void SetFrameBufferIndex(int index);
 
 	glm::vec3 pos;
 	int animationIndex = 0;
-	bool onRender = false;
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*> fbs;
 	SphereBV* spv;

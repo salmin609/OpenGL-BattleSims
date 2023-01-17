@@ -24,6 +24,7 @@ public:
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 	float zNear = 0.1f;
 	float zFar = 1000.f;
+	int* boFBusageDatas;
 private:
 	unsigned vao;
 	Shader* boShader;
