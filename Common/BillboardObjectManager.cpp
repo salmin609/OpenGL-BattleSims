@@ -142,25 +142,33 @@ void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& v
 	//boShader->Use();
 	//glBindVertexArray(vao);
 	//boPosBuffer->BindStorage(0);
-
-
-
 	
-
 }
 
 void BillboardObjectManager::GenerateArrayTexture(const std::vector<BillboardAnimatingDatas*>& boDatas)
 {
-	//glGenTextures(1, &gArrayTexture);
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D_ARRAY, gArrayTexture);
+	glGenTextures(1, &gArrayTexture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, gArrayTexture);
 
-	//glTexStorage3D(GL_TEXTURE_2D_ARRAY,
-	//	1,
-	//	GL_RGBA,
-	//	1024,
-	//	768,
-	//	100);
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY,
+		1,
+		GL_RGBA,
+		1024,
+		768,
+		100);
+
+	const size_t boDatasSize = boDatas.size();
+
+	for(size_t i = 0; i < boDatasSize; ++i)
+	{
+		const BillboardAnimatingDatas* boData = boDatas[i];
+		std::vector<std::vector<std::vector<FrameBuffer*>>> fbs = boData->frameBuffers;
+
+
+
+
+	}
 
 
 
