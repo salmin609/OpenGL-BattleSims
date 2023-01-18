@@ -5,7 +5,7 @@ uniform mat4 viewMat;
 
 layout(std430, binding = 0) buffer boPoses
 {
-    vec3 boPos[];
+    vec4 boPos[];
 };
 
 uniform mat4 modelMat;

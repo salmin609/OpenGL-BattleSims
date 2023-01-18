@@ -86,7 +86,7 @@ void Graphic::Draw()
 
 	boObjsManager->CheckFrameBufferUsage(currentCam, fov);
 	boManager->GenBillboard(projMat);
-	boObjsManager->Render(projMat, viewMat);
+	boObjsManager->Render(projMat, viewMat, boManager->boDatas);
 
 	skybox->Draw(projMat, viewMat);
 	floorLine->Draw(projViewMat);

@@ -2,7 +2,18 @@
 #include <string>
 #include <vector>
 
-enum class objKind
+enum class ObjKind
+{
+	SWAT = 0,
+	AMY,
+	KNIGHT,
+	MICHELLE,
+	ADAM,
+
+	END
+};
+
+enum class AnimationKinds
 {
 	SWAT_RifleAimIdle = 0,
 	SWAT_RifleCrouch,
@@ -74,172 +85,172 @@ enum class objKind
 inline std::vector<std::string> ObjPaths()
 {
 	std::vector<std::string> objPaths;
-	for (int i = 0; i < static_cast<int>(objKind::END); ++i)
+	for (int i = 0; i < static_cast<int>(AnimationKinds::END); ++i)
 	{
 		std::string path = "../Models/";
-		switch (static_cast<objKind>(i))
+		switch (static_cast<AnimationKinds>(i))
 		{
-		case objKind::SWAT_RifleAimIdle:
+		case AnimationKinds::SWAT_RifleAimIdle:
 			path += "Swat_RifleAimingIdle";
 			break;
-		case objKind::SWAT_RifleCrouch:
+		case AnimationKinds::SWAT_RifleCrouch:
 			path += "Swat_RifleCrouchWalk";
 			break;
-		case objKind::SWAT_RifleIdle:
+		case AnimationKinds::SWAT_RifleIdle:
 			path += "Swat_RifleIdle";
 			break;
-		case objKind::SWAT_RifleWalk:
+		case AnimationKinds::SWAT_RifleWalk:
 			path += "Swat_RifleWalk";
 			break;
-		case objKind::SWAT_Run:
+		case AnimationKinds::SWAT_Run:
 			path += "Swat_Run";
 			break;
-		case objKind::SWAT_SteppingBackward:
+		case AnimationKinds::SWAT_SteppingBackward:
 			path += "Swat_SteppingBackward";
 			break;
-		case objKind::SWAT_Strafing:
+		case AnimationKinds::SWAT_Strafing:
 			path += "Swat_Strafing";
 			break;
-		case objKind::SWAT_TurnLeft45Degree:
+		case AnimationKinds::SWAT_TurnLeft45Degree:
 			path += "Swat_TurnLeft45Degree";
 			break;
-		case objKind::SWAT_CrawlBackward:
+		case AnimationKinds::SWAT_CrawlBackward:
 			path += "Swat_CrawlBackward";
 			break;
-		case objKind::SWAT_Death:
+		case AnimationKinds::SWAT_Death:
 			path += "Swat_Death";
 			break;
-		case objKind::SWAT_Reload:
+		case AnimationKinds::SWAT_Reload:
 			path += "Swat_Reload";
 			break;
-		case objKind::SWAT_Reload2:
+		case AnimationKinds::SWAT_Reload2:
 			path += "Swat_Reload2";
 			break;
-		case objKind::SWAT_Smash:
+		case AnimationKinds::SWAT_Smash:
 			path += "Swat_Smash";
 			break;
 
-		case objKind::AMY_Excited:
+		case AnimationKinds::AMY_Excited:
 			path += "Amy_Excited";
 			break;
-		case objKind::AMY_Floating:
+		case AnimationKinds::AMY_Floating:
 			path += "Amy_Floating";
 			break;
-		case objKind::AMY_HappyIdle:
+		case AnimationKinds::AMY_HappyIdle:
 			path += "Amy_HappyIdle";
 			break;
-		case objKind::AMY_Jogging:
+		case AnimationKinds::AMY_Jogging:
 			path += "Amy_Jogging";
 			break;
-		case objKind::AMY_Singing:
+		case AnimationKinds::AMY_Singing:
 			path += "Amy_Singing";
 			break;
-		case objKind::AMY_StandingUp:
+		case AnimationKinds::AMY_StandingUp:
 			path += "Amy_StandingUp";
 			break;
-		case objKind::AMY_Surprised:
+		case AnimationKinds::AMY_Surprised:
 			path += "Amy_Surprised";
 			break;
-		case objKind::AMY_TalkingOnPhone:
+		case AnimationKinds::AMY_TalkingOnPhone:
 			path += "Amy_TalkingOnPhone";
 			break;
-		case objKind::AMY_TwistDance:
+		case AnimationKinds::AMY_TwistDance:
 			path += "Amy_TwistDance";
 			break;
-		case objKind::KNIGHT_Attack1:
+		case AnimationKinds::KNIGHT_Attack1:
 			path += "Knight_Attack1";
 			break;
-		case objKind::KNIGHT_Block:
+		case AnimationKinds::KNIGHT_Block:
 			path += "Knight_Block";
 			break;
-		case objKind::KNIGHT_BlockIdle:
+		case AnimationKinds::KNIGHT_BlockIdle:
 			path += "Knight_BlockIdle";
 			break;
-		case objKind::KNIGHT_CrouchBlockIdle:
+		case AnimationKinds::KNIGHT_CrouchBlockIdle:
 			path += "Knight_CrouchBlockIdle";
 			break;
-		case objKind::KNIGHT_Death:
+		case AnimationKinds::KNIGHT_Death:
 			path += "Knight_Death";
 			break;
-		case objKind::KNIGHT_Idle:
+		case AnimationKinds::KNIGHT_Idle:
 			path += "Knight_Idle";
 			break;
-		case objKind::KNIGHT_Idle2:
+		case AnimationKinds::KNIGHT_Idle2:
 			path += "Knight_Idle2";
 			break;
-		case objKind::KNIGHT_Impact:
+		case AnimationKinds::KNIGHT_Impact:
 			path += "Knight_Impact";
 			break;
-		case objKind::KNIGHT_PowerUp:
+		case AnimationKinds::KNIGHT_PowerUp:
 			path += "Knight_PowerUp";
 			break;
-		case objKind::KNIGHT_Run:
+		case AnimationKinds::KNIGHT_Run:
 			path += "Knight_Run";
 			break;
-		case objKind::KNIGHT_Slash:
+		case AnimationKinds::KNIGHT_Slash:
 			path += "Knight_Slash";
 			break;
 
-		case objKind::MICHELLE_BreakDance:
+		case AnimationKinds::MICHELLE_BreakDance:
 			path += "Michelle_BreakDance";
 			break;
-		case objKind::MICHELLE_BreakDanceReady:
+		case AnimationKinds::MICHELLE_BreakDanceReady:
 			path += "Michelle_BreakDanceReady";
 			break;
-		case objKind::MICHELLE_Dancing:
+		case AnimationKinds::MICHELLE_Dancing:
 			path += "Michelle_Dancing";
 			break;
-		case objKind::MICHELLE_DancingTwerk:
+		case AnimationKinds::MICHELLE_DancingTwerk:
 			path += "Michelle_DancingTwerk";
 			break;
-		case objKind::MICHELLE_Flair:
+		case AnimationKinds::MICHELLE_Flair:
 			path += "Michelle_Flair";
 			break;
-		case objKind::MICHELLE_HipHopDance1:
+		case AnimationKinds::MICHELLE_HipHopDance1:
 			path += "Michelle_HipHopDance1";
 			break;
-		case objKind::MICHELLE_HipHopDance2:
+		case AnimationKinds::MICHELLE_HipHopDance2:
 			path += "Michelle_HipHopDance2";
 			break;
-		case objKind::MICHELLE_HipHopDance3:
+		case AnimationKinds::MICHELLE_HipHopDance3:
 			path += "Michelle_HipHopDance3";
 			break;
-		case objKind::MICHELLE_HipHopDance4:
+		case AnimationKinds::MICHELLE_HipHopDance4:
 			path += "Michelle_HipHopDance4";
 			break;
-		case objKind::MICHELLE_RumbaDance:
+		case AnimationKinds::MICHELLE_RumbaDance:
 			path += "Michelle_RumbaDance";
 			break;
-		case objKind::MICHELLE_Twist:
+		case AnimationKinds::MICHELLE_Twist:
 			path += "Michelle_Twist";
 			break;
-		case objKind::MICHELLE_WaveHipHop:
+		case AnimationKinds::MICHELLE_WaveHipHop:
 			path += "Michelle_WaveHipHop";
 			break;
 
-		case objKind::ADAM_ComboPunch:
+		case AnimationKinds::ADAM_ComboPunch:
 			path += "Adam_ComboPunch";
 			break;
-		case objKind::ADAM_ElbowPunch:
+		case AnimationKinds::ADAM_ElbowPunch:
 			path += "Adam_ElbowPunch";
 			break;
-		case objKind::ADAM_Idle:
+		case AnimationKinds::ADAM_Idle:
 			path += "Adam_Idle1";
 			break;
-		case objKind::ADAM_Idle2:
+		case AnimationKinds::ADAM_Idle2:
 			path += "Adam_Idle2";
 			break;
-		case objKind::ADAM_Jab:
+		case AnimationKinds::ADAM_Jab:
 			path += "Adam_Jab";
 			break;
-		case objKind::ADAM_MMAKick:
+		case AnimationKinds::ADAM_MMAKick:
 			path += "Adam_MMAKick";
 			break;
-		case objKind::ADAM_Victory:
+		case AnimationKinds::ADAM_Victory:
 			path += "Adam_Victory";
 			break;
 
-		case objKind::END:
+		case AnimationKinds::END:
 			break;
 		default:;
 		}

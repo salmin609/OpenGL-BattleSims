@@ -6,7 +6,7 @@
 #include "Buffer.hpp"
 #include "Camera.hpp"
 #include "FrameBuffer.h"
-#include "FrustumCulling.h"
+#include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
 #include "Shader.h"
 
@@ -22,6 +22,12 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
+	for(int i = 0; i < static_cast<int>(ObjKind::END); ++i)
+	{
+		std::vector<BillBoardObject*> bo;
+		bos.push_back(bo);
+	}
+
 	PopulateObjsPos();
 	Populate();
 
@@ -31,7 +37,8 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 BillboardObjectManager::~BillboardObjectManager()
 {
 	for (const auto bo : bos)
-		delete bo;
+		for(const auto b : bo)
+			delete b;
 
 	delete[] boFBusageDatas;
 }
@@ -61,6 +68,8 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 	data->inUse = true;
 
+	std::vector<glm::vec4> poses;
+
 	for (int i = 0; i < num; ++i)
 	{
 		const int animationIndex = rand() % animationCount;
@@ -68,11 +77,15 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 
 		const glm::vec3& pos = objsPos[posOffset + i];
 
-		bos.push_back(new BillBoardObject(boShader,
+		bos[obj].push_back(new BillBoardObject(boShader,
 			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
 
-		posDatas.emplace_back(pos, 1.f);
+		poses.emplace_back(pos, 1.f);
+
+		totalPositionBufferCount++;
 	}
+
+	posDatas.push_back(poses);
 
 	posOffset += num;
 
@@ -81,27 +94,32 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 
 void BillboardObjectManager::Populate()
 {
-	PopulateObjs(2560, 0);
-	PopulateObjs(2560, 1);
-	PopulateObjs(2560, 2);
-	PopulateObjs(2560, 3);
-	PopulateObjs(2560, 4);
+	PopulateObjs(2560, static_cast<int>(ObjKind::SWAT));
+	PopulateObjs(2560, static_cast<int>(ObjKind::AMY));
+	PopulateObjs(2560, static_cast<int>(ObjKind::KNIGHT));
+	PopulateObjs(2560, static_cast<int>(ObjKind::MICHELLE));
+	PopulateObjs(2560, static_cast<int>(ObjKind::ADAM));
 
-	const int posDatasSize = static_cast<int>(posDatas.size());
 
-	boFrameBufferUsageBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * posDatasSize, GL_DYNAMIC_DRAW,
-		nullptr, 0);
+	boFrameBufferUsageBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * totalPositionBufferCount, GL_DYNAMIC_DRAW,
+		nullptr, 5);
 
-	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * posDatasSize, GL_DYNAMIC_DRAW,
-		posDatas.data(), 1);
+	for (int i = 0; i < static_cast<int>(ObjKind::END); ++i)
+	{
+		boPosBuffer.push_back(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(posDatas[i].size()),
+			GL_DYNAMIC_DRAW, posDatas[i].data(), i));
+	}
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage(Camera* cam, float fov)
 {
 	boFBusageComputeShader->Use();
 	boFrameBufferUsageBuffer->BindStorage();
-	boPosBuffer->BindStorage();
 
+	for(int i = 0; i < static_cast<int>(ObjKind::END); ++i)
+	{
+		boPosBuffer[i]->BindStorage();
+	}
 	boFBusageComputeShader->SendUniformVec3("camPos", &cam->Position);
 	boFBusageComputeShader->SendUniformVec3("camFront", &cam->Front);
 	boFBusageComputeShader->SendUniformVec3("camRight", &cam->Right);
@@ -110,9 +128,20 @@ void BillboardObjectManager::CheckFrameBufferUsage(Camera* cam, float fov)
 	boFBusageComputeShader->SendUniformFloat("fovY", glm::radians(cam->Zoom));
 	boFBusageComputeShader->SendUniformFloat("zNear", zNear);
 	boFBusageComputeShader->SendUniformFloat("zFar", zFar);
-	boFBusageComputeShader->SendUniformInt("bufferSize", static_cast<int>(posDatas.size()));
+	boFBusageComputeShader->SendUniformInt("bufferSize", totalPositionBufferCount);
 
-	glDispatchCompute(static_cast<int>(posDatas.size()) / 128, 1, 1);
+	int size = 0;
+	boFBusageComputeShader->SendUniformInt("posOffset0", size);
+	size += static_cast<int>(posDatas[0].size());
+	boFBusageComputeShader->SendUniformInt("posOffset1", size);
+	size += static_cast<int>(posDatas[1].size());
+	boFBusageComputeShader->SendUniformInt("posOffset2", size);
+	size += static_cast<int>(posDatas[2].size());
+	boFBusageComputeShader->SendUniformInt("posOffset3", size);
+	size += static_cast<int>(posDatas[3].size());
+	boFBusageComputeShader->SendUniformInt("posOffset4", size);
+
+	glDispatchCompute(totalPositionBufferCount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
@@ -121,55 +150,37 @@ void BillboardObjectManager::CheckFrameBufferUsage(Camera* cam, float fov)
 
 	const size_t bosSize = bos.size();
 
+	int bufIndex = 0;
+
 	for(size_t i = 0; i < bosSize; ++i)
 	{
-		BillBoardObject* bo = bos[i];
+		std::vector<BillBoardObject*>& bo = bos[i];
 
-		if (boFBusageDatas[i] >= 0)
-			bo->SetFrameBufferIndex(boFBusageDatas[i]);
-		else
-			bo->usingFrameBuffer = nullptr;
+		const size_t boSize = bo.size();
+
+		for(size_t j = 0; j < boSize; ++j)
+		{
+			const int usingFbIndex = boFBusageDatas[bufIndex];
+
+			if (usingFbIndex >= 0)
+				bo[j]->SetFrameBufferIndex(usingFbIndex);
+			else
+				bo[j]->usingFrameBuffer = nullptr;
+
+			bufIndex++;
+		}
 	}
 }
 
-void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
+void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
+	const std::vector<BillboardAnimatingDatas*>& boDatas)
 {
 	for (const auto& bo : bos)
-	{
-		bo->Render(projMat, viewMat);
-	}
-
-	//boShader->Use();
-	//glBindVertexArray(vao);
-	//boPosBuffer->BindStorage(0);
-	
+		for(const auto& b : bo)
+			b->Render(projMat, viewMat);
 }
 
 void BillboardObjectManager::GenerateArrayTexture(const std::vector<BillboardAnimatingDatas*>& boDatas)
 {
-	glGenTextures(1, &gArrayTexture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, gArrayTexture);
-
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY,
-		1,
-		GL_RGBA,
-		1024,
-		768,
-		100);
-
-	const size_t boDatasSize = boDatas.size();
-
-	for(size_t i = 0; i < boDatasSize; ++i)
-	{
-		const BillboardAnimatingDatas* boData = boDatas[i];
-		std::vector<std::vector<std::vector<FrameBuffer*>>> fbs = boData->frameBuffers;
-
-
-
-
-	}
-
-
 
 }

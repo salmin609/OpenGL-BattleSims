@@ -2,18 +2,42 @@
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
+//Position Buffers of objects, need to same number with ObjKind
 layout(binding = 0) buffer
+bufferFirstObjPos {
+	vec4 firstObjPoses[];
+};
+
+layout(binding = 1) buffer
+bufferSecondObjPos {
+	vec4 secondObjPoses[];
+};
+
+layout(binding = 2) buffer
+bufferThirdObjPos {
+	vec4 thirdObjPoses[];
+};
+
+layout(binding = 3) buffer
+bufferFourthObjPos {
+	vec4 fourthObjPoses[];
+};
+
+layout(binding = 4) buffer
+bufferFifthObjPos {
+	vec4 fifthObjPoses[];
+};
+
+layout(binding = 5) buffer
 bufferOutFrameBufferUsage {
 	int frameBufferUsingIndex[];
 };
 
-layout(binding = 1) buffer
-bufferInBillboardPoses {
-	vec4 boPoses[];
-};
-
-
-
+uniform int posOffset0;
+uniform int posOffset1;
+uniform int posOffset2;
+uniform int posOffset3;
+uniform int posOffset4;
 uniform vec3 camPos;
 uniform vec3 camFront;
 uniform vec3 camRight;
@@ -170,7 +194,24 @@ void main(void)
 		return;
 
 	frameBufferUsingIndex[index] = -1;
-	vec4 boPosInVec4 = boPoses[index];
+
+	vec4 boPosInVec4;
+
+	if (posOffset0 <= index && index < posOffset1)
+		boPosInVec4 = firstObjPoses[index];
+
+	else if (posOffset1 <= index && index < posOffset2)
+		boPosInVec4 = secondObjPoses[index - posOffset1];
+
+	else if (posOffset2 <= index && index < posOffset3)
+		boPosInVec4 = thirdObjPoses[index - posOffset2];
+
+	else if (posOffset3 <= index && index < posOffset4)
+		boPosInVec4 = fourthObjPoses[index - posOffset3];
+
+	else if (posOffset4 <= index)
+		boPosInVec4 = fifthObjPoses[index - posOffset4];
+
 	vec3 boPos = vec3(boPosInVec4);
 	float distance = distance(boPos, camPos);
 
