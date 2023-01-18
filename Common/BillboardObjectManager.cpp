@@ -71,7 +71,7 @@ void BillboardObjectManager::PopulateObjs(int num, int obj)
 		bos.push_back(new BillBoardObject(boShader,
 			pos, data->frameBuffers[timeDiffSlot][animationIndex], currentCam));
 
-		posDatas.push_back(glm::vec4(pos, 1.f));
+		posDatas.emplace_back(pos, 1.f);
 	}
 
 	posOffset += num;
@@ -87,20 +87,20 @@ void BillboardObjectManager::Populate()
 	PopulateObjs(2560, 3);
 	PopulateObjs(2560, 4);
 
-	boFrameBufferUsageBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * posDatas.size(), GL_DYNAMIC_DRAW,
-		nullptr);
-	boFrameBufferUsageBuffer->BindStorage(0);
+	const int posDatasSize = static_cast<int>(posDatas.size());
 
-	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * posDatas.size(), GL_DYNAMIC_DRAW,
-		posDatas.data());
-	boPosBuffer->BindStorage(1);
+	boFrameBufferUsageBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * posDatasSize, GL_DYNAMIC_DRAW,
+		nullptr, 0);
+
+	boPosBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * posDatasSize, GL_DYNAMIC_DRAW,
+		posDatas.data(), 1);
 }
 
-void BillboardObjectManager::CheckFrameBufferUsage(Frustum* frustum, Camera* cam, float fov)
+void BillboardObjectManager::CheckFrameBufferUsage(Camera* cam, float fov)
 {
 	boFBusageComputeShader->Use();
-	boFrameBufferUsageBuffer->BindStorage(0);
-	boPosBuffer->BindStorage(1);
+	boFrameBufferUsageBuffer->BindStorage();
+	boPosBuffer->BindStorage();
 
 	boFBusageComputeShader->SendUniformVec3("camPos", &cam->Position);
 	boFBusageComputeShader->SendUniformVec3("camFront", &cam->Front);
@@ -143,6 +143,25 @@ void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& v
 	//glBindVertexArray(vao);
 	//boPosBuffer->BindStorage(0);
 
+
+
 	
+
+}
+
+void BillboardObjectManager::GenerateArrayTexture(const std::vector<BillboardAnimatingDatas*>& boDatas)
+{
+	//glGenTextures(1, &gArrayTexture);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D_ARRAY, gArrayTexture);
+
+	//glTexStorage3D(GL_TEXTURE_2D_ARRAY,
+	//	1,
+	//	GL_RGBA,
+	//	1024,
+	//	768,
+	//	100);
+
+
 
 }

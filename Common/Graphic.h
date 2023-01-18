@@ -40,9 +40,6 @@ public:
 	Graphic(int w, int h);
 	~Graphic();
 
-	//void PopulateObjsPos();
-	//void PopulateObjs(int num, int obj);
-	//void DeleteObjs(int num);
 	void Draw();
 	void ProcessInput();
 	void PrintCameraStatement(Camera* cam_);
@@ -50,30 +47,25 @@ public:
 
 	void ResetCamAngle();
 
-	GLFWwindow* window;
+	GLFWwindow* window{};
 	Camera* cam;
-	Timer* timer;
-	//int posOffset = 0;
+	Timer* timer{};
 	float deltaTime, lastFrame;
 	bool camLock = true;
 
 
 	std::vector<Object*> objs;
-	//std::vector<glm::vec3> objsPos;
-	//std::vector<BillBoardObject*> bos;
-	
 	BillboardManager* boManager;
 	std::vector<std::string> objPaths;
 
 	Floor* floor;
 	glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
-	//int totalRenderingAmount = 0;
 	float fov;
 	Camera* currentCam;
 	bool testOneTime = true;
 	SkyBox* skybox;
 	BillboardObjectManager* boObjsManager;
-	Frustum* frustum;
+	//Frustum* frustum;
 private:
 
 	Shader* shader;

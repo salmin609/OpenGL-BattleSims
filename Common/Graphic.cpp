@@ -16,14 +16,13 @@
 #include <fstream>
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
-#include "FrustumCulling.h"
 #include "Skybox.h"
 #include "Floor.hpp"
 #include "Line.h"
 #include "ModelKinds.hpp"
 #include "assimp/anim.h"
 
-Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f), lastFrame(0.f)
+Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w), windowHeight(h)
 {
 	shader = new Shader("../Shaders/vert.glsl", "../Shaders/frag.glsl");
 	floorShader = new Shader("../Shaders/floorVertex.glsl", "../Shaders/floorFragment.glsl");
@@ -47,11 +46,10 @@ Graphic::Graphic(int w, int h) : windowWidth(w), windowHeight(h), deltaTime(0.f)
 	floorLine = new Line(lineShader);
 	fov = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
 
-	frustum = new Frustum();
-	frustum->ResetFrustumPlans(*currentCam, fov,
-		glm::radians(currentCam->Zoom), boObjsManager->zNear, 
-		boObjsManager->zFar);
-	//boObjsManager->Populate();
+	//frustum = new Frustum();
+	//frustum->ResetFrustumPlans(*currentCam, fov,
+	//	glm::radians(currentCam->Zoom), boObjsManager->zNear, 
+	//	boObjsManager->zFar);
 }
 
 Graphic::~Graphic()
@@ -59,7 +57,7 @@ Graphic::~Graphic()
 	delete boObjsManager;
 	delete boManager;
 	delete skybox;
-	delete frustum;
+	//delete frustum;
 	delete cam;
 	delete shader;
 	delete interpolationComputeShader;
@@ -82,11 +80,11 @@ void Graphic::Draw()
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	frustum->ResetFrustumPlans(*currentCam, fov,
+	/*frustum->ResetFrustumPlans(*currentCam, fov,
 		glm::radians(currentCam->Zoom), boObjsManager->zNear,
-		boObjsManager->zFar);
+		boObjsManager->zFar);*/
 
-	boObjsManager->CheckFrameBufferUsage(frustum, currentCam, fov);
+	boObjsManager->CheckFrameBufferUsage(currentCam, fov);
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 

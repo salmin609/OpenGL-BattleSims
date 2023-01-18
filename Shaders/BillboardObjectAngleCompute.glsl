@@ -171,7 +171,7 @@ void main(void)
 
 	frameBufferUsingIndex[index] = -1;
 	vec4 boPosInVec4 = boPoses[index];
-	vec3 boPos = vec3(boPosInVec4.x, boPosInVec4.y, boPosInVec4.z);
+	vec3 boPos = vec3(boPosInVec4);
 	float distance = distance(boPos, camPos);
 
 	if (distance < 1000.f)

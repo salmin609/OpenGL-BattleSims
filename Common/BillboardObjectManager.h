@@ -3,6 +3,7 @@
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
+class BillboardAnimatingDatas;
 class Buffer;
 struct Frustum;
 class Camera;
@@ -20,11 +21,15 @@ public:
 	void PopulateObjsPos();
 	void PopulateObjs(int num, int obj);
 	void Populate();
-	void CheckFrameBufferUsage(Frustum* frustum, Camera* cam, float fov);
+	void CheckFrameBufferUsage(Camera* cam, float fov);
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
+
+	void GenerateArrayTexture(const std::vector<BillboardAnimatingDatas*>& boDatas);
+
 	float zNear = 0.1f;
 	float zFar = 1000.f;
 	int* boFBusageDatas;
+	unsigned gArrayTexture;
 private:
 	unsigned vao;
 	Shader* boShader;

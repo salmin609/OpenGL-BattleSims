@@ -76,7 +76,7 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 
 	PopulateBoDatas(objPaths);
 
-	check = new FrameBuffer(windowWidth * 3, windowHeight * 3);
+	//check = new FrameBuffer(windowWidth * 3, windowHeight * 3);
 }
 
 BillboardManager::~BillboardManager()
@@ -303,7 +303,7 @@ void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
 			windowW, windowH * 2, windowW * 2, windowH * 3,
 			GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
-		check->SavePNG();
+		//check->SavePNG();
 		once = false;
 	}
 }

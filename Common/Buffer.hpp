@@ -37,18 +37,12 @@ public:
 
 
 private:
-	unsigned bufferId;
+	unsigned bufferId{};
 	GLenum type;
 	int storageIndex;
 	int size;
 	
 };
-
-//template <typename T>
-//void Buffer::WriteData(const std::vector<T>& val)
-//{
-//	WriteData(val.data());
-//}
 
 template <typename T>
 void Buffer::WriteData(void* data)
@@ -64,14 +58,6 @@ void Buffer::WriteData(void* data)
 
 	T* writeVal = static_cast<T*>(glMapBufferRange(type, 0, size,
 		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
-
-	//const int sizeCheck = size / sizeof(T);
-
-	//for (int i = 0; i < sizeCheck; ++i)
-	//{
-	//	//writeVal[i] = static_cast<T*>(data)[i];
-	//	writeVal[i] = reinterpret_cast<T*>(data)[i];
-	//}
 
 	memcpy(writeVal, data, size);
 
@@ -94,37 +80,12 @@ T* Buffer::GetData()
 	{
 		BindStorage();
 	}
-	//else if(type == GL_ARRAY_BUFFER || 
-	//	type == GL_ELEMENT_ARRAY_BUFFER)
-	//{
-	//	Bind();
-	//}
-	
-	/*T* checkVal = static_cast<T*>(glMapBufferRange(type, 0, size,
-		GL_MAP_READ_BIT));*/
-	void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
-	//std::vector<T> check;
-	/*int sizeCheck = size / sizeof(T);
-	check.reserve(size);
-	for (int i = 0; i < sizeCheck; ++i)
-	{
-		check.push_back(checkVal[i]);
-	}*/
-	//check.reserve(size);
 
+	const void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
 	assert(dataPtr);
 	T* checkPtr = new T[size];
 	memcpy(checkPtr, dataPtr, size);
 	glUnmapBuffer(type);
-
-	//std::vector<T> check;
-
-	////check.reserve(size);
-	//int sizeCheck = size / sizeof(T);
-	//for (int i = 0; i < sizeCheck; ++i)
-	//{
-	//	check.push_back(checkPtr[i]);
-	//}
 
 	return checkPtr;
 }
@@ -132,7 +93,7 @@ T* Buffer::GetData()
 inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, int storageIndex_) : type(type)
 {
 	storageIndex = storageIndex_;
-	size = sizeVal;
+	size = static_cast<int>(sizeVal);
 	
 	glGenBuffers(1, &bufferId);
 	glBindBuffer(type, bufferId);
@@ -140,10 +101,6 @@ inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, i
 
 	if (type == GL_SHADER_STORAGE_BUFFER)
 		glBindBufferBase(type, storageIndex, bufferId);
-
-
-	//??? why?
-	//glBindBuffer(type, 0);
 }
 
 inline void Buffer::Bind(unsigned uniformBufferSlot)
