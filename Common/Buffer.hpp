@@ -39,7 +39,7 @@ public:
 private:
 	unsigned bufferId{};
 	GLenum type;
-	int storageIndex;
+	int baseStorageIndex;
 	int size;
 	
 };
@@ -70,7 +70,7 @@ inline void Buffer::GetData(void* data) const
 
 	glGetBufferSubData(type, 0, size, data);
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, storageIndex, 0);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, baseStorageIndex, 0);
 }
 
 template <typename T>
@@ -82,7 +82,7 @@ T* Buffer::GetData()
 	}
 
 	const void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
-	assert(dataPtr);
+	//assert(dataPtr);
 	T* checkPtr = new T[size];
 	memcpy(checkPtr, dataPtr, size);
 	glUnmapBuffer(type);
@@ -92,7 +92,7 @@ T* Buffer::GetData()
 
 inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, int storageIndex_) : type(type)
 {
-	storageIndex = storageIndex_;
+	baseStorageIndex = storageIndex_;
 	size = static_cast<int>(sizeVal);
 	
 	glGenBuffers(1, &bufferId);
@@ -100,7 +100,7 @@ inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, i
 	glBufferData(type, size, data, usage);
 
 	if (type == GL_SHADER_STORAGE_BUFFER)
-		glBindBufferBase(type, storageIndex, bufferId);
+		glBindBufferBase(type, baseStorageIndex, bufferId);
 }
 
 inline void Buffer::Bind(unsigned uniformBufferSlot)
@@ -112,7 +112,7 @@ inline void Buffer::Bind(unsigned uniformBufferSlot)
 		break;
 	case GL_ARRAY_BUFFER:
 	case GL_SHADER_STORAGE_BUFFER:
-		glBindBufferBase(type, storageIndex, bufferId);
+		glBindBufferBase(type, baseStorageIndex, bufferId);
 	case GL_ELEMENT_ARRAY_BUFFER:
 		glBindBuffer(type, bufferId);
 	default: ;
@@ -121,13 +121,12 @@ inline void Buffer::Bind(unsigned uniformBufferSlot)
 
 inline void Buffer::BindStorage(int index)
 {
-	storageIndex = index;
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, bufferId);
 }
 
 inline void Buffer::BindStorage() const
 {
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, storageIndex, bufferId);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, baseStorageIndex, bufferId);
 }
 
 inline void Buffer::BindStorageBuffer(int storageIndexVal, unsigned sizeVal)

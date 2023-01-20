@@ -42,7 +42,7 @@ public:
 	
 	AnimationModelDatas* datas;
 	std::chrono::system_clock::time_point startTime;
-
+	glm::mat4x4* boneTransformsData;
 
 private:
 	Importer* importer;

@@ -14,6 +14,7 @@
 #include "Buffer.hpp"
 
 #include "BoneStorageManager.h"
+#include "ComputeShaderBufferManager.h"
 #include "MeshDatas.h"
 
 #include "glm/vec2.hpp"
@@ -43,23 +44,23 @@ AnimationModelDatas::~AnimationModelDatas()
 	delete ssboIndexEndsBuffer;
 	delete ssboTransformsBuffer;
 
-	delete computeNodeTransformInBuffer;
-	delete computeNodeTransformOutBuffer;
-	delete computeTotalOrderBuffer;
-	delete computeOrderStartBuffer;
-	delete computeOrderEndBuffer;
-	delete computeBoolAnimationBuffer;
-	delete computeTotalScalingKeysBuffer;
-	delete computeTotalTranslationKeysBuffer;
-	delete computeTotalRotationKeysBuffer;
-	delete computeKeyFactorsStartIndexBuffer;
-	delete computeKeyFactorsEndIndexBuffer;
-	delete computeKeyFactorsTimeStampBuffer;
-	delete computeOffsetMatrixesBuffer;
-	delete computeNodeContainOffsetMatrix;
-	delete computeBoneIndexes;
-	delete computeOutFinalTransforms;
-
+	//delete computeNodeTransformInBuffer;
+	//delete computeNodeTransformOutBuffer;
+	//delete computeTotalOrderBuffer;
+	//delete computeOrderStartBuffer;
+	//delete computeOrderEndBuffer;
+	//delete computeBoolAnimationBuffer;
+	//delete computeTotalScalingKeysBuffer;
+	//delete computeTotalTranslationKeysBuffer;
+	//delete computeTotalRotationKeysBuffer;
+	//delete computeKeyFactorsStartIndexBuffer;
+	//delete computeKeyFactorsEndIndexBuffer;
+	//delete computeKeyFactorsTimeStampBuffer;
+	//delete computeOffsetMatrixesBuffer;
+	//delete computeNodeContainOffsetMatrix;
+	//delete computeBoneIndexes;
+	//delete computeOutFinalTransforms;
+	delete csBuffers;
 }
 
 void AnimationModelDatas::ReserveVectorSpace()
@@ -195,72 +196,59 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 		orderEndIndex.push_back(startIndex);
 	}
 	int size = static_cast<int>(boneInfos.size());
-	gBonesBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * size, GL_DYNAMIC_DRAW, nullptr);
+	gBonesBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(glm::mat4) * size, GL_DYNAMIC_DRAW, nullptr, 4);
 
 
-	computeNodeTransformInBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(nodeTransforms.size()), GL_DYNAMIC_DRAW,
-		nodeTransforms.data());
-	computeNodeTransformInBuffer->BindStorage(0);
+	csBuffers = new ComputeShaderBufferManager();
 
-	computeNodeTransformOutBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(nodeTransforms.size()), GL_DYNAMIC_DRAW,
-		nullptr);
-	computeNodeTransformOutBuffer->BindStorage(1);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(nodeTransforms.size()), GL_DYNAMIC_DRAW,
+		nodeTransforms.data(), 0));
 
-	computeTotalOrderBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderIn1DArray.size()), GL_DYNAMIC_DRAW,
-		orderIn1DArray.data());
-	computeTotalOrderBuffer->BindStorage(2);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(nodeTransforms.size()), GL_DYNAMIC_DRAW,
+		nullptr, 1));
 
-	computeOrderStartBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderStartIndex.size()), GL_DYNAMIC_DRAW,
-		orderStartIndex.data());
-	computeOrderStartBuffer->BindStorage(3);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderIn1DArray.size()), GL_DYNAMIC_DRAW,
+		orderIn1DArray.data(), 2));
 
-	computeOrderEndBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderEndIndex.size()), GL_DYNAMIC_DRAW,
-		orderEndIndex.data());
-	computeOrderEndBuffer->BindStorage(4);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderStartIndex.size()), GL_DYNAMIC_DRAW,
+		orderStartIndex.data(), 3));
 
-	computeBoolAnimationBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(nodeContainAnimation.size()), GL_DYNAMIC_DRAW,
-		nodeContainAnimation.data());
-	computeBoolAnimationBuffer->BindStorage(5);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(orderEndIndex.size()), GL_DYNAMIC_DRAW,
+		orderEndIndex.data(), 4));
 
-	computeTotalScalingKeysBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(scalingIn1DArray.size()), GL_DYNAMIC_DRAW,
-		scalingIn1DArray.data());
-	computeTotalScalingKeysBuffer->BindStorage(6);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(nodeContainAnimation.size()), GL_DYNAMIC_DRAW,
+		nodeContainAnimation.data(), 5));
 
-	computeTotalTranslationKeysBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(translationIn1DArray.size()), GL_DYNAMIC_DRAW,
-		translationIn1DArray.data());
-	computeTotalTranslationKeysBuffer->BindStorage(7);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(scalingIn1DArray.size()), GL_DYNAMIC_DRAW,
+		scalingIn1DArray.data(), 6));
 
-	computeTotalRotationKeysBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(rotationIn1DArray.size()), GL_DYNAMIC_DRAW,
-		rotationIn1DArray.data());
-	computeTotalRotationKeysBuffer->BindStorage(8);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(translationIn1DArray.size()), GL_DYNAMIC_DRAW,
+		translationIn1DArray.data(), 7));
 
-	computeKeyFactorsStartIndexBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(keyFactorStartIndex.size()), GL_DYNAMIC_DRAW,
-		keyFactorStartIndex.data());
-	computeKeyFactorsStartIndexBuffer->BindStorage(9);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(rotationIn1DArray.size()), GL_DYNAMIC_DRAW,
+		rotationIn1DArray.data(), 8));
 
-	computeKeyFactorsEndIndexBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(keyFactorEndIndex.size()), GL_DYNAMIC_DRAW,
-		keyFactorEndIndex.data());
-	computeKeyFactorsEndIndexBuffer->BindStorage(10);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(keyFactorStartIndex.size()), GL_DYNAMIC_DRAW,
+		keyFactorStartIndex.data(), 9));
 
-	computeKeyFactorsTimeStampBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * static_cast<int>(keyFactorTimeStampIn1DArray.size()), GL_DYNAMIC_DRAW,
-		keyFactorTimeStampIn1DArray.data());
-	computeKeyFactorsTimeStampBuffer->BindStorage(11);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(keyFactorEndIndex.size()), GL_DYNAMIC_DRAW,
+		keyFactorEndIndex.data(), 10));
 
-	computeOffsetMatrixesBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(offsetMatrixes.size()), GL_DYNAMIC_DRAW,
-		offsetMatrixes.data());
-	computeOffsetMatrixesBuffer->BindStorage(12);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * static_cast<int>(keyFactorTimeStampIn1DArray.size()), GL_DYNAMIC_DRAW,
+		keyFactorTimeStampIn1DArray.data(), 11));
 
-	computeNodeContainOffsetMatrix = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(containOffsetMatrixes.size()), GL_DYNAMIC_DRAW,
-		containOffsetMatrixes.data());
-	computeNodeContainOffsetMatrix->BindStorage(13);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(offsetMatrixes.size()), GL_DYNAMIC_DRAW,
+		offsetMatrixes.data(), 12));
 
-	computeBoneIndexes = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(boneIndexes.size()), GL_DYNAMIC_DRAW,
-		boneIndexes.data());
-	computeBoneIndexes->BindStorage(14);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(containOffsetMatrixes.size()), GL_DYNAMIC_DRAW,
+		containOffsetMatrixes.data(), 13));
 
-	computeOutFinalTransforms = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(boneInfos.size()), GL_DYNAMIC_DRAW,
-		nullptr);
-	computeOutFinalTransforms->BindStorage(15);
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(boneIndexes.size()), GL_DYNAMIC_DRAW,
+		boneIndexes.data(), 14));
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(boneInfos.size()), GL_DYNAMIC_DRAW,
+		nullptr, 15));
 }
 
 void AnimationModelDatas::Bind()
@@ -274,21 +262,22 @@ void AnimationModelDatas::Bind()
 
 void AnimationModelDatas::BindInterpolationBuffer()
 {
-	computeNodeTransformInBuffer->BindStorage(0);
-	computeNodeTransformOutBuffer->BindStorage(1);
-	computeTotalOrderBuffer->BindStorage(2);
-	computeOrderStartBuffer->BindStorage(3);
-	computeOrderEndBuffer->BindStorage(4);
-	computeBoolAnimationBuffer->BindStorage(5);
-	computeTotalScalingKeysBuffer->BindStorage(6);
-	computeTotalTranslationKeysBuffer->BindStorage(7);
-	computeTotalRotationKeysBuffer->BindStorage(8);
-	computeKeyFactorsStartIndexBuffer->BindStorage(9);
-	computeKeyFactorsEndIndexBuffer->BindStorage(10);
-	computeKeyFactorsTimeStampBuffer->BindStorage(11);
-	computeOffsetMatrixesBuffer->BindStorage(12);
-	computeNodeContainOffsetMatrix->BindStorage(13);
-	computeBoneIndexes->BindStorage(14);
-	computeOutFinalTransforms->BindStorage(15);
+	//computeNodeTransformInBuffer->BindStorage();
+	//computeNodeTransformOutBuffer->BindStorage();
+	//computeTotalOrderBuffer->BindStorage();
+	//computeOrderStartBuffer->BindStorage();
+	//computeOrderEndBuffer->BindStorage();
+	//computeBoolAnimationBuffer->BindStorage();
+	//computeTotalScalingKeysBuffer->BindStorage();
+	//computeTotalTranslationKeysBuffer->BindStorage();
+	//computeTotalRotationKeysBuffer->BindStorage();
+	//computeKeyFactorsStartIndexBuffer->BindStorage();
+	//computeKeyFactorsEndIndexBuffer->BindStorage();
+	//computeKeyFactorsTimeStampBuffer->BindStorage();
+	//computeOffsetMatrixesBuffer->BindStorage();
+	//computeNodeContainOffsetMatrix->BindStorage();
+	//computeBoneIndexes->BindStorage();
+	//computeOutFinalTransforms->BindStorage();
+	csBuffers->BindBuffers();
 }
 

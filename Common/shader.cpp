@@ -380,6 +380,36 @@ void Shader::SendUniform1fv(std::string uniformName, void* val, int count) const
 	glUniform1fv(loc, count, valInFloat);
 }
 
+void Shader::SendUniformValues()
+{
+	for(const auto& val : uniformValues)
+	{
+		switch(val.second.type)
+		{
+		case ShaderValueType::Int:
+			SendUniformInt(val.first, val.second.data);
+			break;
+		case ShaderValueType::Float:
+			SendUniformFloat(val.first, val.second.data);
+			break;
+		case ShaderValueType::Vec3:
+			SendUniformVec3(val.first, val.second.data);
+			break;
+		case ShaderValueType::Matrix4x4:
+			SendUniformMat(val.first, val.second.data);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void Shader::AddUniformValues(std::string name, ShaderValueType type, void* data)
+{
+	ShaderUniformValue value{type, data};
+	uniformValues.insert(std::make_pair(name, value));
+}
+
 Shader::~Shader()
 {
 	glDeleteProgram(programId);

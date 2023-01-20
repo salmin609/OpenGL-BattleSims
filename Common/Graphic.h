@@ -60,7 +60,6 @@ public:
 
 	Floor* floor;
 	glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
-	float fov;
 	Camera* currentCam;
 	bool testOneTime = true;
 	SkyBox* skybox;

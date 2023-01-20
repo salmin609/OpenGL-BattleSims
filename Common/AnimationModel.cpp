@@ -20,6 +20,7 @@
 #include "Texture.h"
 #include "AnimationModelDatas.h"
 #include "Buffer.hpp"
+#include "ComputeShaderBufferManager.h"
 //#include "Graphic.h"
 
 
@@ -75,12 +76,15 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 	InitMaterial();
 
 	datas->PopulateInterpolationShaderBuffer(scene, this);
+	boneTransformsData = new glm::mat4x4[static_cast<int>(datas->boneInfos.size())];
+
 }
 
 AnimationModel::~AnimationModel()
 {
 	delete importer;
 	delete datas;
+	delete[] boneTransformsData;
 }
 
 
@@ -118,7 +122,7 @@ void AnimationModel::Draw(
 	glm::mat4 modelMat = objMat;
 	shader->SendUniformMatGLM("gWVP", &matrix);
 	datas->gBonesBuffer->WriteData<glm::mat4>(transforms);
-	datas->gBonesBuffer->BindStorage(4);
+	datas->gBonesBuffer->BindStorage();
 	shader->SendUniformMatGLM("model", &modelMat);
 
 	if (datas->diffuseTexture != nullptr)
@@ -165,8 +169,8 @@ glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
 	glUseProgram(0);
-
-	return datas->computeOutFinalTransforms->GetData<glm::mat4>();
+	datas->csBuffers->GetData(15, boneTransformsData);
+	return boneTransformsData;
 }
 
 void AnimationModel::PopulateTransforms(std::vector<glm::mat4>& transforms)

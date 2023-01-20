@@ -254,7 +254,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 			}
 
-			delete[] transformMat;
+			//delete[] transformMat;
 		}
 	}
 }

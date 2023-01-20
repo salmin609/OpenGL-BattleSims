@@ -44,7 +44,8 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	skybox = new SkyBox();
 
 	floorLine = new Line(lineShader);
-	fov = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
+	cam->fov = (float)windowWidth / (float)windowHeight;
+	cam->fovY = glm::radians(cam->Zoom);
 
 	//frustum = new Frustum();
 	//frustum->ResetFrustumPlans(*currentCam, fov,
@@ -84,9 +85,9 @@ void Graphic::Draw()
 		glm::radians(currentCam->Zoom), boObjsManager->zNear,
 		boObjsManager->zFar);*/
 
-	boObjsManager->CheckFrameBufferUsage(currentCam, fov);
+	boObjsManager->CheckFrameBufferUsage();
 	boManager->GenBillboard(projMat);
-	boObjsManager->Render(projMat, viewMat, boManager->boDatas);
+	boObjsManager->Render(projMat, viewMat);
 
 	skybox->Draw(projMat, viewMat);
 	floorLine->Draw(projViewMat);

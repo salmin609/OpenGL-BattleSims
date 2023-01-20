@@ -35,8 +35,6 @@
 
 //////////////////////////////////////////////////////////////////////
 
-int windowWidth = 1024;
-int windowHeight = 768;
 int displayIndex = 0;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);

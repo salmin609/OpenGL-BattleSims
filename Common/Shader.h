@@ -10,10 +10,24 @@
 #include <string>
 #include <GL/glew.h>
 #include "glm/mat4x4.hpp"
+#include <map>
 
 class Shader 
 {
 public:
+	enum class ShaderValueType
+	{
+		Int = 0,
+		Float,
+		Vec3,
+		//Vec4,
+		Matrix4x4
+	};
+	struct ShaderUniformValue
+	{
+		ShaderValueType type;
+		void* data;
+	};
 	Shader(const char* vertexPath, const char* fragPath);
 	Shader(const char* computeShader);
 	Shader(const char* vertex, const char* frag, const char* tessControl, const char* tessEval);
@@ -33,10 +47,15 @@ public:
 	void SendUniform3fv(std::string uniformName, void* val, int count) const;
 	void SendUniform4fv(std::string uniformName, void* val, int count) const;
 	void SendUniform1fv(std::string uniformName, void* val, int count) const;
+	
+	void SendUniformValues();
+	void AddUniformValues(std::string name, ShaderValueType type, void* data);
+
 	~Shader();
 private:
 	unsigned programId;
 	unsigned vertexShaderId;
 	unsigned fragmentShaderId;
 	unsigned computeShaderId;
+	std::map<std::string, ShaderUniformValue> uniformValues;
 };

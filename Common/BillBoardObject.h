@@ -20,21 +20,15 @@ class Shader;
 class BillBoardObject
 {
 public:
-	BillBoardObject(Shader* shader_, const glm::vec3& pos_, std::vector<FrameBuffer*> fb_,
-		Camera* cam_);
+	BillBoardObject(Shader* shader_, const glm::vec3& pos_, std::vector<FrameBuffer*> fb_);
 	~BillBoardObject();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot);
 	void SetFrameBufferIndex(int index);
 
 	glm::vec3 pos;
-	int animationIndex = 0;
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*> fbs;
-	SphereBV* spv;
-
 private:
 	unsigned vao{};
 	Shader* shader;
-	glm::vec3 direction;
-	Camera* cam;
 };

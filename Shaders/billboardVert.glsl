@@ -3,12 +3,15 @@
 uniform mat4 projMat;
 uniform mat4 viewMat;
 
-layout(std430, binding = 0) buffer boPoses
-{
-    vec4 boPos[];
-};
+//layout(std430, binding = 0) buffer boPoses
+//{
+//    vec4 boPos[];
+//};
 
-uniform mat4 modelMat;
+//uniform mat4 modelMat;
+
+uniform vec3 boPos;
+
 
 mat4 identityMat = mat4(1.0, 0.0, 0.0, 0.0,  // 1. column
     0.0, 1.0, 0.0, 0.0,  // 2. column
@@ -28,7 +31,7 @@ mat4 TranslationMatrix(vec3 translationFactor)
 
 void main()
 {
-    //mat4 modelMat = TranslationMatrix(boPos[gl_InstanceID]);
+    mat4 modelMat = TranslationMatrix(boPos);
     mat4 mvmat = viewMat * modelMat;
     
     mvmat[0][0] = mvmat[1][1] = mvmat[2][2] = 1.f;

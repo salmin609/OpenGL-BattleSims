@@ -13,6 +13,7 @@
 #include "VertexBoneData.hpp"
 #include "AnimationStructure.hpp"
 
+class ComputeShaderBufferManager;
 class MeshDatas;
 class AnimationModel;
 class BoneStorageManager;
@@ -56,25 +57,27 @@ public:
 	Buffer* ssboIndexEndsBuffer;
 	Buffer* ssboTransformsBuffer;
 
-	Buffer* computeNodeTransformInBuffer;
-	Buffer* computeNodeTransformOutBuffer;
-	Buffer* computeTotalOrderBuffer;
-	Buffer* computeOrderStartBuffer;
-	Buffer* computeOrderEndBuffer;
-	Buffer* computeBoolAnimationBuffer;
+	ComputeShaderBufferManager* csBuffers;
 
-	Buffer* computeTotalScalingKeysBuffer;
-	Buffer* computeTotalTranslationKeysBuffer;
-	Buffer* computeTotalRotationKeysBuffer;
-	Buffer* computeKeyFactorsStartIndexBuffer;
-	Buffer* computeKeyFactorsEndIndexBuffer;
+	//Buffer* computeNodeTransformInBuffer;
+	//Buffer* computeNodeTransformOutBuffer;
+	//Buffer* computeTotalOrderBuffer;
+	//Buffer* computeOrderStartBuffer;
+	//Buffer* computeOrderEndBuffer;
+	//Buffer* computeBoolAnimationBuffer;
 
-	Buffer* computeKeyFactorsTimeStampBuffer;
+	//Buffer* computeTotalScalingKeysBuffer;
+	//Buffer* computeTotalTranslationKeysBuffer;
+	//Buffer* computeTotalRotationKeysBuffer;
+	//Buffer* computeKeyFactorsStartIndexBuffer;
+	//Buffer* computeKeyFactorsEndIndexBuffer;
 
-	Buffer* computeOffsetMatrixesBuffer;
-	Buffer* computeNodeContainOffsetMatrix;
-	Buffer* computeBoneIndexes;
-	Buffer* computeOutFinalTransforms;
+	//Buffer* computeKeyFactorsTimeStampBuffer;
+
+	//Buffer* computeOffsetMatrixesBuffer;
+	//Buffer* computeNodeContainOffsetMatrix;
+	//Buffer* computeBoneIndexes;
+	//Buffer* computeOutFinalTransforms;
 
 
 	int numVertices, numIndices;
