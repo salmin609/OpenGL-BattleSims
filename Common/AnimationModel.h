@@ -38,7 +38,7 @@ public:
 	const aiScene* GetScene() const;
 	//std::vector<glm::mat4> Interpolate(float animationTimeTicks) const;
 	glm::mat4* Interpolate(float animationTimeTicks) const;
-	void PopulateTransforms(std::vector<glm::mat4>& transforms);
+	//void PopulateTransforms(std::vector<glm::mat4>& transforms);
 	
 	AnimationModelDatas* datas;
 	std::chrono::system_clock::time_point startTime;
@@ -47,10 +47,10 @@ public:
 private:
 	Importer* importer;
 	const aiScene* scene;
-	aiNode* rootNode;
+	aiNode* rootNode{};
 	Shader* shader;
 
-	unsigned vao;
+	unsigned vao{};
 	int numVertices, numIndices;
 	std::string filePath;
 	Shader* interpolationComputeShader;

@@ -12,29 +12,21 @@ class Buffer
 {
 public:
 	Buffer(GLenum type, unsigned size, GLenum usage, void* data, int storageIndex_ = 0);
-	void Bind(unsigned uniformBufferSlot = 0);
+	~Buffer();
+
+	void Bind();
 	void BindStorage(int index);
 	void BindStorage() const;
 	void BindStorageBuffer(int storageIndex, unsigned size);
 	void UnBind();
-
-	template <typename T>
 	void WriteData(void* data);
-
 	void GetData(void* data) const;
-	
 	unsigned GetId();
-	
+	void UnMap();
+	int GetSize();
 
 	template <typename T>
 	T* GetData();
-
-	void UnMap();
-
-	~Buffer();
-
-	int GetSize();
-
 
 private:
 	unsigned bufferId{};
@@ -44,8 +36,8 @@ private:
 	
 };
 
-template <typename T>
-void Buffer::WriteData(void* data)
+
+inline void Buffer::WriteData(void* data)
 {
 	if (type == GL_SHADER_STORAGE_BUFFER)
 	{
@@ -56,8 +48,8 @@ void Buffer::WriteData(void* data)
 		Bind();
 	}
 
-	T* writeVal = static_cast<T*>(glMapBufferRange(type, 0, size,
-		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
+	void* writeVal = glMapBufferRange(type, 0, size,
+	GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT); 
 
 	memcpy(writeVal, data, size);
 
@@ -76,10 +68,11 @@ inline void Buffer::GetData(void* data) const
 template <typename T>
 T* Buffer::GetData()
 {
-	if(type == GL_SHADER_STORAGE_BUFFER)
+	/*if(type == GL_SHADER_STORAGE_BUFFER)
 	{
 		BindStorage();
-	}
+	}*/
+	Bind();
 
 	const void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
 	//assert(dataPtr);
@@ -103,19 +96,22 @@ inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, i
 		glBindBufferBase(type, baseStorageIndex, bufferId);
 }
 
-inline void Buffer::Bind(unsigned uniformBufferSlot)
+inline void Buffer::Bind()
 {
 	switch(type)
 	{
 	case GL_UNIFORM_BUFFER:
-		glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferSlot, bufferId);
+		//glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferSlot, bufferId);
 		break;
 	case GL_ARRAY_BUFFER:
-	case GL_SHADER_STORAGE_BUFFER:
-		glBindBufferBase(type, baseStorageIndex, bufferId);
 	case GL_ELEMENT_ARRAY_BUFFER:
 		glBindBuffer(type, bufferId);
-	default: ;
+		break;
+	case GL_SHADER_STORAGE_BUFFER:
+		BindStorage();
+		break;
+	default: 
+		break;
 	}
 }
 

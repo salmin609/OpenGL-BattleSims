@@ -14,7 +14,7 @@
 #include "Buffer.hpp"
 
 #include "BoneStorageManager.h"
-#include "ComputeShaderBufferManager.h"
+#include "BufferManager.h"
 #include "MeshDatas.h"
 
 #include "glm/vec2.hpp"
@@ -35,31 +35,8 @@ AnimationModelDatas::AnimationModelDatas(unsigned vao_, MeshDatas* reusableMeshD
 
 AnimationModelDatas::~AnimationModelDatas()
 {
-	//delete meshDatas;
 	delete storage;
-
-	delete ssboBonesBuffer;
-	delete ssboWeightsBuffer;
-	delete ssboIndexStartsBuffer;
-	delete ssboIndexEndsBuffer;
-	delete ssboTransformsBuffer;
-
-	//delete computeNodeTransformInBuffer;
-	//delete computeNodeTransformOutBuffer;
-	//delete computeTotalOrderBuffer;
-	//delete computeOrderStartBuffer;
-	//delete computeOrderEndBuffer;
-	//delete computeBoolAnimationBuffer;
-	//delete computeTotalScalingKeysBuffer;
-	//delete computeTotalTranslationKeysBuffer;
-	//delete computeTotalRotationKeysBuffer;
-	//delete computeKeyFactorsStartIndexBuffer;
-	//delete computeKeyFactorsEndIndexBuffer;
-	//delete computeKeyFactorsTimeStampBuffer;
-	//delete computeOffsetMatrixesBuffer;
-	//delete computeNodeContainOffsetMatrix;
-	//delete computeBoneIndexes;
-	//delete computeOutFinalTransforms;
+	delete animInfoBuffers;
 	delete csBuffers;
 }
 
@@ -73,7 +50,6 @@ void AnimationModelDatas::ReserveVectorSpace()
 void AnimationModelDatas::ReserveSpace(const aiScene* scene)
 {
 	meshes.resize(scene->mNumMeshes);
-	//materials.resize(scene->mNumMaterials);
 
 	const unsigned size = static_cast<unsigned>(meshes.size());
 
@@ -103,28 +79,27 @@ void AnimationModelDatas::PopulateBuffers()
 
 	storage = new BoneStorageManager(bones);
 
-	ssboBonesBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(storage->bones.size()), GL_STATIC_DRAW, storage->bones.data(), 0);
-	ssboBonesBuffer->UnBind();
-	ssboWeightsBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * static_cast<int>(storage->weights.size()), GL_STATIC_DRAW, storage->weights.data(), 1);
-	ssboWeightsBuffer->UnBind();
-	ssboIndexStartsBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(storage->indexStarts.size()), GL_STATIC_DRAW, storage->indexStarts.data(), 2);
-	ssboIndexStartsBuffer->UnBind();
-	ssboIndexEndsBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * static_cast<int>(storage->indexEnds.size()), GL_STATIC_DRAW, storage->indexEnds.data(), 3);
-	ssboIndexEndsBuffer->UnBind();
+	animInfoBuffers = new BufferManager();
+
+	animInfoBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(int) * static_cast<int>(storage->bones.size()), GL_STATIC_DRAW, storage->bones.data(), 0));
+
+	animInfoBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(float) * static_cast<int>(storage->weights.size()), GL_STATIC_DRAW, storage->weights.data(), 1));
+
+	animInfoBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(int) * static_cast<int>(storage->indexStarts.size()), GL_STATIC_DRAW, storage->indexStarts.data(), 2));
+
+	animInfoBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(int) * static_cast<int>(storage->indexEnds.size()), GL_STATIC_DRAW, storage->indexEnds.data(), 3));
+
+	animInfoBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER,
+		sizeof(glm::mat4) * static_cast<int>(boneInfos.size()), GL_DYNAMIC_DRAW, nullptr, 4));
 
 	glBindVertexArray(0);
 }
 
-void AnimationModelDatas::PopulateTransforms(std::vector<glm::mat4>& transforms)
-{
-	const int transformsSize = static_cast<int>(transforms.size());
 
-	glBindVertexArray(vao);
-
-	ssboTransformsBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * transformsSize, GL_STATIC_DRAW, transforms.data(), 4);
-
-	glBindVertexArray(0);
-}
 
 void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene, AnimationModel* model)
 {
@@ -195,12 +170,8 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 		startIndex += orderSize;
 		orderEndIndex.push_back(startIndex);
 	}
-	int size = static_cast<int>(boneInfos.size());
-	gBonesBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, 
-		sizeof(glm::mat4) * size, GL_DYNAMIC_DRAW, nullptr, 4);
 
-
-	csBuffers = new ComputeShaderBufferManager();
+	csBuffers = new BufferManager();
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * static_cast<int>(nodeTransforms.size()), GL_DYNAMIC_DRAW,
 		nodeTransforms.data(), 0));
@@ -254,30 +225,5 @@ void AnimationModelDatas::PopulateInterpolationShaderBuffer(const aiScene* scene
 void AnimationModelDatas::Bind()
 {
 	meshDatas->Bind();
-	ssboBonesBuffer->Bind();
-	ssboWeightsBuffer->Bind();
-	ssboIndexStartsBuffer->Bind();
-	ssboIndexEndsBuffer->Bind();
+	animInfoBuffers->BindBuffers();
 }
-
-void AnimationModelDatas::BindInterpolationBuffer()
-{
-	//computeNodeTransformInBuffer->BindStorage();
-	//computeNodeTransformOutBuffer->BindStorage();
-	//computeTotalOrderBuffer->BindStorage();
-	//computeOrderStartBuffer->BindStorage();
-	//computeOrderEndBuffer->BindStorage();
-	//computeBoolAnimationBuffer->BindStorage();
-	//computeTotalScalingKeysBuffer->BindStorage();
-	//computeTotalTranslationKeysBuffer->BindStorage();
-	//computeTotalRotationKeysBuffer->BindStorage();
-	//computeKeyFactorsStartIndexBuffer->BindStorage();
-	//computeKeyFactorsEndIndexBuffer->BindStorage();
-	//computeKeyFactorsTimeStampBuffer->BindStorage();
-	//computeOffsetMatrixesBuffer->BindStorage();
-	//computeNodeContainOffsetMatrix->BindStorage();
-	//computeBoneIndexes->BindStorage();
-	//computeOutFinalTransforms->BindStorage();
-	csBuffers->BindBuffers();
-}
-

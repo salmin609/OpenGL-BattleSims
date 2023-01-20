@@ -19,12 +19,7 @@
 
 #include "Texture.h"
 #include "AnimationModelDatas.h"
-#include "Buffer.hpp"
-#include "ComputeShaderBufferManager.h"
-//#include "Graphic.h"
-
-
-#define ASSIMP_LOAD_FLAGS (aiProcess_Triangulate | aiProcess_GenSmoothNormals |  aiProcess_JoinIdenticalVertices )
+#include "BufferManager.h"
 
  /*
   * Create VAO for object,
@@ -56,7 +51,9 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 	importer = new Importer();
 
 	scene = importer->ReadFile(filePath.c_str(),
-		ASSIMP_LOAD_FLAGS);
+		aiProcess_Triangulate | 
+		aiProcess_GenSmoothNormals | 
+		aiProcess_JoinIdenticalVertices);
 
 	assert(scene != nullptr);
 
@@ -121,9 +118,8 @@ void AnimationModel::Draw(
 	glm::mat4 matrix = projViewMat * objMat;
 	glm::mat4 modelMat = objMat;
 	shader->SendUniformMatGLM("gWVP", &matrix);
-	datas->gBonesBuffer->WriteData<glm::mat4>(transforms);
-	datas->gBonesBuffer->BindStorage();
 	shader->SendUniformMatGLM("model", &modelMat);
+	datas->animInfoBuffers->WriteData(4, transforms);
 
 	if (datas->diffuseTexture != nullptr)
 		datas->diffuseTexture->Bind(shader->GetShaderId(), 0, "gDiffuse");
@@ -131,7 +127,7 @@ void AnimationModel::Draw(
 	if (datas->specularTexture != nullptr)
 		datas->specularTexture->Bind(shader->GetShaderId(), 1, "gSpecular");
 
-	const unsigned meshesSize = static_cast<unsigned>(datas->meshes.size());
+	const auto meshesSize = static_cast<unsigned>(datas->meshes.size());
 	for (unsigned i = 0; i < meshesSize; ++i)
 	{
 		glDrawElementsBaseVertex(GL_TRIANGLES, static_cast<GLsizei>(datas->meshes[i].NumIndices),
@@ -153,13 +149,12 @@ const aiScene* AnimationModel::GetScene() const
 	return scene;
 }
 
-//std::vector<glm::mat4> AnimationModel::Interpolate(float animationTimeTicks) const
 glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 {
 	assert(interpolationComputeShader != nullptr);
 
 	interpolationComputeShader->Use();
-	datas->BindInterpolationBuffer();
+	datas->csBuffers->BindBuffers();
 	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));
 	interpolationComputeShader->SendUniformFloat("animationTimeTicks", animationTimeTicks);
 
@@ -171,9 +166,4 @@ glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 	glUseProgram(0);
 	datas->csBuffers->GetData(15, boneTransformsData);
 	return boneTransformsData;
-}
-
-void AnimationModel::PopulateTransforms(std::vector<glm::mat4>& transforms)
-{
-	datas->PopulateTransforms(transforms);
 }

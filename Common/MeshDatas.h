@@ -10,6 +10,7 @@
 #include "glm/vec3.hpp"
 
 
+class BufferManager;
 struct aiScene;
 class Buffer;
 
@@ -27,10 +28,8 @@ public:
 	std::vector<glm::vec2> texCoords;
 	std::vector<unsigned> indices;
 
-	Buffer* posBuffer;
-	Buffer* texBuffer;
-	Buffer* normalBuffer;
-	Buffer* indexBuffer;
+	BufferManager* renderingDatas;
+
 private:
 	
 

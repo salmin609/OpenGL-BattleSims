@@ -6,23 +6,19 @@
  */
 
 #include "MeshDatas.h"
-
 #include <GL/glew.h>
 #include "glm/vec2.hpp"
-
 #include "Buffer.hpp"
+#include "BufferManager.h"
 
 MeshDatas::MeshDatas()
 {
-
+	renderingDatas = new BufferManager();
 }
 
 MeshDatas::~MeshDatas()
 {
-	delete posBuffer;
-	delete texBuffer;
-	delete normalBuffer;
-	delete indexBuffer;
+	delete renderingDatas;
 }
 
 void MeshDatas::ReserveSpace(int numVertices, int numIndices)
@@ -35,43 +31,37 @@ void MeshDatas::ReserveSpace(int numVertices, int numIndices)
 
 void MeshDatas::PopulateBuffer()
 {
-	posBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(positions.size()), GL_STATIC_DRAW,
-		positions.data());
+	renderingDatas->AddBuffer(new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(positions.size()), GL_STATIC_DRAW,
+		positions.data()));
 
-	texBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec2) * static_cast<int>(texCoords.size()), GL_STATIC_DRAW,
-		texCoords.data());
+	renderingDatas->AddBuffer(new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec2) * static_cast<int>(texCoords.size()), GL_STATIC_DRAW,
+		texCoords.data()));
 
-	normalBuffer = new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(normals.size()), GL_STATIC_DRAW,
-		normals.data());
+	renderingDatas->AddBuffer(new Buffer(GL_ARRAY_BUFFER, sizeof(glm::vec3) * static_cast<int>(normals.size()), GL_STATIC_DRAW,
+		normals.data()));
+
+	renderingDatas->AddBuffer(new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * static_cast<int>(indices.size()),
+		GL_STATIC_DRAW, indices.data()));
 
 	FeedLayout();
-
-	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * static_cast<int>(indices.size()),
-		GL_STATIC_DRAW, indices.data());
 }
 
 void MeshDatas::FeedLayout()
 {
-	posBuffer->Bind();
+	renderingDatas->BindBuffer(0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
 
-	texBuffer->Bind();
+	renderingDatas->BindBuffer(1);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (GLvoid*)0);
 
-	normalBuffer->Bind();
+	renderingDatas->BindBuffer(2);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-
-	indexBuffer = new Buffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * static_cast<int>(indices.size()),
-		GL_STATIC_DRAW, indices.data());
 }
 
 void MeshDatas::Bind()
 {
-	posBuffer->Bind();
-	texBuffer->Bind();
-	normalBuffer->Bind();
-	indexBuffer->Bind();
+	renderingDatas->BindBuffers();
 }

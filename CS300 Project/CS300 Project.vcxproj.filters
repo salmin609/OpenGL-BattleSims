@@ -111,7 +111,7 @@
     <ClCompile Include="..\Common\BillboardObjectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\ComputeShaderBufferManager.cpp">
+    <ClCompile Include="..\Common\BufferManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,7 +236,7 @@
     <ClInclude Include="..\Common\BillboardObjectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\ComputeShaderBufferManager.h">
+    <ClInclude Include="..\Common\BufferManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

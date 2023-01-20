@@ -234,6 +234,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation,
 				i);
 			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
+			assert(transformMat != nullptr);
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
@@ -251,10 +252,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 					datas->frameBuffers[i][j][k]->UnBind();
 					fb->isOnUsage = false;
 				}
-
 			}
-
-			//delete[] transformMat;
 		}
 	}
 }

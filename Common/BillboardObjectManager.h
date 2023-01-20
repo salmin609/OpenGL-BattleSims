@@ -3,7 +3,7 @@
 #include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
-class ComputeShaderBufferManager;
+class BufferManager;
 class Texture;
 class BillboardAnimatingDatas;
 class Buffer;
@@ -53,5 +53,5 @@ private:
 	//Buffer* boFrameBufferUsageBuffer;
 	std::vector<std::vector<glm::vec4>> posDatas;
 
-	ComputeShaderBufferManager* csBuffers;
+	BufferManager* csBuffers;
 };

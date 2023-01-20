@@ -5,7 +5,7 @@
 #include "BillBoardObject.h"
 #include "Buffer.hpp"
 #include "Camera.hpp"
-#include "ComputeShaderBufferManager.h"
+#include "BufferManager.h"
 #include "FrameBuffer.h"
 #include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
@@ -18,7 +18,7 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boShader = boShader_;
 	boManager = boManager_;
 	currentCam = currentCam_;
-	csBuffers = new ComputeShaderBufferManager();
+	csBuffers = new BufferManager();
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
