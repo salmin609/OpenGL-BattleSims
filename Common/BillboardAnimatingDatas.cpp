@@ -6,13 +6,10 @@
  */
 
 #include "BillboardAnimatingDatas.h"
-
 #include "AnimationModel.h"
 #include "BillboardManager.h"
-#include "Camera.hpp"
 #include "FrameBuffer.h"
 #include "MultipleAnimationObject.h"
-#include "Object.h"
 
 BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 	, MultipleAnimationObject* mObj_)
