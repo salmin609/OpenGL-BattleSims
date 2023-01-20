@@ -38,19 +38,13 @@ private:
 	unsigned vao{};
 	Shader* boShader;
 	Shader* boFBusageComputeShader;
-
 	std::vector<std::vector<BillBoardObject*>> bos;
-
 	std::vector<glm::vec3> objsPos;
 	glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
 	BillboardManager* boManager;
 	Camera* currentCam;
 	int posOffset = 0;
 	int totalRenderingAmount = 0;
-
-	//std::vector<Buffer*> boPosBuffer{};
-
-	//Buffer* boFrameBufferUsageBuffer;
 	std::vector<std::vector<glm::vec4>> posDatas;
 
 	BufferManager* csBuffers;

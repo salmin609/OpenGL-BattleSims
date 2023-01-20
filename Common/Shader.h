@@ -12,22 +12,11 @@
 #include "glm/mat4x4.hpp"
 #include <map>
 
+#include "DataTypes.h"
+
 class Shader 
 {
 public:
-	enum class ShaderValueType
-	{
-		Int = 0,
-		Float,
-		Vec3,
-		//Vec4,
-		Matrix4x4
-	};
-	struct ShaderUniformValue
-	{
-		ShaderValueType type;
-		void* data;
-	};
 	Shader(const char* vertexPath, const char* fragPath);
 	Shader(const char* computeShader);
 	Shader(const char* vertex, const char* frag, const char* tessControl, const char* tessEval);

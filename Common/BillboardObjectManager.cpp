@@ -42,22 +42,22 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	}
 
 	boFBusageComputeShader = boFrameBufferUsageComputeShader;
-	boFBusageComputeShader->AddUniformValues("camPos", Shader::ShaderValueType::Vec3, &currentCam->Position);
-	boFBusageComputeShader->AddUniformValues("camFront", Shader::ShaderValueType::Vec3, &currentCam->Front);
-	boFBusageComputeShader->AddUniformValues("camRight", Shader::ShaderValueType::Vec3, &currentCam->Right);
-	boFBusageComputeShader->AddUniformValues("camUp", Shader::ShaderValueType::Vec3, &currentCam->Up);
-	boFBusageComputeShader->AddUniformValues("aspect", Shader::ShaderValueType::Float, &currentCam->fov);
-	boFBusageComputeShader->AddUniformValues("fovY", Shader::ShaderValueType::Float, &currentCam->fovY);
-	boFBusageComputeShader->AddUniformValues("zNear", Shader::ShaderValueType::Float, &zNear);
-	boFBusageComputeShader->AddUniformValues("zFar", Shader::ShaderValueType::Float, &zFar);
-	boFBusageComputeShader->AddUniformValues("bufferSize", Shader::ShaderValueType::Int, &totalPositionBufferCount);
+	boFBusageComputeShader->AddUniformValues("camPos", ShaderValueType::Vec3, &currentCam->Position);
+	boFBusageComputeShader->AddUniformValues("camFront", ShaderValueType::Vec3, &currentCam->Front);
+	boFBusageComputeShader->AddUniformValues("camRight", ShaderValueType::Vec3, &currentCam->Right);
+	boFBusageComputeShader->AddUniformValues("camUp", ShaderValueType::Vec3, &currentCam->Up);
+	boFBusageComputeShader->AddUniformValues("aspect", ShaderValueType::Float, &currentCam->fov);
+	boFBusageComputeShader->AddUniformValues("fovY", ShaderValueType::Float, &currentCam->fovY);
+	boFBusageComputeShader->AddUniformValues("zNear", ShaderValueType::Float, &zNear);
+	boFBusageComputeShader->AddUniformValues("zFar", ShaderValueType::Float, &zFar);
+	boFBusageComputeShader->AddUniformValues("bufferSize", ShaderValueType::Int, &totalPositionBufferCount);
 
 	for(int i = 0; i < boPosDatasCount; ++i)
 	{
 		const std::string bufferOffsetUniformName = "posOffset" + std::to_string(i);
 
 		boFBusageComputeShader->AddUniformValues(bufferOffsetUniformName, 
-			Shader::ShaderValueType::Int, &posOffsets[i]);
+			ShaderValueType::Int, &posOffsets[i]);
 	}
 
 	boFBusageDatas = new int[csBuffers->GetBufferSize(5)];
