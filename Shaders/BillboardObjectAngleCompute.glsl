@@ -52,7 +52,7 @@ uniform float fovY;
 uniform float zNear;
 uniform float zFar;
 
-vec3 boDirection = vec3(0.f, 0.f, -1.f);
+vec3 boDirection = vec3(-1.f, 0.f, 0.f);
 uniform int bufferSize;
 
 
@@ -158,34 +158,36 @@ float Convert(float radian)
 int GetUsingFrameBufferIndex(vec3 boPos)
 {
 	int result = 0;
-	vec3 camToPos = boPos - camPos;
-	float cosTheta = dot(camToPos, boDirection) / (length(camToPos) * length(boDirection));
+	vec3 boToCam = camPos - boPos;
+	boToCam.y = 0.f;
+
+	float cosTheta = dot(boToCam, boDirection) / (length(boToCam) * length(boDirection));
 	float angle = acos(cosTheta);
 	float angleInDegree = Convert(angle);
 
 	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
-		result = 3;
+		result = 0;
 	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
-		result = 2;
+		result = 1;
 	else
 	{
-		if (boPos.x > camPos.x)
+		if (boPos.z > camPos.z)
 		{
 			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				result = 5;
-			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
 				result = 4;
+			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
+				result = 6;
 			else
-				result = 0;
+				result = 2;
 		}
 		else
 		{
 			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				result = 7;
+				result = 5;
 			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
-				result = 6;
+				result = 7;
 			else
-				result = 1;
+				result = 3;
 		}
 	}
 
@@ -198,6 +200,9 @@ void main(void)
 
 	if (index >= bufferSize)
 		return;
+
+	if (index >= 128)
+		boDirection = vec3(1.f, 0.f, 0.f);
 
 	frameBufferUsingIndex[index] = -1;
 
