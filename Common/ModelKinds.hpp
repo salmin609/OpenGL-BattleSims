@@ -5,12 +5,15 @@
 enum class ObjKind
 {
 	SWAT = 0,
+
+
 	AMY,
+	END,
+
 	KNIGHT,
 	MICHELLE,
 	ADAM,
 
-	END
 };
 
 enum class AnimationKinds
@@ -29,6 +32,8 @@ enum class AnimationKinds
 	SWAT_Reload2,
 	SWAT_Smash,
 
+
+
 	AMY_Excited,
 	AMY_Floating,
 	AMY_HappyIdle,
@@ -39,7 +44,7 @@ enum class AnimationKinds
 	AMY_TalkingOnPhone,
 	AMY_TwistDance,
 
-
+	END,
 
 	KNIGHT_Attack1,
 	KNIGHT_Block,
@@ -78,7 +83,6 @@ enum class AnimationKinds
 	ADAM_MMAKick,
 	ADAM_Victory,
 
-	END,
 
 };
 

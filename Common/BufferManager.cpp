@@ -34,14 +34,29 @@ void BufferManager::BindBuffer(int bufferIndex, int storageIndex)
 	buffers[bufferIndex]->BindStorage(storageIndex);
 }
 
-int BufferManager::GetBufferSize(int index)
+int BufferManager::GetBufferSize(int storageIndex)
 {
-	return buffers[index]->GetSize();
+	for(const auto& buffer : buffers)
+	{
+		if (buffer->GetStorageIndex() == storageIndex)
+			return buffer->GetSize();
+	}
+	//StorageIndex does not exist.
+	return -1;
 }
 
-void BufferManager::GetData(int bufferIndex, void* dataPtr)
+void BufferManager::GetData(int storageIndex, void* dataPtr)
 {
-	buffers[bufferIndex]->GetData(dataPtr);
+	for (const auto& buffer : buffers)
+	{
+		if (buffer->GetStorageIndex() == storageIndex)
+		{
+			buffer->GetData(dataPtr);
+			return;
+		}
+	}
+
+	dataPtr = nullptr;
 }
 
 

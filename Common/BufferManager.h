@@ -12,8 +12,8 @@ public:
 	void BindBuffers();
 	void BindBuffer(int bufferIndex);
 	void BindBuffer(int bufferIndex, int storageIndex);
-	int GetBufferSize(int index);
-	void GetData(int bufferIndex, void* dataPtr);
+	int GetBufferSize(int storageIndex);
+	void GetData(int storageIndex, void* dataPtr);
 	void WriteData(int bufferIndex, void* dataPtr);
 private:
 	std::vector<Buffer*> buffers;

@@ -24,6 +24,7 @@ public:
 	unsigned GetId();
 	void UnMap();
 	int GetSize();
+	int GetStorageIndex();
 
 	template <typename T>
 	T* GetData();
@@ -68,14 +69,8 @@ inline void Buffer::GetData(void* data) const
 template <typename T>
 T* Buffer::GetData()
 {
-	/*if(type == GL_SHADER_STORAGE_BUFFER)
-	{
-		BindStorage();
-	}*/
 	Bind();
-
 	const void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
-	//assert(dataPtr);
 	T* checkPtr = new T[size];
 	memcpy(checkPtr, dataPtr, size);
 	glUnmapBuffer(type);
@@ -153,4 +148,9 @@ inline Buffer::~Buffer()
 inline int Buffer::GetSize()
 {
 	return size;
+}
+
+inline int Buffer::GetStorageIndex()
+{
+	return baseStorageIndex;
 }

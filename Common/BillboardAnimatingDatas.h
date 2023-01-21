@@ -26,15 +26,8 @@ public:
 	MultipleAnimationObject* mObj_);
 	~BillboardAnimatingDatas();
 
-	//FrameBuffer* frameBuffer;
 	std::vector<std::vector<std::vector<FrameBuffer*>>> frameBuffers;
 	MultipleAnimationObject* obj;
-
-	//Camera* cam;
-	//std::vector<Camera*> cams;
-
-
-	bool inUse = false;
 	int diffTimeAnimCount;
 private:
 

@@ -2,33 +2,38 @@
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
-//Position Buffers of objects, need to same number with ObjKind
 layout(binding = 0) buffer
-bufferFirstObjPos {
-	vec4 firstObjPoses[];
+bufferObjPos {
+	vec4 objPos[];
 };
 
+//Position Buffers of objects, need to same number with ObjKind
+//layout(binding = 0) buffer
+//bufferFirstObjPos {
+//	vec4 firstObjPoses[];
+//};
+//
+//layout(binding = 1) buffer
+//bufferSecondObjPos {
+//	vec4 secondObjPoses[];
+//};
+//
+//layout(binding = 2) buffer
+//bufferThirdObjPos {
+//	vec4 thirdObjPoses[];
+//};
+//
+//layout(binding = 3) buffer
+//bufferFourthObjPos {
+//	vec4 fourthObjPoses[];
+//};
+//
+//layout(binding = 4) buffer
+//bufferFifthObjPos {
+//	vec4 fifthObjPoses[];
+//};
+//
 layout(binding = 1) buffer
-bufferSecondObjPos {
-	vec4 secondObjPoses[];
-};
-
-layout(binding = 2) buffer
-bufferThirdObjPos {
-	vec4 thirdObjPoses[];
-};
-
-layout(binding = 3) buffer
-bufferFourthObjPos {
-	vec4 fourthObjPoses[];
-};
-
-layout(binding = 4) buffer
-bufferFifthObjPos {
-	vec4 fifthObjPoses[];
-};
-
-layout(binding = 5) buffer
 bufferOutFrameBufferUsage {
 	int frameBufferUsingIndex[];
 };
@@ -49,6 +54,7 @@ uniform float zFar;
 
 vec3 boDirection = vec3(0.f, 0.f, -1.f);
 uniform int bufferSize;
+
 
 struct Plan 
 {
@@ -195,9 +201,9 @@ void main(void)
 
 	frameBufferUsingIndex[index] = -1;
 
-	vec4 boPosInVec4;
+	vec4 boPosInVec4 = objPos[index];
 
-	if (posOffset0 <= index && index < posOffset1)
+	/*if (posOffset0 <= index && index < posOffset1)
 		boPosInVec4 = firstObjPoses[index];
 
 	else if (posOffset1 <= index && index < posOffset2)
@@ -210,7 +216,7 @@ void main(void)
 		boPosInVec4 = fourthObjPoses[index - posOffset3];
 
 	else if (posOffset4 <= index)
-		boPosInVec4 = fifthObjPoses[index - posOffset4];
+		boPosInVec4 = fifthObjPoses[index - posOffset4];*/
 
 	vec3 boPos = vec3(boPosInVec4);
 	float distance = distance(boPos, camPos);
