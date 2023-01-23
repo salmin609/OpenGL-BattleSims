@@ -7,42 +7,13 @@ bufferObjPos {
 	vec4 objPos[];
 };
 
-//Position Buffers of objects, need to same number with ObjKind
-//layout(binding = 0) buffer
-//bufferFirstObjPos {
-//	vec4 firstObjPoses[];
-//};
-//
-//layout(binding = 1) buffer
-//bufferSecondObjPos {
-//	vec4 secondObjPoses[];
-//};
-//
-//layout(binding = 2) buffer
-//bufferThirdObjPos {
-//	vec4 thirdObjPoses[];
-//};
-//
-//layout(binding = 3) buffer
-//bufferFourthObjPos {
-//	vec4 fourthObjPoses[];
-//};
-//
-//layout(binding = 4) buffer
-//bufferFifthObjPos {
-//	vec4 fifthObjPoses[];
-//};
-//
 layout(binding = 1) buffer
 bufferOutFrameBufferUsage {
 	int frameBufferUsingIndex[];
 };
 
-uniform int posOffset0;
-uniform int posOffset1;
-uniform int posOffset2;
-uniform int posOffset3;
-uniform int posOffset4;
+uniform vec4 herdBoDirectionAndOffsets[32];
+uniform int herdCount;
 uniform vec3 camPos;
 uniform vec3 camFront;
 uniform vec3 camRight;
@@ -52,7 +23,7 @@ uniform float fovY;
 uniform float zNear;
 uniform float zFar;
 
-vec3 boDirection = vec3(-1.f, 0.f, 0.f);
+vec3 boDirection;
 uniform int bufferSize;
 
 
@@ -165,13 +136,18 @@ int GetUsingFrameBufferIndex(vec3 boPos)
 	float angle = acos(cosTheta);
 	float angleInDegree = Convert(angle);
 
+	vec3 camDir = -boDirection;
+	vec3 targetDir = boPos - camPos;
+	vec3 crossResult = cross(camDir, targetDir);
+
+
 	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
 		result = 0;
 	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
 		result = 1;
 	else
 	{
-		if (boPos.z > camPos.z)
+		if (crossResult.y < 0)
 		{
 			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
 				result = 4;
@@ -201,27 +177,20 @@ void main(void)
 	if (index >= bufferSize)
 		return;
 
-	if (index >= 128)
-		boDirection = vec3(1.f, 0.f, 0.f);
-
 	frameBufferUsingIndex[index] = -1;
 
 	vec4 boPosInVec4 = objPos[index];
+	
+	for (int i = herdCount - 1; i >= 0; --i)
+	{
+		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
 
-	/*if (posOffset0 <= index && index < posOffset1)
-		boPosInVec4 = firstObjPoses[index];
-
-	else if (posOffset1 <= index && index < posOffset2)
-		boPosInVec4 = secondObjPoses[index - posOffset1];
-
-	else if (posOffset2 <= index && index < posOffset3)
-		boPosInVec4 = thirdObjPoses[index - posOffset2];
-
-	else if (posOffset3 <= index && index < posOffset4)
-		boPosInVec4 = fourthObjPoses[index - posOffset3];
-
-	else if (posOffset4 <= index)
-		boPosInVec4 = fifthObjPoses[index - posOffset4];*/
+		if (index >= herdboDirectionAndOffset.w)
+		{
+			boDirection = vec3(herdBoDirectionAndOffsets[i]);
+			break;
+		}
+	}
 
 	vec3 boPos = vec3(boPosInVec4);
 	float distance = distance(boPos, camPos);
@@ -234,5 +203,4 @@ void main(void)
 		if (isOnFrustum(camFrustum, spv))
 			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos);
 	}
-		
 }

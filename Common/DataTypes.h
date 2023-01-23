@@ -5,7 +5,7 @@ enum class ShaderValueType
 	Int = 0,
 	Float,
 	Vec3,
-	//Vec4,
+	Vec4,
 	Matrix4x4
 };
 

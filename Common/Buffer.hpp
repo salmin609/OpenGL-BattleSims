@@ -29,11 +29,15 @@ public:
 	template <typename T>
 	T* GetData();
 
+	template <typename T>
+	int GetCount();
+
 private:
 	unsigned bufferId{};
 	GLenum type;
 	int baseStorageIndex;
 	int size;
+	int count;
 	
 };
 
@@ -149,6 +153,13 @@ inline int Buffer::GetSize()
 {
 	return size;
 }
+
+template <typename T>
+int Buffer::GetCount()
+{
+	return size / sizeof(T);
+}
+
 
 inline int Buffer::GetStorageIndex()
 {

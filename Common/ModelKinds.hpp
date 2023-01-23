@@ -5,8 +5,6 @@
 enum class ObjKind
 {
 	SWAT = 0,
-
-
 	AMY,
 	END,
 

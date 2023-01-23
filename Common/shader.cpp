@@ -359,6 +359,13 @@ void Shader::SendUniformVec3(std::string uniformName, void* val) const
 	glUniform3f(loc, valInFloat[0], valInFloat[1], valInFloat[2]);
 }
 
+void Shader::SendUniformVec4(std::string uniformName, void* val) const
+{
+	const int loc = glGetUniformLocation(programId, uniformName.c_str());
+	float* valInFloat = static_cast<float*>(val);
+	glUniform4f(loc, valInFloat[0], valInFloat[1], valInFloat[2], valInFloat[3]);
+}
+
 void Shader::SendUniform3fv(std::string uniformName, void* val, int count) const
 {
 	const int loc = glGetUniformLocation(programId, uniformName.c_str());
@@ -394,6 +401,9 @@ void Shader::SendUniformValues()
 			break;
 		case ShaderValueType::Vec3:
 			SendUniformVec3(val.first, val.second.data);
+			break;
+		case ShaderValueType::Vec4:
+			SendUniformVec4(val.first, val.second.data);
 			break;
 		case ShaderValueType::Matrix4x4:
 			SendUniformMat(val.first, val.second.data);

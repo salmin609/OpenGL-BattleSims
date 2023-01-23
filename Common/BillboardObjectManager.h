@@ -27,7 +27,7 @@ public:
 	void SetBosFrameBufferIndex();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 	void SetShaderUniforms();
-	void SetPositionOffsetBuffers();
+	void SetPositionOffsetBuffers(std::vector<glm::vec3> directions);
 	std::vector<glm::vec3> GetHerdPos(int num, glm::vec3 pos, float offset);
 	void PopulateBuffers();
 	std::vector<Texture*> GetTextures(const std::vector<BillboardAnimatingDatas*>& boDatas);
@@ -37,19 +37,21 @@ public:
 	void* boFBusageDatas{};
 	unsigned gArrayTexture{};
 	int totalPositionBufferCount = 0;
-	int* posOffsets{};
+
+	//xyz = boDirection, w = count
+	glm::vec4* herdBoDirAndOffset{};
 private:
 	unsigned vao{};
 	Shader* boShader;
 	Shader* boFBusageComputeShader;
 	std::vector<std::vector<BillBoardObject*>> bos;
-	//std::vector<glm::vec3> objsPos;
-	//glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
 	BillboardManager* boManager;
 	Camera* currentCam;
 	int posOffset = 0;
 	int totalRenderingAmount = 0;
-	//std::vector<std::vector<glm::vec4>> posDatas;
+	int herdCount = 0;
+	std::vector<int> herdOffset;
+
 	std::vector<glm::vec4> posDatas;
 
 	BufferManager* csBuffers;

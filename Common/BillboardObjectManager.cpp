@@ -33,8 +33,6 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	}
 
 	//TODO : Need to put obj spanwing
-
-	//PopulateObjsPos();
 	Populate();
 
 	SetShaderUniforms();
@@ -49,17 +47,19 @@ BillboardObjectManager::~BillboardObjectManager()
 			delete b;
 
 	delete[] static_cast<int*>(boFBusageDatas);
-	delete[] posOffsets;
+	delete[] herdBoDirAndOffset;
 }
 
 
-void BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos, float offset)
+void BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos, 
+	float offset)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
 
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
-	//std::vector<glm::vec4> poses;
+	herdCount++;
+
 
 	const std::vector<glm::vec3> herdVec = GetHerdPos(num, pos, offset);
 
@@ -68,32 +68,33 @@ void BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos, float
 		const int animationIndex = rand() % animationCount;
 		const int timeDiffSlot = rand() % data->diffTimeAnimCount;
 
-		const glm::vec3& pos = herdVec[i];
+		const glm::vec3& position = herdVec[i];
 
 		bos[obj].push_back(new BillBoardObject(boShader,
-			pos, data->frameBuffers[timeDiffSlot][animationIndex]));
+			position, data->frameBuffers[timeDiffSlot][animationIndex]));
 
-		//poses.emplace_back(pos, 1.f);
-		posDatas.emplace_back(pos, 1.f);
+		posDatas.emplace_back(position, 1.f);
 
 		totalPositionBufferCount++;
 	}
 
-	//posDatas.push_back(poses);
-
 	posOffset += num;
 
+	herdOffset.push_back(totalRenderingAmount);
 	totalRenderingAmount += num;
 }
 
 void BillboardObjectManager::Populate()
 {
-	//PopulateObjs(2, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f);
-	PopulateObjs(128, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f);
-	PopulateObjs(128, static_cast<int>(ObjKind::AMY), glm::vec3(-400.f, 12.f, -20.f), 20.f);
+	PopulateObjs(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f);
+	PopulateObjs(1280, static_cast<int>(ObjKind::AMY), glm::vec3(-400.f, 12.f, -20.f), 20.f);
 	//PopulateObjs(2560, static_cast<int>(ObjKind::KNIGHT));
 	//PopulateObjs(2560, static_cast<int>(ObjKind::MICHELLE));
 	//PopulateObjs(2560, static_cast<int>(ObjKind::ADAM));
+
+	SetPositionOffsetBuffers({
+		glm::vec3(-1.f, 0.f, 0.f), 
+		glm::vec3(1.f, 0.f, 0.f)});
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage()
@@ -139,55 +140,8 @@ void BillboardObjectManager::SetBosFrameBufferIndex()
 		}
 	}
 }
-
-float Convert(float radian)
-{
-	return radian * (180.f / 3.14159f);
-}
-
 void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
-	//glm::vec3 boDirection = glm::vec3(-1.f, 0.f, 0.f);
-
-	/*int result;
-
-	glm::vec3 camPos = currentCam->Position;
-	glm::vec3 boPos = bos[0][0]->pos;
-
-	glm::vec3 boToCam = camPos - boPos;
-	float cosTheta = dot(boToCam, boDirection) / (length(boToCam) * length(boDirection));
-	float angle = acos(cosTheta);
-	float angleInDegree = Convert(angle);
-
-
-	if (angleInDegree >= 0.f && angleInDegree <= 22.5f)
-		result = static_cast<int>(CamVectorOrder::Front);
-	else if (angleInDegree >= 157.5f && angleInDegree <= 180.f)
-		result = static_cast<int>(CamVectorOrder::Back);
-	else
-	{
-		if (bos[0][0]->pos.z > currentCam->Position.z)
-		{
-			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				result = static_cast<int>(CamVectorOrder::LeftFront);
-			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
-				result = static_cast<int>(CamVectorOrder::LeftBack);
-			else
-				result = static_cast<int>(CamVectorOrder::Left);
-		}
-		else
-		{
-			if (angleInDegree >= 22.5f && angleInDegree <= 67.5f)
-				result = static_cast<int>(CamVectorOrder::RightFront);
-			else if (angleInDegree >= 112.5f && angleInDegree <= 157.5f)
-				result = static_cast<int>(CamVectorOrder::RightBack);
-			else
-				result = static_cast<int>(CamVectorOrder::Right);
-		}
-	}*/
-
-
-
 	for (const auto& bo : bos)
 		for(const auto& b : bo)
 			b->Render(projMat, viewMat);
@@ -206,30 +160,26 @@ void BillboardObjectManager::SetShaderUniforms()
 	boFBusageComputeShader->AddUniformValues("bufferSize", ShaderValueType::Int, &totalPositionBufferCount);
 }
 
-void BillboardObjectManager::SetPositionOffsetBuffers()
+void BillboardObjectManager::SetPositionOffsetBuffers(std::vector<glm::vec3> directions)
 {
-	const int boPosDatasCount = static_cast<int>(posDatas.size());
-	posOffsets = new int[boPosDatasCount];
+	herdBoDirAndOffset = new glm::vec4[herdCount];
 
-
-	int offset = 0;
-	for (int i = 0; i < boPosDatasCount; ++i)
+	for(int i = 0; i < herdCount; ++i)
 	{
-		posOffsets[i] = offset;
-		//offset += static_cast<int>(posDatas[i].size());
+		herdBoDirAndOffset[i].x = directions[i].x;
+		herdBoDirAndOffset[i].y = directions[i].y;
+		herdBoDirAndOffset[i].z = directions[i].z;
+		herdBoDirAndOffset[i].w = static_cast<float>(herdOffset[i]);
+
+		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
+		boFBusageComputeShader->AddUniformValues(uName, ShaderValueType::Vec4, &herdBoDirAndOffset[i]);
 	}
 
-
-	for (int i = 0; i < boPosDatasCount; ++i)
-	{
-		const std::string bufferOffsetUniformName = "posOffset" + std::to_string(i);
-
-		boFBusageComputeShader->AddUniformValues(bufferOffsetUniformName,
-			ShaderValueType::Int, &posOffsets[i]);
-	}
+	boFBusageComputeShader->AddUniformValues("herdCount",ShaderValueType::Int, &herdCount);
 }
 
-std::vector<glm::vec3> BillboardObjectManager::GetHerdPos(int num, glm::vec3 pos, float offset)
+std::vector<glm::vec3> BillboardObjectManager::GetHerdPos(int num, glm::vec3 pos, 
+	float offset)
 {
 	std::vector<glm::vec3> result;
 	
@@ -268,7 +218,7 @@ void BillboardObjectManager::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * totalPositionBufferCount, GL_DYNAMIC_DRAW,
 		nullptr, 1));
 
-	boFBusageDatas = new int[csBuffers->GetBufferSize(1)];
+	boFBusageDatas = new int[csBuffers->GetBufferSize(1) / sizeof(int)];
 }
 
 std::vector<Texture*> BillboardObjectManager::GetTextures(const std::vector<BillboardAnimatingDatas*>& boDatas)

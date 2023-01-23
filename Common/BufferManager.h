@@ -15,6 +15,8 @@ public:
 	int GetBufferSize(int storageIndex);
 	void GetData(int storageIndex, void* dataPtr);
 	void WriteData(int bufferIndex, void* dataPtr);
+
 private:
 	std::vector<Buffer*> buffers;
 };
+
