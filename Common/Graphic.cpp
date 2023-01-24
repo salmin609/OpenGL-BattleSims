@@ -47,6 +47,9 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
 
+	
+
+
 	//frustum = new Frustum();
 	//frustum->ResetFrustumPlans(*currentCam, fov,
 	//	glm::radians(currentCam->Zoom), boObjsManager->zNear, 
