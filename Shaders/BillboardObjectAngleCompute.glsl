@@ -2,14 +2,22 @@
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
+
+
+//out
 layout(binding = 0) buffer
-bufferObjPos {
-	vec4 objPos[];
+bufferOutFrameBufferUsage {
+	int frameBufferUsingIndex[];
 };
 
 layout(binding = 1) buffer
-bufferOutFrameBufferUsage {
-	int frameBufferUsingIndex[];
+bufferObjPos1 {
+	vec4 obj1Pos[];
+};
+
+layout(binding = 2) buffer
+bufferObjPos2 {
+	vec4 obj2Pos[];
 };
 
 uniform vec4 herdBoDirectionAndOffsets[32];
@@ -179,18 +187,29 @@ void main(void)
 
 	frameBufferUsingIndex[index] = -1;
 
-	vec4 boPosInVec4 = objPos[index];
+	vec4 boPosInVec4;
 	
+	int posBufferIndex;
+	int bufferOffset;
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
 		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
 
 		if (index >= herdboDirectionAndOffset.w)
 		{
-			boDirection = vec3(herdBoDirectionAndOffsets[i]);
+			boDirection = vec3(herdboDirectionAndOffset);
+			posBufferIndex = i;
+			bufferOffset = int(herdboDirectionAndOffset.w);
 			break;
 		}
 	}
+
+	if (posBufferIndex == 0)
+		boPosInVec4 = obj1Pos[index];
+	else if (posBufferIndex == 1)
+		boPosInVec4 = obj2Pos[index - bufferOffset];
+
+
 
 	vec3 boPos = vec3(boPosInVec4);
 	float distance = distance(boPos, camPos);

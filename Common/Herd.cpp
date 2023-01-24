@@ -26,3 +26,8 @@ glm::vec4& Herd::GetHerdBoDirAndOffset()
 {
 	return herdBoDirAndOffset;
 }
+
+void Herd::BindPosBuffer()
+{
+	posBuffer->BindStorage();
+}

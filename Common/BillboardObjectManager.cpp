@@ -1,7 +1,5 @@
 #include "BillboardObjectManager.h"
-
 #include <iostream>
-
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillBoardObject.h"
@@ -24,16 +22,13 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boFBusageComputeShader = boFrameBufferUsageComputeShader;
 
 	csBuffers = new BufferManager();
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(0);
-
+	
 	for (int i = 0; i < static_cast<int>(ObjKind::END); ++i)
 	{
 		std::vector<BillBoardObject*> bo;
 		bos.push_back(bo);
 	}
 
-	//TODO : Need to put obj spanwing
 	Populate();
 
 	SetShaderUniforms();
@@ -48,23 +43,23 @@ BillboardObjectManager::~BillboardObjectManager()
 			delete b;
 
 	delete[] static_cast<int*>(boFBusageDatas);
-	//delete[] herdBoDirAndOffset;
 
-
+	for (const auto& herd : herds)
+		delete herd;
 }
 
 
 Herd* BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos, 
 	float offset)
 {
-	BillboardAnimatingDatas* data = boManager->boDatas[obj];
+	const BillboardAnimatingDatas* data = boManager->boDatas[obj];
 
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
 	herdCount++;
 
 	Buffer* posBuffer = GetHerdPosBuffer(num, pos, offset);
-	glm::vec4* posData = posBuffer->GetData<glm::vec4>();
+	const glm::vec4* posData = posBuffer->GetData<glm::vec4>();
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -76,13 +71,10 @@ Herd* BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos,
 		bos[obj].push_back(new BillBoardObject(boShader,
 			position, data->frameBuffers[timeDiffSlot][animationIndex]));
 
-		posDatas.emplace_back(position, 1.f);
-
 	}
 
 	delete[] posData;
 
-	posOffset += num;
 
 	herdOffset.push_back(totalRenderingAmount);
 	totalRenderingAmount += num;
@@ -114,14 +106,18 @@ void BillboardObjectManager::CheckFrameBufferUsage()
 
 	csBuffers->BindBuffers();
 
+	for(int i = 0; i < herdCount; ++i)
+		herds[i]->BindPosBuffer();
+
 	boFBusageComputeShader->SendUniformValues();
+
 
 	glDispatchCompute(totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
 
-	csBuffers->GetData(1, boFBusageDatas);
+	csBuffers->GetData(0, boFBusageDatas);
 	assert(boFBusageDatas != nullptr);
 	SetBosFrameBufferIndex();
 }
@@ -193,7 +189,8 @@ void BillboardObjectManager::SetPositionOffsetBuffers(std::vector<glm::vec3> dir
 Buffer* BillboardObjectManager::GetHerdPosBuffer(int num, glm::vec3 pos,
 	float offset)
 {
-	std::vector<glm::vec4> resultVector;
+	if(!resultVector.empty())
+		resultVector.clear();
 	
 	glm::vec4 startPos;
 	startPos.x = pos.x;
@@ -218,22 +215,22 @@ Buffer* BillboardObjectManager::GetHerdPosBuffer(int num, glm::vec3 pos,
 		resultVector.push_back(newPos);
 	}
 
-	Buffer* resultBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, resultVector.size() * sizeof(glm::vec4),
-	                                  GL_DYNAMIC_DRAW, resultVector.data(), 0);
-
-	return resultBuffer;
+	return new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		static_cast<int>(resultVector.size()) * static_cast<int>(sizeof(glm::vec4)),
+	                                  GL_DYNAMIC_DRAW, resultVector.data(), posBufferIndex++);
 }
 
 
 void BillboardObjectManager::PopulateBuffers()
 {
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(posDatas.size()),
-	GL_DYNAMIC_DRAW, posDatas.data(), 0));
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
+		sizeof(int) * totalRenderingAmount, GL_DYNAMIC_DRAW,
+		nullptr, 0));
 
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * totalRenderingAmount, GL_DYNAMIC_DRAW,
-		nullptr, 1));
+	/*csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(posDatas.size()),
+		GL_DYNAMIC_DRAW, posDatas.data(), 1));*/
 
-	boFBusageDatas = new int[csBuffers->GetBufferSize(1) / sizeof(int)];
+	boFBusageDatas = new int[totalRenderingAmount];
 }
 
 std::vector<Texture*> BillboardObjectManager::GetTextures(const std::vector<BillboardAnimatingDatas*>& boDatas)

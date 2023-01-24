@@ -11,9 +11,10 @@ public:
 	void SetPosBuffer(Buffer* posBuffer_);
 	void SetBoDirAndOffset(glm::vec4 data_);
 	glm::vec4& GetHerdBoDirAndOffset();
+	void BindPosBuffer();
+	Buffer* posBuffer;
 
 private:
 	glm::vec4 herdBoDirAndOffset{};
-	Buffer* posBuffer;
 
 };

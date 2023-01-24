@@ -37,24 +37,24 @@ public:
 	float zFar = 1000.f;
 	void* boFBusageDatas{};
 	unsigned gArrayTexture{};
-	int herdCount;
+	int herdCount{};
 	//xyz = boDirection, w = count
 	//glm::vec4* herdBoDirAndOffset{};
 
+	int posBufferIndex = 1;
+	std::vector<glm::vec4> resultVector;
 	std::vector<Herd*> herds;
 
 private:
-	unsigned vao{};
 	Shader* boShader;
 	Shader* boFBusageComputeShader;
 	std::vector<std::vector<BillBoardObject*>> bos;
 	BillboardManager* boManager;
 	Camera* currentCam;
-	int posOffset = 0;
 	int totalRenderingAmount = 0;
 	std::vector<int> herdOffset;
 
-	std::vector<glm::vec4> posDatas;
+	//std::vector<glm::vec4> posDatas;
 
 	BufferManager* csBuffers;
 };
