@@ -16,7 +16,7 @@
 #include "Texture.h"
 
 BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
-	std::vector<FrameBuffer*> fb_)
+	const std::vector<FrameBuffer*>& fb_)
 {
 	pos = pos_;
 	shader = shader_;
