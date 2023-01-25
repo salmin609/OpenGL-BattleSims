@@ -264,15 +264,15 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <None Include="..\Shaders\billboardGeometry.glsl" />
     <None Include="..\Shaders\BillboardObjectAngleCompute.glsl" />
     <None Include="..\Shaders\billboardVert.glsl" />
-    <None Include="..\Shaders\computeShader.glsl" />
+    <None Include="..\Shaders\SkinningComputeShader.glsl" />
     <None Include="..\Shaders\floorFragment.glsl" />
     <None Include="..\Shaders\floorVertex.glsl" />
-    <None Include="..\Shaders\frag.glsl" />
+    <None Include="..\Shaders\AnimationFragment.glsl" />
     <None Include="..\Shaders\lineFrag.glsl" />
     <None Include="..\Shaders\lineVert.glsl" />
     <None Include="..\Shaders\SkyboxFragment.glsl" />
     <None Include="..\Shaders\SkyboxVertex.glsl" />
-    <None Include="..\Shaders\vert.glsl" />
+    <None Include="..\Shaders\AnimationVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

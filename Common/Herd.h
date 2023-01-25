@@ -13,8 +13,8 @@ public:
 	glm::vec4& GetHerdBoDirAndOffset();
 	void BindPosBuffer();
 	Buffer* posBuffer;
+	glm::vec4 herdBoDirAndOffset{};
 
 private:
-	glm::vec4 herdBoDirAndOffset{};
 
 };

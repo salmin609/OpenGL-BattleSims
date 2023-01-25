@@ -20,6 +20,16 @@ bufferObjPos2 {
 	vec4 obj2Pos[];
 };
 
+layout(binding = 3) buffer
+bufferObjPos3 {
+	vec4 obj3Pos[];
+};
+
+layout(binding = 4) buffer
+bufferObjPos4 {
+	vec4 obj4Pos[];
+};
+
 uniform vec4 herdBoDirectionAndOffsets[32];
 uniform int herdCount;
 uniform vec3 camPos;
@@ -208,6 +218,10 @@ void main(void)
 		boPosInVec4 = obj1Pos[index];
 	else if (posBufferIndex == 1)
 		boPosInVec4 = obj2Pos[index - bufferOffset];
+	else if (posBufferIndex == 2)
+		boPosInVec4 = obj3Pos[index - bufferOffset];
+	else if (posBufferIndex == 3)
+		boPosInVec4 = obj4Pos[index - bufferOffset];
 
 
 

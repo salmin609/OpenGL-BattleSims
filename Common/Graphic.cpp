@@ -24,11 +24,11 @@
 
 Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w), windowHeight(h)
 {
-	shader = new Shader("../Shaders/vert.glsl", "../Shaders/frag.glsl");
+	shader = new Shader("../Shaders/AnimationVertex.glsl", "../Shaders/AnimationFragment.glsl");
 	floorShader = new Shader("../Shaders/floorVertex.glsl", "../Shaders/floorFragment.glsl");
 	billboardShader = new Shader("../Shaders/billboardVert.glsl", "../Shaders/billboardFrag.glsl", 
 		"../Shaders/billboardGeometry.glsl");
-	interpolationComputeShader = new Shader("../Shaders/computeShader.glsl");
+	interpolationComputeShader = new Shader("../Shaders/SkinningComputeShader.glsl");
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
 

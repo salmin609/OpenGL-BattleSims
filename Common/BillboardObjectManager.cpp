@@ -49,8 +49,8 @@ BillboardObjectManager::~BillboardObjectManager()
 }
 
 
-Herd* BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos, 
-	float offset)
+Herd* BillboardObjectManager::PopulateHerd(int num, int obj, glm::vec3 pos, 
+	float offset, glm::vec3 boDirection)
 {
 	const BillboardAnimatingDatas* data = boManager->boDatas[obj];
 
@@ -82,22 +82,21 @@ Herd* BillboardObjectManager::PopulateObjs(int num, int obj, glm::vec3 pos,
 	Herd* herd = new Herd();
 
 	herd->SetPosBuffer(posBuffer);
-
+	herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f};
 
 	return herd;
 }
 
 void BillboardObjectManager::Populate()
 {
-	herds.push_back(PopulateObjs(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f));
-	herds.push_back(PopulateObjs(1280, static_cast<int>(ObjKind::AMY), glm::vec3(-400.f, 12.f, -20.f), 20.f));
-	//PopulateObjs(2560, static_cast<int>(ObjKind::KNIGHT));
-	//PopulateObjs(2560, static_cast<int>(ObjKind::MICHELLE));
-	//PopulateObjs(2560, static_cast<int>(ObjKind::ADAM));
+	herds.push_back(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f,
+		glm::vec3(-1.f, 0.f, 0.f)));
+	herds.push_back(PopulateHerd(1280, static_cast<int>(ObjKind::AMY), glm::vec3(-400.f, 12.f, -20.f), 20.f,
+		glm::vec3(1.f, 0.f, 0.f)));
+	//herds.push_back(PopulateObjs(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(0.f, 12.f, -400.f), 20.f));
+	//herds.push_back(PopulateObjs(1280, static_cast<int>(ObjKind::MICHELLE), glm::vec3(0.f, 12.f, 400.f), 20.f));
 
-	SetPositionOffsetBuffers({
-		glm::vec3(-1.f, 0.f, 0.f), 
-		glm::vec3(1.f, 0.f, 0.f)});
+	SetPositionOffsetBuffers();
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage()
@@ -110,7 +109,6 @@ void BillboardObjectManager::CheckFrameBufferUsage()
 		herds[i]->BindPosBuffer();
 
 	boFBusageComputeShader->SendUniformValues();
-
 
 	glDispatchCompute(totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -167,17 +165,19 @@ void BillboardObjectManager::SetShaderUniforms()
 	boFBusageComputeShader->AddUniformValues("bufferSize", ShaderValueType::Int, &totalRenderingAmount);
 }
 
-void BillboardObjectManager::SetPositionOffsetBuffers(std::vector<glm::vec3> directions)
+void BillboardObjectManager::SetPositionOffsetBuffers()
 {
 
 	for(int i = 0; i < herdCount; ++i)
 	{
 		Herd* herd = herds[i];
 
-		herd->SetBoDirAndOffset(glm::vec4(directions[i].x,
+		herd->herdBoDirAndOffset.w = static_cast<float>(herdOffset[i]);
+		/*herd->SetBoDirAndOffset(glm::vec4(
+			directions[i].x,
 			directions[i].y,
 			directions[i].z,
-			static_cast<float>(herdOffset[i])));
+			static_cast<float>(herdOffset[i])));*/
 
 		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
 		boFBusageComputeShader->AddUniformValues(uName, ShaderValueType::Vec4, &herds[i]->GetHerdBoDirAndOffset());
@@ -226,9 +226,6 @@ void BillboardObjectManager::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, 
 		sizeof(int) * totalRenderingAmount, GL_DYNAMIC_DRAW,
 		nullptr, 0));
-
-	/*csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * static_cast<int>(posDatas.size()),
-		GL_DYNAMIC_DRAW, posDatas.data(), 1));*/
 
 	boFBusageDatas = new int[totalRenderingAmount];
 }

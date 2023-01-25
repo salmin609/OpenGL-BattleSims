@@ -22,13 +22,13 @@ public:
 		Camera* currentCam_);
 	~BillboardObjectManager();
 
-	Herd* PopulateObjs(int num, int obj, glm::vec3 pos, float offset);
+	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection);
 	void Populate();
 	void CheckFrameBufferUsage();
 	void SetBosFrameBufferIndex();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 	void SetShaderUniforms();
-	void SetPositionOffsetBuffers(std::vector<glm::vec3> directions);
+	void SetPositionOffsetBuffers();
 	Buffer* GetHerdPosBuffer(int num, glm::vec3 pos, float offset);
 	void PopulateBuffers();
 	std::vector<Texture*> GetTextures(const std::vector<BillboardAnimatingDatas*>& boDatas);

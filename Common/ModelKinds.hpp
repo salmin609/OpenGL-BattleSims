@@ -6,7 +6,9 @@ enum class ObjKind
 {
 	SWAT = 0,
 	AMY,
+
 	END,
+
 
 	KNIGHT,
 	MICHELLE,
@@ -43,6 +45,7 @@ enum class AnimationKinds
 	AMY_TwistDance,
 
 	END,
+
 
 	KNIGHT_Attack1,
 	KNIGHT_Block,

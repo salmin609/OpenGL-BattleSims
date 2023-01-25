@@ -250,10 +250,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\frag.glsl">
+    <None Include="..\Shaders\AnimationFragment.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="..\Shaders\vert.glsl">
+    <None Include="..\Shaders\AnimationVertex.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shaders\floorFragment.glsl">
@@ -262,7 +262,7 @@
     <None Include="..\Shaders\floorVertex.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="..\Shaders\computeShader.glsl">
+    <None Include="..\Shaders\SkinningComputeShader.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shaders\billboardVert.glsl">
