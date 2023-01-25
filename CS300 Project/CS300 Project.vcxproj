@@ -196,6 +196,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\FrustumCulling.cpp" />
     <ClCompile Include="..\Common\Graphic.cpp" />
     <ClCompile Include="..\Common\Herd.cpp" />
+    <ClCompile Include="..\Common\HerdManager.cpp" />
     <ClCompile Include="..\Common\Interpolation.cpp" />
     <ClCompile Include="..\Common\Line.cpp" />
     <ClCompile Include="..\Common\MeshDatas.cpp" />
@@ -233,6 +234,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\FrustumCulling.h" />
     <ClInclude Include="..\Common\Graphic.h" />
     <ClInclude Include="..\Common\Herd.h" />
+    <ClInclude Include="..\Common\HerdManager.h" />
     <ClInclude Include="..\Common\Interpolation.h" />
     <ClInclude Include="..\Common\Line.h" />
     <ClInclude Include="..\Common\Material.h" />

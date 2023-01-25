@@ -68,6 +68,8 @@ Graphic::~Graphic()
 	delete lineShader;
 	delete billboardShader;
 	delete floorLine;
+	delete floorShader;
+	delete bbCheckFrameBufferUsage;
 }
 
 void Graphic::Draw()
