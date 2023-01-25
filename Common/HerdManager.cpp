@@ -5,6 +5,7 @@
 #include "BillBoardObject.h"
 #include "Buffer.hpp"
 #include "Herd.h"
+#include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
 
 HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
@@ -13,6 +14,12 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	herdCount = 0;
 	boManager = boManager_;
 	boShader = boShader_;
+
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(0.f, 12.f, -20.f), 20.f,
+		glm::vec3(-1.f, 0.f, 0.f)));
+
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::AMY), glm::vec3(-400.f, 12.f, -20.f), 20.f,
+		glm::vec3(1.f, 0.f, 0.f)));
 }
 
 HerdManager::~HerdManager()
@@ -32,14 +39,13 @@ void HerdManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 void HerdManager::AddHerd(Herd* herd)
 {
 	herds.push_back(herd);
-
 	herdOffset.push_back(totalRenderingAmount);
 	totalRenderingAmount += herd->count;
+	herdCount = static_cast<int>(herds.size());
 }
 
 int& HerdManager::GetHerdCount()
 {
-	herdCount = static_cast<int>(herds.size());
 	return herdCount;
 }
 
@@ -47,7 +53,7 @@ void HerdManager::BindHerdPositions()
 {
 	for(const auto& herd : herds)
 	{
-		herd->BindPosBuffer();
+		herd->posBuffer->BindStorage();
 	}
 }
 
@@ -99,7 +105,7 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 
 	Herd* herd = new Herd();
 
-	herd->SetPosBuffer(posBuffer);
+	herd->posBuffer = posBuffer;
 	herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
 	herd->count = num;
 

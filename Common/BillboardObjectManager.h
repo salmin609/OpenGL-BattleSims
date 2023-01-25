@@ -1,7 +1,7 @@
 #pragma once
-#include <vector>
 #include "glm/mat4x4.hpp"
 
+class BillboardFrameBufferUsageCS;
 class HerdManager;
 class Herd;
 class BufferManager;
@@ -22,21 +22,20 @@ public:
 		Camera* currentCam_);
 	~BillboardObjectManager();
 
-	void Populate();
+	//void Populate();
 	void CheckFrameBufferUsage();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
-	void SetShaderUniforms();
-	void PopulateBuffers();
+	//void SetShaderUniforms();
+	//void PopulateBuffers();
 
-	float zNear = 0.1f;
-	float zFar = 1000.f;
-	void* boFBusageDatas{};
+	//void* boFBusageDatas{};
 
 	HerdManager* herdManager;
 private:
 	Shader* boShader;
 	Shader* boFBusageComputeShader;
 	BillboardManager* boManager;
-	BufferManager* csBuffers;
+	//BufferManager* csBuffers;
 	Camera* currentCam;
+	BillboardFrameBufferUsageCS* boFBusageCS;
 };

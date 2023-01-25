@@ -5,7 +5,7 @@
 
 Herd::Herd()
 {
-
+	posBuffer = nullptr;
 }
 
 Herd::~Herd()
@@ -14,26 +14,6 @@ Herd::~Herd()
 
 	for (const auto& bo : bos)
 		delete bo;
-}
-
-void Herd::SetPosBuffer(Buffer* posBuffer_)
-{
-	posBuffer = posBuffer_;
-}
-
-void Herd::SetBoDirAndOffset(glm::vec4 data_)
-{
-	herdBoDirAndOffset = data_;
-}
-
-glm::vec4& Herd::GetHerdBoDirAndOffset()
-{
-	return herdBoDirAndOffset;
-}
-
-void Herd::BindPosBuffer()
-{
-	posBuffer->BindStorage();
 }
 
 void Herd::Render(const glm::mat4& projMat, const glm::mat4& viewMat)

@@ -120,6 +120,9 @@
     <ClCompile Include="..\Common\HerdManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\Graphic.h">
@@ -252,6 +255,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\HerdManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardFrameBufferUsageCS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

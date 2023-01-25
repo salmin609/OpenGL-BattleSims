@@ -36,10 +36,7 @@ public:
 		glm::mat4* transforms);
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;
-	//std::vector<glm::mat4> Interpolate(float animationTimeTicks) const;
 	glm::mat4* Interpolate(float animationTimeTicks) const;
-	//void PopulateTransforms(std::vector<glm::mat4>& transforms);
-	
 	AnimationModelDatas* datas;
 	std::chrono::system_clock::time_point startTime;
 	glm::mat4x4* boneTransformsData;
