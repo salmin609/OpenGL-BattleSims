@@ -17,7 +17,6 @@
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
 #include "Skybox.h"
-#include "Floor.hpp"
 #include "Line.h"
 #include "ModelKinds.hpp"
 #include "assimp/anim.h"
@@ -32,7 +31,6 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
 
-	floor = new Floor(floorShader);
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
 		50.8f, -14.0999f);
@@ -108,7 +106,6 @@ void Graphic::Draw()
 
 		for (const auto& obj : objs)
 		{
-			//AnimationModel* animationModel = obj->animationModel;
 			const aiAnimation* animation = obj->GetAiAnimation();
 			const long long diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - obj->GetAnimationStartTime()).count();
 			const float animationT = static_cast<float>(diff) / 1000.f;

@@ -58,7 +58,6 @@ public:
 	BillboardManager* boManager;
 	std::vector<std::string> objPaths;
 
-	Floor* floor;
 	glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
 	Camera* currentCam;
 	bool testOneTime = true;

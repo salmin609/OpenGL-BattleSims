@@ -1,5 +1,4 @@
 #include "HerdManager.h"
-
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillBoardObject.h"

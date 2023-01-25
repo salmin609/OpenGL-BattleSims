@@ -268,12 +268,6 @@
     <None Include="..\Shaders\AnimationVertex.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="..\Shaders\floorFragment.glsl">
-      <Filter>Shader</Filter>
-    </None>
-    <None Include="..\Shaders\floorVertex.glsl">
-      <Filter>Shader</Filter>
-    </None>
     <None Include="..\Shaders\SkinningComputeShader.glsl">
       <Filter>Shader</Filter>
     </None>

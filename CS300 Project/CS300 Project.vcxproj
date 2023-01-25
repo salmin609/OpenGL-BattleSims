@@ -269,8 +269,6 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <None Include="..\Shaders\BillboardObjectAngleCompute.glsl" />
     <None Include="..\Shaders\billboardVert.glsl" />
     <None Include="..\Shaders\SkinningComputeShader.glsl" />
-    <None Include="..\Shaders\floorFragment.glsl" />
-    <None Include="..\Shaders\floorVertex.glsl" />
     <None Include="..\Shaders\AnimationFragment.glsl" />
     <None Include="..\Shaders\lineFrag.glsl" />
     <None Include="..\Shaders\lineVert.glsl" />
