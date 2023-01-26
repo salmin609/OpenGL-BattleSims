@@ -26,8 +26,5 @@ void Herd::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 
 	int index = 0;
 	for(const auto& bo : bos)
-	{
-		glm::vec4 ck = positions[index++];
-		bo->Render(projMat, viewMat, ck);
-	}
+		bo->Render(projMat, viewMat, positions[index++]);
 }

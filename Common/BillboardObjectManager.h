@@ -25,7 +25,7 @@ public:
 	~BillboardObjectManager();
 
 	void CheckFrameBufferUsage();
-	void Move();
+	void Move(float dt);
 	void MoveBos();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 

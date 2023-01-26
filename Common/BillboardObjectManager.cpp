@@ -34,9 +34,9 @@ void BillboardObjectManager::CheckFrameBufferUsage()
 	boFBusageCS->CheckFrameBufferUsage();
 }
 
-void BillboardObjectManager::Move()
+void BillboardObjectManager::Move(float dt)
 {
-	boMovingCS->Move();
+	boMovingCS->Move(dt);
 }
 
 void BillboardObjectManager::MoveBos()

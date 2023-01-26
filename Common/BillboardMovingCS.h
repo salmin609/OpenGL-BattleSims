@@ -13,10 +13,10 @@ public:
 	~BillboardMovingCS();
 	void SetUniforms();
 	void SetBuffers();
-	void Move();
+	void Move(float dt);
 private:
-	float tempDt;
 	Shader* boMovingShader;
 	BufferManager* csBuffers;
 	HerdManager* herdManager;
+	int* reached;
 };

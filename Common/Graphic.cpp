@@ -90,6 +90,7 @@ void Graphic::Draw()
 		boObjsManager->zFar);*/
 
 	boObjsManager->CheckFrameBufferUsage();
+	boObjsManager->Move(deltaTime);
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 

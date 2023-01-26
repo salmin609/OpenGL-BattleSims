@@ -5,12 +5,11 @@
 enum class ObjKind
 {
 	SWAT = 0,
-	AMY,
+	KNIGHT,
 
 	END,
 
-
-	KNIGHT,
+	AMY,
 	MICHELLE,
 	ADAM,
 
@@ -18,22 +17,33 @@ enum class ObjKind
 
 enum class AnimationKinds
 {
-	SWAT_RifleAimIdle = 0,
-	SWAT_RifleCrouch,
-	SWAT_RifleIdle,
-	SWAT_RifleWalk,
+	SWAT_RifleIdle = 0,
 	SWAT_Run,
-	SWAT_SteppingBackward,
-	SWAT_Strafing,
-	SWAT_TurnLeft45Degree,
-	SWAT_CrawlBackward,
-	SWAT_Death,
-	SWAT_Reload,
-	SWAT_Reload2,
 	SWAT_Smash,
 
+	KNIGHT_Idle,
+	KNIGHT_Run,
+	KNIGHT_Attack1,
 
-
+	END,
+	//SWAT_RifleAimIdle = 0,
+	//SWAT_RifleCrouch,
+	//SWAT_RifleWalk,
+	//SWAT_SteppingBackward,
+	//SWAT_Strafing,
+	//SWAT_TurnLeft45Degree,
+	//SWAT_CrawlBackward,
+	//SWAT_Death,
+	//SWAT_Reload,
+	//SWAT_Reload2,
+	//KNIGHT_Block,
+	//KNIGHT_BlockIdle,
+	//KNIGHT_CrouchBlockIdle,
+	//KNIGHT_Death,
+	//KNIGHT_Idle2,
+	//KNIGHT_Impact,
+	//KNIGHT_PowerUp,
+	//KNIGHT_Slash,
 	AMY_Excited,
 	AMY_Floating,
 	AMY_HappyIdle,
@@ -43,23 +53,6 @@ enum class AnimationKinds
 	AMY_Surprised,
 	AMY_TalkingOnPhone,
 	AMY_TwistDance,
-
-	END,
-
-
-	KNIGHT_Attack1,
-	KNIGHT_Block,
-	KNIGHT_BlockIdle,
-	KNIGHT_CrouchBlockIdle,
-	KNIGHT_Death,
-	KNIGHT_Idle,
-	KNIGHT_Idle2,
-	KNIGHT_Impact,
-	KNIGHT_PowerUp,
-	KNIGHT_Run,
-	KNIGHT_Slash,
-
-
 
 	MICHELLE_BreakDance,
 	MICHELLE_BreakDanceReady,
@@ -74,8 +67,6 @@ enum class AnimationKinds
 	MICHELLE_Twist,
 	MICHELLE_WaveHipHop,
 
-
-
 	ADAM_ComboPunch,
 	ADAM_ElbowPunch,
 	ADAM_Idle,
@@ -83,8 +74,6 @@ enum class AnimationKinds
 	ADAM_Jab,
 	ADAM_MMAKick,
 	ADAM_Victory,
-
-
 };
 
 inline std::vector<std::string> ObjPaths()
@@ -95,42 +84,42 @@ inline std::vector<std::string> ObjPaths()
 		std::string path = "../Models/";
 		switch (static_cast<AnimationKinds>(i))
 		{
-		case AnimationKinds::SWAT_RifleAimIdle:
-			path += "Swat_RifleAimingIdle";
-			break;
-		case AnimationKinds::SWAT_RifleCrouch:
-			path += "Swat_RifleCrouchWalk";
-			break;
+		//case AnimationKinds::SWAT_RifleAimIdle:
+		//	path += "Swat_RifleAimingIdle";
+		//	break;
+		//case AnimationKinds::SWAT_RifleCrouch:
+		//	path += "Swat_RifleCrouchWalk";
+		//	break;
 		case AnimationKinds::SWAT_RifleIdle:
 			path += "Swat_RifleIdle";
 			break;
-		case AnimationKinds::SWAT_RifleWalk:
+		/*case AnimationKinds::SWAT_RifleWalk:
 			path += "Swat_RifleWalk";
-			break;
+			break;*/
 		case AnimationKinds::SWAT_Run:
 			path += "Swat_Run";
 			break;
-		case AnimationKinds::SWAT_SteppingBackward:
-			path += "Swat_SteppingBackward";
-			break;
-		case AnimationKinds::SWAT_Strafing:
-			path += "Swat_Strafing";
-			break;
-		case AnimationKinds::SWAT_TurnLeft45Degree:
-			path += "Swat_TurnLeft45Degree";
-			break;
-		case AnimationKinds::SWAT_CrawlBackward:
-			path += "Swat_CrawlBackward";
-			break;
-		case AnimationKinds::SWAT_Death:
-			path += "Swat_Death";
-			break;
-		case AnimationKinds::SWAT_Reload:
-			path += "Swat_Reload";
-			break;
-		case AnimationKinds::SWAT_Reload2:
-			path += "Swat_Reload2";
-			break;
+		//case AnimationKinds::SWAT_SteppingBackward:
+		//	path += "Swat_SteppingBackward";
+		//	break;
+		//case AnimationKinds::SWAT_Strafing:
+		//	path += "Swat_Strafing";
+		//	break;
+		//case AnimationKinds::SWAT_TurnLeft45Degree:
+		//	path += "Swat_TurnLeft45Degree";
+		//	break;
+		//case AnimationKinds::SWAT_CrawlBackward:
+		//	path += "Swat_CrawlBackward";
+		//	break;
+		//case AnimationKinds::SWAT_Death:
+		//	path += "Swat_Death";
+		//	break;
+		//case AnimationKinds::SWAT_Reload:
+		//	path += "Swat_Reload";
+		//	break;
+		//case AnimationKinds::SWAT_Reload2:
+		//	path += "Swat_Reload2";
+		//	break;
 		case AnimationKinds::SWAT_Smash:
 			path += "Swat_Smash";
 			break;
@@ -165,36 +154,36 @@ inline std::vector<std::string> ObjPaths()
 		case AnimationKinds::KNIGHT_Attack1:
 			path += "Knight_Attack1";
 			break;
-		case AnimationKinds::KNIGHT_Block:
-			path += "Knight_Block";
-			break;
-		case AnimationKinds::KNIGHT_BlockIdle:
-			path += "Knight_BlockIdle";
-			break;
-		case AnimationKinds::KNIGHT_CrouchBlockIdle:
-			path += "Knight_CrouchBlockIdle";
-			break;
-		case AnimationKinds::KNIGHT_Death:
-			path += "Knight_Death";
-			break;
+		//case AnimationKinds::KNIGHT_Block:
+		//	path += "Knight_Block";
+		//	break;
+		//case AnimationKinds::KNIGHT_BlockIdle:
+		//	path += "Knight_BlockIdle";
+		//	break;
+		//case AnimationKinds::KNIGHT_CrouchBlockIdle:
+		//	path += "Knight_CrouchBlockIdle";
+		//	break;
+		//case AnimationKinds::KNIGHT_Death:
+		//	path += "Knight_Death";
+		//	break;
 		case AnimationKinds::KNIGHT_Idle:
 			path += "Knight_Idle";
 			break;
-		case AnimationKinds::KNIGHT_Idle2:
-			path += "Knight_Idle2";
-			break;
-		case AnimationKinds::KNIGHT_Impact:
-			path += "Knight_Impact";
-			break;
-		case AnimationKinds::KNIGHT_PowerUp:
-			path += "Knight_PowerUp";
-			break;
+		//case AnimationKinds::KNIGHT_Idle2:
+		//	path += "Knight_Idle2";
+		//	break;
+		//case AnimationKinds::KNIGHT_Impact:
+		//	path += "Knight_Impact";
+		//	break;
+		//case AnimationKinds::KNIGHT_PowerUp:
+		//	path += "Knight_PowerUp";
+		//	break;
 		case AnimationKinds::KNIGHT_Run:
 			path += "Knight_Run";
 			break;
-		case AnimationKinds::KNIGHT_Slash:
-			path += "Knight_Slash";
-			break;
+		//case AnimationKinds::KNIGHT_Slash:
+		//	path += "Knight_Slash";
+		//	break;
 
 		case AnimationKinds::MICHELLE_BreakDance:
 			path += "Michelle_BreakDance";

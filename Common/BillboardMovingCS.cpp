@@ -13,9 +13,10 @@ BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdM
 	boMovingShader = boMovingShader_;
 	herdManager = herdManager_;
 	csBuffers = new BufferManager();
-	tempDt = 0.1f;
 	SetBuffers();
 	SetUniforms();
+
+	reached = new int[herdManager->totalRenderingAmount];
 }
 
 BillboardMovingCS::~BillboardMovingCS()
@@ -25,8 +26,6 @@ BillboardMovingCS::~BillboardMovingCS()
 
 void BillboardMovingCS::SetUniforms()
 {
-	boMovingShader->AddUniformValues("dt",ShaderValueType::Float ,&tempDt);
-
 	int& herdCount = herdManager->GetHerdCount();
 
 	for (int i = 0; i < herdCount; ++i)
@@ -46,22 +45,27 @@ void BillboardMovingCS::SetUniforms()
 
 void BillboardMovingCS::SetBuffers()
 {
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, 3));
 }
 
-void BillboardMovingCS::Move()
+void BillboardMovingCS::Move(float dt)
 {
 	boMovingShader->Use();
 	csBuffers->BindBuffers();
 	herdManager->BindHerdPositions();
 	boMovingShader->SendUniformValues();
 
+	boMovingShader->SendUniformFloat("dt", dt);
+
 	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
 
-	std::vector<glm::vec4> check = csBuffers->GetBuffer(3)->GetDataVector<glm::vec4>();
-	int a = 0;
+	csBuffers->GetData(3, reached);
+	assert(reached != nullptr);
+
+	herdManager->SetReachedAnimation(reached);
+
 }

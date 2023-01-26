@@ -22,6 +22,8 @@ public:
 	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection);
 	void SetBosFrameBufferIndex(void* boFBusageDatas);
+	void SetReachedAnimation(int* data);
+	void ChangeToAttackAnimation();
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
