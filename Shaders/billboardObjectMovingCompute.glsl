@@ -22,7 +22,26 @@ uniform vec4 herdBoDirectionAndOffsets[32];
 uniform float dt;
 uniform int herdCount;
 vec3 boDirection;
-float speed = 10.f;
+float speed = 18.f;
+
+#define MAX_COUNT_PER_HERD 1280
+
+
+
+
+//void CopyArrayToOtherPos(inout int destination[MAX_COUNT_PER_HERD], inout int source[MAX_COUNT_PER_HERD])
+//{
+//	for (int i = 0; i < MAX_COUNT_PER_HERD; i++)
+//	{
+//		otherPos[i] = pos[i];
+//	}
+//}
+
+bool CheckReached()
+{
+	return true;
+}
+
 
 void main(void)
 {
@@ -48,8 +67,12 @@ void main(void)
 
 	bool isReached = false;
 
+	vec4 pos;
+
 	if (posBufferIndex == 0)
 	{
+		pos = obj1Pos[index];
+
 		//obj1Pos
 		for (int i = 0; i < 1280; ++i)
 		{
@@ -57,7 +80,7 @@ void main(void)
 
 			float distance = distance(pos, otherHerdPos);
 
-			if (distance < 10.f)
+			if (distance < 20.f)
 			{
 				reached[index] = 1;
 				isReached = true;
@@ -66,7 +89,6 @@ void main(void)
 		}
 		if (isReached == false)
 		{
-			vec4 pos = obj1Pos[index];
 			obj1Pos[index] = pos + vec4(boDirection, 1.f) * dt * speed;
 			obj1Pos[index].w = 1.f;
 		}
@@ -74,13 +96,16 @@ void main(void)
 	}
 	else if (posBufferIndex == 1)
 	{
+		uint newIndex = index - bufferOffset;
+		pos = obj2Pos[newIndex];
+
 		for (int i = 0; i < 1280; ++i)
 		{
 			vec4 otherHerdPos = obj1Pos[i];
 
 			float distance = distance(pos, otherHerdPos);
 
-			if (distance < 10.f)
+			if (distance < 20.f)
 			{
 				reached[index] = 1;
 				isReached = true;
@@ -91,8 +116,7 @@ void main(void)
 		if (isReached == false)
 		{
 			//obj2Pos
-			uint newIndex = index - bufferOffset;
-			vec4 pos = obj2Pos[newIndex];
+
 			obj2Pos[newIndex] = pos + vec4(boDirection, 1.f) * dt * speed;
 			obj2Pos[newIndex].w = 1.f;
 		}
