@@ -18,7 +18,6 @@
 BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
 	const std::vector<FrameBuffer*>& fb_)
 {
-	pos = pos_;
 	shader = shader_;
 	fbs = fb_;
 	glGenVertexArrays(1, &vao);
@@ -31,7 +30,7 @@ BillBoardObject::~BillBoardObject()
 }
 
 
-void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,const glm::vec4& pos)
 {
 	if(usingFrameBuffer != nullptr)
 	{
@@ -40,7 +39,7 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 
 		usingFrameBuffer->texture->Bind(0);
 
-		shader->SendUniformVec3("boPos", &pos);
+		shader->SendUniformVec4("boPos", pos);
 		shader->SendUniformMatGLM("projMat", projMat);
 		shader->SendUniformMatGLM("viewMat", viewMat);
 

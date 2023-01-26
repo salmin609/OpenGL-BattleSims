@@ -27,6 +27,10 @@ public:
 	int GetStorageIndex();
 
 	template <typename T>
+	std::vector<T> GetDataVector();
+
+
+	template <typename T>
 	T* GetData();
 
 	template <typename T>
@@ -38,7 +42,7 @@ private:
 	int baseStorageIndex;
 	int size;
 	int count;
-	
+
 };
 
 
@@ -54,7 +58,7 @@ inline void Buffer::WriteData(void* data)
 	}
 
 	void* writeVal = glMapBufferRange(type, 0, size,
-	GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT); 
+		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 	memcpy(writeVal, data, size);
 
@@ -68,6 +72,29 @@ inline void Buffer::GetData(void* data) const
 	glGetBufferSubData(type, 0, size, data);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, baseStorageIndex, 0);
+}
+
+template <typename T>
+std::vector<T> Buffer::GetDataVector()
+{
+	if (type == GL_SHADER_STORAGE_BUFFER)
+	{
+		BindStorage();
+	}
+
+	T* checkVal = static_cast<T*>(glMapBufferRange(type, 0, size,
+		GL_MAP_READ_BIT));
+	std::vector<T> check;
+	int sizeCheck = size / sizeof(T);
+	check.reserve(size);
+	for (int i = 0; i < sizeCheck; ++i)
+	{
+		check.push_back(checkVal[i]);
+	}
+
+	glUnmapBuffer(type);
+
+	return check;
 }
 
 template <typename T>
@@ -86,7 +113,7 @@ inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, i
 {
 	baseStorageIndex = storageIndex_;
 	size = static_cast<int>(sizeVal);
-	
+
 	glGenBuffers(1, &bufferId);
 	glBindBuffer(type, bufferId);
 	glBufferData(type, size, data, usage);
@@ -97,7 +124,7 @@ inline Buffer::Buffer(GLenum type, unsigned sizeVal, GLenum usage, void* data, i
 
 inline void Buffer::Bind()
 {
-	switch(type)
+	switch (type)
 	{
 	case GL_UNIFORM_BUFFER:
 		//glBindBufferBase(GL_UNIFORM_BUFFER, uniformBufferSlot, bufferId);
@@ -109,7 +136,7 @@ inline void Buffer::Bind()
 	case GL_SHADER_STORAGE_BUFFER:
 		BindStorage();
 		break;
-	default: 
+	default:
 		break;
 	}
 }

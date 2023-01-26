@@ -2,15 +2,7 @@
 
 uniform mat4 projMat;
 uniform mat4 viewMat;
-
-//layout(std430, binding = 0) buffer boPoses
-//{
-//    vec4 boPos[];
-//};
-
-//uniform mat4 modelMat;
-
-uniform vec3 boPos;
+uniform vec4 boPos;
 
 
 mat4 identityMat = mat4(1.0, 0.0, 0.0, 0.0,  // 1. column
@@ -18,7 +10,7 @@ mat4 identityMat = mat4(1.0, 0.0, 0.0, 0.0,  // 1. column
     0.0, 0.0, 1.0, 0.0,  // 3. column
     0.0, 0.0, 0.0, 1.0); // 4. column
 
-mat4 TranslationMatrix(vec3 translationFactor)
+mat4 TranslationMatrix(vec4 translationFactor)
 {
     mat4 result = identityMat;
 

@@ -102,11 +102,10 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 	Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
 	const glm::vec4* posData = posBuffer->GetData<glm::vec4>();
 
-	Herd* herd = new Herd();
+	Herd* herd = new Herd(num);
 
 	herd->posBuffer = posBuffer;
 	herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
-	herd->count = num;
 
 	for (int i = 0; i < num; ++i)
 	{

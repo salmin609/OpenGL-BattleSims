@@ -23,10 +23,12 @@ public:
 	BillBoardObject(Shader* shader_, const glm::vec3& pos_, 
 		const std::vector<FrameBuffer*>& fb_);
 	~BillBoardObject();
-	void Render(const glm::mat4& projMat, const glm::mat4& viewMatWithoutRot);
+	void Render(const glm::mat4& projMat, 
+		const glm::mat4& viewMatWithoutRot, 
+		const glm::vec4& pos);
 	void SetFrameBufferIndex(int index);
 
-	glm::vec3 pos;
+	
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*> fbs;
 private:

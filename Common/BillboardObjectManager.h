@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/mat4x4.hpp"
 
+class BillboardMovingCS;
 class BillboardFrameBufferUsageCS;
 class HerdManager;
 class Herd;
@@ -19,23 +20,21 @@ class BillboardObjectManager
 public:
 	BillboardObjectManager(Shader* boShader_, BillboardManager* boManager_,
 		Shader* boFrameBufferUsageComputeShader,
-		Camera* currentCam_);
+		Camera* currentCam_,
+		Shader* boMovingShader_);
 	~BillboardObjectManager();
 
-	//void Populate();
 	void CheckFrameBufferUsage();
+	void Move();
+	void MoveBos();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
-	//void SetShaderUniforms();
-	//void PopulateBuffers();
-
-	//void* boFBusageDatas{};
 
 	HerdManager* herdManager;
 private:
 	Shader* boShader;
 	Shader* boFBusageComputeShader;
 	BillboardManager* boManager;
-	//BufferManager* csBuffers;
 	Camera* currentCam;
 	BillboardFrameBufferUsageCS* boFBusageCS;
+	BillboardMovingCS* boMovingCS;
 };

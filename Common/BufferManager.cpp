@@ -64,3 +64,15 @@ void BufferManager::WriteData(int bufferIndex, void* dataPtr)
 {
 	buffers[bufferIndex]->WriteData(dataPtr);
 }
+
+Buffer* BufferManager::GetBuffer(int storageIndex)
+{
+	for (const auto& buffer : buffers)
+	{
+		if (buffer->GetStorageIndex() == storageIndex)
+		{
+			return buffer;
+		}
+	}
+	return nullptr;
+}

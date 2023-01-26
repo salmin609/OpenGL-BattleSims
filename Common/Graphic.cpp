@@ -30,6 +30,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	interpolationComputeShader = new Shader("../Shaders/SkinningComputeShader.glsl");
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
+	bbMoving = new Shader("../Shaders/billboardObjectMovingCompute.glsl");
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
@@ -38,7 +39,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 
 	objPaths = ObjPaths();
 	boManager = new BillboardManager(shader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
-	boObjsManager = new BillboardObjectManager(billboardShader, boManager, bbCheckFrameBufferUsage, currentCam);
+	boObjsManager = new BillboardObjectManager(billboardShader, boManager, bbCheckFrameBufferUsage, currentCam, bbMoving);
 	skybox = new SkyBox();
 
 	floorLine = new Line(lineShader);

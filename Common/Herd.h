@@ -9,7 +9,7 @@ class Buffer;
 class Herd
 {
 public:
-	Herd();
+	Herd(int num_);
 	~Herd();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 
@@ -18,6 +18,7 @@ public:
 	glm::vec4 herdBoDirAndOffset{};
 	std::vector<BillBoardObject*> bos;
 	int count;
+	glm::vec4* positions;
 private:
 
 };

@@ -10,7 +10,7 @@
 #include "Shader.h"
 #include <fstream>
 #include <sstream>
-
+#include "glm/vec3.hpp"
 
 
 Shader::Shader(const char* vertexPath, const char* fragPath)
@@ -359,11 +359,23 @@ void Shader::SendUniformVec3(std::string uniformName, void* val) const
 	glUniform3f(loc, valInFloat[0], valInFloat[1], valInFloat[2]);
 }
 
+void Shader::SendUniformVec3(std::string uniformName, glm::vec3 val) const
+{
+	const int loc = glGetUniformLocation(programId, uniformName.c_str());
+	glUniform3f(loc, val.x, val.y, val.z);
+}
+
 void Shader::SendUniformVec4(std::string uniformName, void* val) const
 {
 	const int loc = glGetUniformLocation(programId, uniformName.c_str());
 	float* valInFloat = static_cast<float*>(val);
 	glUniform4f(loc, valInFloat[0], valInFloat[1], valInFloat[2], valInFloat[3]);
+}
+
+void Shader::SendUniformVec4(std::string uniformName, glm::vec4 val) const
+{
+	const int loc = glGetUniformLocation(programId, uniformName.c_str());
+	glUniform4f(loc, val.x, val.y, val.z, val.w);
 }
 
 void Shader::SendUniform3fv(std::string uniformName, void* val, int count) const

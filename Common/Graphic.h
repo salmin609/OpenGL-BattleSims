@@ -58,12 +58,10 @@ public:
 	BillboardManager* boManager;
 	std::vector<std::string> objPaths;
 
-	glm::vec3 populateLastPosition = glm::vec3(0.f, 12.f, -20.f);
 	Camera* currentCam;
 	bool testOneTime = true;
 	SkyBox* skybox;
 	BillboardObjectManager* boObjsManager;
-	//Frustum* frustum;
 private:
 
 	Shader* shader;
@@ -72,6 +70,7 @@ private:
 	Shader* interpolationComputeShader;
 	Shader* lineShader;
 	Shader* bbCheckFrameBufferUsage;
+	Shader* bbMoving;
 	int windowWidth;
 	int windowHeight;
 	Line* floorLine;
