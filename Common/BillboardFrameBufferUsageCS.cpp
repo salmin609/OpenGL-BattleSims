@@ -8,29 +8,26 @@
 #include "Shader.h"
 
 BillboardFrameBufferUsageCS::BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
-	HerdManager* herdManager_)
+	HerdManager* herdManager_): ComputeShaderClass(boFBusageComputeShader_)
 {
-	boFBusageComputeShader = boFBusageComputeShader_;
 	currentCam = currentCam_;
 	herdManager = herdManager_;
 	boFBusageDatas = nullptr;
-	csBuffers = new BufferManager();
-	SetShaderUniforms();
-	PopulateBuffers();
+	BillboardFrameBufferUsageCS::SetShaderUniforms();
+	BillboardFrameBufferUsageCS::PopulateBuffers();
 }
 
 BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 {
-	delete csBuffers;
-	delete[] static_cast<int*>(boFBusageDatas);
+	delete[] boFBusageDatas;
 }
 
-void BillboardFrameBufferUsageCS::CheckFrameBufferUsage()
+void BillboardFrameBufferUsageCS::CheckFrameBufferUsage() const
 {
-	boFBusageComputeShader->Use();
+	shader->Use();
 	csBuffers->BindBuffers();
 	herdManager->BindHerdPositions();
-	boFBusageComputeShader->SendUniformValues();
+	shader->SendUniformValues();
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -53,15 +50,15 @@ void BillboardFrameBufferUsageCS::PopulateBuffers()
 
 void BillboardFrameBufferUsageCS::SetShaderUniforms()
 {
-	boFBusageComputeShader->AddUniformValues("camPos", ShaderValueType::Vec3, &currentCam->Position);
-	boFBusageComputeShader->AddUniformValues("camFront", ShaderValueType::Vec3, &currentCam->Front);
-	boFBusageComputeShader->AddUniformValues("camRight", ShaderValueType::Vec3, &currentCam->Right);
-	boFBusageComputeShader->AddUniformValues("camUp", ShaderValueType::Vec3, &currentCam->Up);
-	boFBusageComputeShader->AddUniformValues("aspect", ShaderValueType::Float, &currentCam->fov);
-	boFBusageComputeShader->AddUniformValues("fovY", ShaderValueType::Float, &currentCam->fovY);
-	boFBusageComputeShader->AddUniformValues("zNear", ShaderValueType::Float, &currentCam->zNear);
-	boFBusageComputeShader->AddUniformValues("zFar", ShaderValueType::Float, &currentCam->zFar);
-	boFBusageComputeShader->AddUniformValues("bufferSize", ShaderValueType::Int, &herdManager->totalRenderingAmount);
+	shader->AddUniformValues("camPos", ShaderValueType::Vec3, &currentCam->Position);
+	shader->AddUniformValues("camFront", ShaderValueType::Vec3, &currentCam->Front);
+	shader->AddUniformValues("camRight", ShaderValueType::Vec3, &currentCam->Right);
+	shader->AddUniformValues("camUp", ShaderValueType::Vec3, &currentCam->Up);
+	shader->AddUniformValues("aspect", ShaderValueType::Float, &currentCam->fov);
+	shader->AddUniformValues("fovY", ShaderValueType::Float, &currentCam->fovY);
+	shader->AddUniformValues("zNear", ShaderValueType::Float, &currentCam->zNear);
+	shader->AddUniformValues("zFar", ShaderValueType::Float, &currentCam->zFar);
+	shader->AddUniformValues("bufferSize", ShaderValueType::Int, &herdManager->totalRenderingAmount);
 
 	int& herdCount = herdManager->GetHerdCount();
 
@@ -72,8 +69,8 @@ void BillboardFrameBufferUsageCS::SetShaderUniforms()
 		herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
 
 		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
-		boFBusageComputeShader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
+		shader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
 	}
 
-	boFBusageComputeShader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
+	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
 }

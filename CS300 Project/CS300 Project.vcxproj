@@ -193,6 +193,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\BillboardObjectManager.cpp" />
     <ClCompile Include="..\Common\BoneStorageManager.cpp" />
     <ClCompile Include="..\Common\BufferManager.cpp" />
+    <ClCompile Include="..\Common\ComputeShaderClass.cpp" />
     <ClCompile Include="..\Common\Floor.cpp" />
     <ClCompile Include="..\Common\FrameBuffer.cpp" />
     <ClCompile Include="..\Common\FrustumCulling.cpp" />
@@ -232,6 +233,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\Buffer.hpp" />
     <ClInclude Include="..\Common\Camera.hpp" />
     <ClInclude Include="..\Common\BufferManager.h" />
+    <ClInclude Include="..\Common\ComputeShaderClass.h" />
     <ClInclude Include="..\Common\DataTypes.h" />
     <ClInclude Include="..\Common\Floor.hpp" />
     <ClInclude Include="..\Common\FrameBuffer.h" />
@@ -251,6 +253,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\SimpleMeshes.h" />
     <ClInclude Include="..\Common\SingleAnimationObject.h" />
     <ClInclude Include="..\Common\Skybox.h" />
+    <ClInclude Include="..\Common\SSBODatas.h" />
     <ClInclude Include="..\Common\StringParser.h" />
     <ClInclude Include="..\Common\Texture.h" />
     <ClInclude Include="..\Common\Timer.hpp" />

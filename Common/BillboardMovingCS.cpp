@@ -1,6 +1,4 @@
 #include "BillboardMovingCS.h"
-
-
 #include "Buffer.hpp"
 #include "BufferManager.h"
 #include "Herd.h"
@@ -8,23 +6,18 @@
 #include "Shader.h"
 #include "glm/vec4.hpp"
 
-BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_)
+BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_): ComputeShaderClass(boMovingShader_)
 {
-	boMovingShader = boMovingShader_;
 	herdManager = herdManager_;
-	csBuffers = new BufferManager();
-	SetBuffers();
-	SetUniforms();
-
+	BillboardMovingCS::PopulateBuffers();
+	BillboardMovingCS::SetShaderUniforms();
 	reached = new int[herdManager->totalRenderingAmount];
 }
 
 BillboardMovingCS::~BillboardMovingCS()
-{
-	delete csBuffers;
-}
+= default;
 
-void BillboardMovingCS::SetUniforms()
+void BillboardMovingCS::SetShaderUniforms()
 {
 	int& herdCount = herdManager->GetHerdCount();
 
@@ -35,28 +28,28 @@ void BillboardMovingCS::SetUniforms()
 		herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
 
 		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
-		boMovingShader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
+		shader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
 	}
 
-	boMovingShader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
+	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
 
 }
 
 
-void BillboardMovingCS::SetBuffers()
+void BillboardMovingCS::PopulateBuffers()
 {
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, 3));
 }
 
-void BillboardMovingCS::Move(float dt)
+void BillboardMovingCS::Move(float dt) const
 {
-	boMovingShader->Use();
+	shader->Use();
 	csBuffers->BindBuffers();
 	herdManager->BindHerdPositions();
-	boMovingShader->SendUniformValues();
+	shader->SendUniformValues();
 
-	boMovingShader->SendUniformFloat("dt", dt);
+	shader->SendUniformFloat("dt", dt);
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -67,5 +60,4 @@ void BillboardMovingCS::Move(float dt)
 	assert(reached != nullptr);
 
 	herdManager->SetReachedAnimation(reached);
-
 }

@@ -14,10 +14,10 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(400.f, 12.f, -20.f), 20.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f,
 		glm::vec3(-1.f, 0.f, 0.f)));
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-400.f, 12.f, -20.f), 20.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f,
 		glm::vec3(1.f, 0.f, 0.f)));
 }
 
@@ -88,7 +88,7 @@ Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
 
 Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection)
 {
-	const BillboardAnimatingDatas* data = boManager->boDatas[obj];
+	BillboardAnimatingDatas* data = boManager->boDatas[obj];
 
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
@@ -110,7 +110,7 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 
 		//Setting different times per animation consumes lots of fps.
 		herd->bos.push_back(new BillBoardObject(boShader,
-			position, data->frameBuffers[0]));
+			position, &data->frameBuffers[0]));
 	}
 
 	delete[] posData;

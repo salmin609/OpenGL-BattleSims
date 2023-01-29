@@ -3,12 +3,12 @@
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
 
-layout(binding = 1) buffer
+layout(std430, binding = 1) buffer
 bufferObjPos1 {
 	vec4 obj1Pos[];
 };
 
-layout(binding = 2) buffer
+layout(std430, binding = 2) buffer
 bufferObjPos2 {
 	vec4 obj2Pos[];
 };
@@ -23,35 +23,46 @@ uniform float dt;
 uniform int herdCount;
 vec3 boDirection;
 float speed = 18.f;
-
+float distanceCheck = 20.f;
 #define MAX_COUNT_PER_HERD 1280
 
 
 
 
-//void CopyArrayToOtherPos(inout int destination[MAX_COUNT_PER_HERD], inout int source[MAX_COUNT_PER_HERD])
-//{
-//	for (int i = 0; i < MAX_COUNT_PER_HERD; i++)
-//	{
-//		otherPos[i] = pos[i];
-//	}
-//}
-
-bool CheckReached()
+void CopyArrayToOtherArray(inout vec4 destination[MAX_COUNT_PER_HERD], inout vec4 source[MAX_COUNT_PER_HERD])
 {
-	return true;
+	for (int i = 0; i < MAX_COUNT_PER_HERD; i++)
+	{
+		destination[i] = source[i];
+	}
+}
+
+void MoveTowardBODirection(inout vec4 pos, vec4 direction, float moveSpeed)
+{
+	pos = pos + direction * dt * moveSpeed;
+	pos.w = 1.f;
+}
+
+bool CheckReached(vec4 pos, vec4 otherPos)
+{
+	float distance = distance(pos, otherPos);
+
+	if (distance < distanceCheck)
+		return true;
+	return false;
 }
 
 
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
+	uint reachedBufferIndex = index;
 
 	vec4 boPosInVec4;
 	reached[index] = 0;
-
+	
 	int posBufferIndex;
-	int bufferOffset;
+	int bufferOffset = 0;
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
 		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
@@ -64,61 +75,42 @@ void main(void)
 			break;
 		}
 	}
+	index -= bufferOffset;
 
-	bool isReached = false;
-
-	vec4 pos;
-
+	vec4 herdPos[MAX_COUNT_PER_HERD];
+	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
+	
 	if (posBufferIndex == 0)
 	{
-		pos = obj1Pos[index];
-
-		//obj1Pos
-		for (int i = 0; i < 1280; ++i)
-		{
-			vec4 otherHerdPos = obj2Pos[i];
-
-			float distance = distance(pos, otherHerdPos);
-
-			if (distance < 20.f)
-			{
-				reached[index] = 1;
-				isReached = true;
-				break;
-			}
-		}
-		if (isReached == false)
-		{
-			obj1Pos[index] = pos + vec4(boDirection, 1.f) * dt * speed;
-			obj1Pos[index].w = 1.f;
-		}
-
+		CopyArrayToOtherArray(herdPos, obj1Pos);
+		CopyArrayToOtherArray(otherHerdPos, obj2Pos);
 	}
-	else if (posBufferIndex == 1)
+	else
 	{
-		uint newIndex = index - bufferOffset;
-		pos = obj2Pos[newIndex];
+		CopyArrayToOtherArray(herdPos, obj2Pos);
+		CopyArrayToOtherArray(otherHerdPos, obj1Pos);
+	}
 
-		for (int i = 0; i < 1280; ++i)
+	vec4 pos = herdPos[index];
+	bool doesReached = false;
+
+	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
+	{
+		vec4 otherPos = otherHerdPos[i];
+
+		if (CheckReached(pos, otherPos))
 		{
-			vec4 otherHerdPos = obj1Pos[i];
-
-			float distance = distance(pos, otherHerdPos);
-
-			if (distance < 20.f)
-			{
-				reached[index] = 1;
-				isReached = true;
-				break;
-			}
+			doesReached = true;
+			reached[reachedBufferIndex] = 1;
+			break;
 		}
+	}
+	if (doesReached == false)
+	{
+		if(posBufferIndex == 0)
+			MoveTowardBODirection(obj1Pos[index], vec4(boDirection, 1.f), speed);
+		else if (posBufferIndex == 1)
+			MoveTowardBODirection(obj2Pos[index], vec4(boDirection, 1.f), speed);
 
-		if (isReached == false)
-		{
-			//obj2Pos
-
-			obj2Pos[newIndex] = pos + vec4(boDirection, 1.f) * dt * speed;
-			obj2Pos[newIndex].w = 1.f;
-		}
 	}
 }

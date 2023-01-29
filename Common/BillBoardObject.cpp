@@ -16,7 +16,7 @@
 #include "Texture.h"
 
 BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
-	const std::vector<std::vector<FrameBuffer*>>& fb_)
+	std::vector<std::vector<FrameBuffer*>>* fb_)
 {
 	shader = shader_;
 	//fbs = fb_;
@@ -56,11 +56,11 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 
 void BillBoardObject::ChangeFrameBufferAngle(int index)
 {
-	usingFrameBuffer = fbs[index];
+	usingFrameBuffer = (*fbs)[index];
 	usingFrameBuffer->isOnUsage = true;
 }
 
 void BillBoardObject::SetAnimation(int index)
 {
-	fbs = animFrames[index];
+	fbs = &(*animFrames)[index];
 }

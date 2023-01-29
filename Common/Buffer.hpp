@@ -25,6 +25,7 @@ public:
 	void UnMap();
 	int GetSize();
 	int GetStorageIndex();
+	void SubData(int offset, int copySize, void* data);
 
 	template <typename T>
 	std::vector<T> GetDataVector();
@@ -68,7 +69,7 @@ inline void Buffer::WriteData(void* data)
 inline void Buffer::GetData(void* data) const
 {
 	BindStorage();
-
+	
 	glGetBufferSubData(type, 0, size, data);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, baseStorageIndex, 0);
@@ -101,7 +102,10 @@ template <typename T>
 T* Buffer::GetData()
 {
 	Bind();
-	const void* dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
+	const void* dataPtr;
+	
+	dataPtr = glMapBufferRange(type, 0, size, GL_MAP_READ_BIT);
+
 	T* checkPtr = new T[size];
 	memcpy(checkPtr, dataPtr, size);
 	glUnmapBuffer(type);
@@ -191,4 +195,10 @@ int Buffer::GetCount()
 inline int Buffer::GetStorageIndex()
 {
 	return baseStorageIndex;
+}
+
+inline void Buffer::SubData(int offset, int copySize, void* data)
+{
+	Bind();
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, copySize, data);
 }

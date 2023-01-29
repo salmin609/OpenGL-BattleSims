@@ -1,25 +1,23 @@
 #pragma once
 
+#include "ComputeShaderClass.h"
+
 class BufferManager;
 class HerdManager;
 class Camera;
 class Shader;
 
-class BillboardFrameBufferUsageCS
+class BillboardFrameBufferUsageCS final : public ComputeShaderClass
 {
 public:
 	BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
 		HerdManager* herdManager_);
-	~BillboardFrameBufferUsageCS();
-	void CheckFrameBufferUsage();
-
+	~BillboardFrameBufferUsageCS() override;
+	void CheckFrameBufferUsage() const;
 private:
-	void SetShaderUniforms();
-	void PopulateBuffers();
-
-	Shader* boFBusageComputeShader;
+	void SetShaderUniforms() override;
+	void PopulateBuffers() override;
 	Camera* currentCam;
 	HerdManager* herdManager;
-	BufferManager* csBuffers;
-	void* boFBusageDatas{};
+	int* boFBusageDatas{};
 };

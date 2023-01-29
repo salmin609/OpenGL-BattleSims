@@ -1,22 +1,21 @@
 #pragma once
 
+#include "ComputeShaderClass.h"
+
 class HerdManager;
 class BufferManager;
 class Shader;
 
-
 //need to change to derived class
-class BillboardMovingCS
+class BillboardMovingCS final : public ComputeShaderClass
 {
 public:
 	BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_);
-	~BillboardMovingCS();
-	void SetUniforms();
-	void SetBuffers();
-	void Move(float dt);
+	~BillboardMovingCS() override;
+	void Move(float dt) const;
 private:
-	Shader* boMovingShader;
-	BufferManager* csBuffers;
+	void SetShaderUniforms() override;
+	void PopulateBuffers() override;
 	HerdManager* herdManager;
 	int* reached;
 };
