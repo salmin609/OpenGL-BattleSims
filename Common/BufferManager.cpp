@@ -81,3 +81,19 @@ Buffer* BufferManager::GetBuffer(int storageIndex)
 	}
 	return nullptr;
 }
+
+template <typename T>
+std::vector<T> BufferManager::GetDataVector(int storageIndex)
+{
+	for (const auto& buffer : buffers)
+	{
+		if (buffer->GetStorageIndex() == storageIndex)
+		{
+			return buffer->GetDataVector<T>();
+		}
+	}
+	
+	assert(0);
+	
+	return std::vector<T>();
+}

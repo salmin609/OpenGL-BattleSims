@@ -42,8 +42,6 @@ private:
 	GLenum type;
 	int baseStorageIndex;
 	int size;
-	int count;
-
 };
 
 

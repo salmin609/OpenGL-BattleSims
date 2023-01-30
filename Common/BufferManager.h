@@ -16,7 +16,11 @@ public:
 	void GetData(int storageIndex, void* dataPtr);
 	void WriteData(int bufferIndex, void* dataPtr);
 	Buffer* GetBuffer(int storageIndex);
+
+	template <typename T>
+	std::vector<T> GetDataVector(int storageIndex);
 private:
 	std::vector<Buffer*> buffers;
 };
+
 

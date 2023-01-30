@@ -42,11 +42,11 @@ void BillboardMovingCS::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, 0));
 
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(0)->count,
-		GL_DYNAMIC_DRAW, nullptr, 3));
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(0)->count,
+	//	GL_DYNAMIC_DRAW, nullptr, 3));
 
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
-		GL_DYNAMIC_DRAW, nullptr, 4));
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
+	//	GL_DYNAMIC_DRAW, nullptr, 4));
 }
 
 void BillboardMovingCS::Move(float dt) const

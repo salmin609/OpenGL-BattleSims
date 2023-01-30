@@ -18,15 +18,15 @@ bufferObjPos2 {
 	vec4 obj2Pos[];
 };
 
-layout(std430, binding = 3) buffer
-herdPosBuffer {
-	vec4 herdPos[];
-};
-
-layout(std430, binding = 4) buffer
-otherHerdPosBuffer {
-	vec4 otherHerdPos[];
-};
+//layout(std430, binding = 3) buffer
+//herdPosBuffer {
+//	vec4 herdPos[];
+//};
+//
+//layout(std430, binding = 4) buffer
+//otherHerdPosBuffer {
+//	vec4 otherHerdPos[];
+//};
 
 
 
@@ -38,7 +38,7 @@ float speed = 18.f;
 float distanceCheck = 20.f;
 #define MAX_COUNT_PER_HERD 1280
 
-void CopyToHerdPosArray(int posBufferIndex)
+void CopyToHerdPosArray(int posBufferIndex, inout vec4 herdPos[MAX_COUNT_PER_HERD], inout vec4 otherHerdPos[MAX_COUNT_PER_HERD])
 {
 	if (posBufferIndex == 0)
 	{
@@ -48,7 +48,7 @@ void CopyToHerdPosArray(int posBufferIndex)
 			otherHerdPos[i] = obj2Pos[i];
 		}
 	}
-	else
+	else if(posBufferIndex == 1)
 	{
 		for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 		{
@@ -91,7 +91,7 @@ void GetBufferOffset(inout int posBufferIndex, inout int bufferOffset, inout uin
 	index -= bufferOffset;
 }
 
-bool CheckCollision(vec4 pos)
+bool CheckCollision(vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
 {
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
@@ -110,15 +110,18 @@ void main(void)
 
 	reached[reachedBufferIndex] = 0;
 	
-	int posBufferIndex;
+	int posBufferIndex = 0;
 	int bufferOffset = 0;
 
-	GetBufferOffset(posBufferIndex, bufferOffset, index);
+	vec4 herdPos[MAX_COUNT_PER_HERD];
+	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
 
-	CopyToHerdPosArray(posBufferIndex);	
+	GetBufferOffset(posBufferIndex, bufferOffset, index);
+	CopyToHerdPosArray(posBufferIndex, herdPos, otherHerdPos);	
 
 	vec4 pos = herdPos[index];
-	bool doesReached = CheckCollision(pos);
+
+	bool doesReached = CheckCollision(pos, otherHerdPos);
 
 	//Need to move toward facing direction.
 	if (doesReached == false)
