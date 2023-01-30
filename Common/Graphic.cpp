@@ -80,7 +80,7 @@ void Graphic::Draw()
 
 	const glm::mat4 projMat = glm::perspective(glm::radians(currentCam->Zoom), 
 		static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
-		0.1f, 10000.f);
+		currentCam->zNear, currentCam->zFar);
 
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;

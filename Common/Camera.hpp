@@ -61,7 +61,7 @@ public:
         Yaw = yaw;
         Pitch = pitch;
         zNear = 0.1f;
-        zFar = 1000.f;
+        zFar = 10000.f;
         updateCameraVectors();
         
     }

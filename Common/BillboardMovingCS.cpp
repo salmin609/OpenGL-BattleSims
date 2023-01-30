@@ -15,7 +15,9 @@ BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdM
 }
 
 BillboardMovingCS::~BillboardMovingCS()
-= default;
+{
+	delete[] reached;
+}
 
 void BillboardMovingCS::SetShaderUniforms()
 {
@@ -32,14 +34,19 @@ void BillboardMovingCS::SetShaderUniforms()
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
-
 }
 
 
 void BillboardMovingCS::PopulateBuffers()
 {
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, nullptr, 0));
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(0)->count,
 		GL_DYNAMIC_DRAW, nullptr, 3));
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
+		GL_DYNAMIC_DRAW, nullptr, 4));
 }
 
 void BillboardMovingCS::Move(float dt) const
@@ -51,12 +58,12 @@ void BillboardMovingCS::Move(float dt) const
 
 	shader->SendUniformFloat("dt", dt);
 
-	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
+	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
 
-	csBuffers->GetData(3, reached);
+	csBuffers->GetData(0, reached);
 	assert(reached != nullptr);
 
 	herdManager->SetReachedAnimation(reached);

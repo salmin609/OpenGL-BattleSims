@@ -1,5 +1,7 @@
 #include "BufferManager.h"
 
+#include <cassert>
+
 #include "Buffer.hpp"
 
 BufferManager::BufferManager()
@@ -42,6 +44,7 @@ int BufferManager::GetBufferSize(int storageIndex)
 			return buffer->GetSize();
 	}
 	//StorageIndex does not exist.
+	assert(0);
 	return -1;
 }
 
@@ -56,6 +59,8 @@ void BufferManager::GetData(int storageIndex, void* dataPtr)
 		}
 	}
 
+	//Storage Index does not exist, somethings wrong.
+	assert(0);
 	dataPtr = nullptr;
 }
 

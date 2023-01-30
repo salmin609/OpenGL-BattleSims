@@ -2,7 +2,7 @@
 
 #include "BufferManager.h"
 
-ComputeShaderClass::ComputeShaderClass(Shader* shader_) : shader(shader_), csBuffers(nullptr)
+ComputeShaderClass::ComputeShaderClass(Shader* shader_) : shader(shader_)
 {
 	csBuffers = new BufferManager();
 }
