@@ -2,82 +2,82 @@
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
-layout(binding = 0) buffer
+layout(binding = 0) readonly buffer
 bufferInNodeTransforms {
 	mat4 inNodeTransforms[];
 };
 
-layout(binding = 1) buffer
+layout(binding = 1) readonly buffer
 bufferOutNodeTransforms {
 	mat4 outNodeTransforms[];
 };
 
-layout(binding = 2) buffer
+layout(binding = 2) readonly buffer
 bufferInTotalOrder {
 	int orders[];
 };
 
-layout(binding = 3) buffer
+layout(binding = 3) readonly buffer
 bufferInOrderStartIndex {
 	int startIndexes[];
 };
 
-layout(binding = 4) buffer
+layout(binding = 4) readonly buffer
 bufferInOrderEndIndex {
 	int endIndexes[];
 };
 
-layout(binding = 5) buffer
+layout(binding = 5) readonly buffer
 bufferInContainAnimation {
 	int containAnimations[];
 };
 
-layout(binding = 6) buffer
+layout(binding = 6) readonly buffer
 bufferInTotalScalingFactors {
 	vec4 scalingKeys[];
 };
 
-layout(binding = 7) buffer
+layout(binding = 7) readonly buffer
 bufferInTotalTranslationFactors {
 	vec4 translationKeys[];
 };
 
-layout(binding = 8) buffer
+layout(binding = 8) readonly buffer
 bufferInTotalRotationFactors {
 	vec4 rotationKeys[];
 };
 
-layout(binding = 9) buffer
+layout(binding = 9) readonly buffer
 bufferInKeyFactorsStartIndex {
 	int factorStartIndexes[];
 };
 
-layout(binding = 10) buffer
+layout(binding = 10) readonly buffer
 bufferInKeyFactorsEndIndex {
 	int factorEndIndexes[];
 };
 
-layout(binding = 11) buffer
+layout(binding = 11) readonly buffer
 bufferInKeyFactorsTimeStamps {
 	float factorTimeStamps[];
 };
 
-layout(binding = 12) buffer
+layout(binding = 12) readonly buffer
 bufferInOffsetMatrix {
 	mat4 offsetMatrixes[];
 };
 
-layout(binding = 13) buffer
+layout(binding = 13) readonly buffer
 bufferInNodeContainOffsetMatrix {
 	int containOffsetMatrixes[];
 };
 
-layout(binding = 14) buffer
+layout(binding = 14) readonly buffer
 bufferInBoneIndex {
 	int boneIndexes[];
 };
 
-layout(binding = 15) buffer
+layout(binding = 15) writeonly buffer
 bufferOutFinalTransform {
 	mat4 finalTransforms[];
 };

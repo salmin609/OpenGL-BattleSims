@@ -91,7 +91,7 @@ void GetBufferOffset(inout int posBufferIndex, inout int bufferOffset, inout uin
 	index -= bufferOffset;
 }
 
-bool CheckCollision(vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
+bool CheckCollisionWithEnemy(vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
 {
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
@@ -101,6 +101,13 @@ bool CheckCollision(vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
 			return true;
 	}
 	return false;
+}
+
+bool CheckCollisionWithAllie(uint index, vec4 herdPos[MAX_COUNT_PER_HERD])
+{
+
+
+
 }
 
 void main(void)
@@ -121,7 +128,7 @@ void main(void)
 
 	vec4 pos = herdPos[index];
 
-	bool doesReached = CheckCollision(pos, otherHerdPos);
+	bool doesReached = CheckCollisionWithEnemy(index, otherHerdPos, herdPos);
 
 	//Need to move toward facing direction.
 	if (doesReached == false)

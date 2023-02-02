@@ -417,11 +417,6 @@ namespace AnimatingFunctions
 				translationM = glm::translate(translationM, glm::vec3(translation.x, translation.y, translation.z));
 
 				nodeTransform = translationM * rotationM * scalingM;
-
-				if (nodeIndex == 3)
-				{
-					PrintMatrix(nodeTransform, "3NodeTransform");
-				}
 			}
 
 			const glm::mat4 globalTransform = parentTransform * nodeTransform;

@@ -14,10 +14,10 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 30.f,
 		glm::vec3(-1.f, 0.f, 0.f)));
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 30.f,
 		glm::vec3(1.f, 0.f, 0.f)));
 }
 

@@ -4,7 +4,6 @@ in vec2 ex_TexCoor;
 
 out vec4 FragColor;
 uniform sampler2D gSampler;
-//uniform sampler2D 
 
 void main()
 {

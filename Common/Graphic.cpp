@@ -14,6 +14,8 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
+
+#include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
 #include "Skybox.h"
@@ -46,7 +48,10 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
 
-	
+	//BillboardAnimatingDatas* data = boManager->boDatas[0];
+
+	//objs.push_back(reinterpret_cast<Object*>(data->obj));
+	//currentCam = boManager->GetBoObjCamera(0);
 
 
 	//frustum = new Frustum();

@@ -76,7 +76,7 @@ private:
 	Shader* boComputeShader;
 	int windowW, windowH;
 
-	FrameBuffer* check;
+	FrameBuffer* check{};
 	bool once = true;
 
 };

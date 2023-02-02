@@ -21,6 +21,7 @@ enum class AnimationKinds
 	SWAT_Run,
 	SWAT_Smash,
 
+
 	KNIGHT_Idle,
 	KNIGHT_Run,
 	KNIGHT_Attack1,
