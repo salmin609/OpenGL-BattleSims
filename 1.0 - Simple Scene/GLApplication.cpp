@@ -74,6 +74,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 ///////////////////////////////////////////////////////////////////////////////////
 int main()
 {
+    bool oneTime = true;
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -215,6 +216,12 @@ int main()
         
         ImGui::End();
 //#endif
+
+        if(oneTime == true)
+        {
+            graphic->lastFrame = static_cast<float>(glfwGetTime());
+            oneTime = false;
+        }
 
         float currentFrame = static_cast<float>(glfwGetTime());
         graphic->deltaTime = currentFrame - graphic->lastFrame;

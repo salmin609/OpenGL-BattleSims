@@ -20,11 +20,13 @@ enum class AnimationKinds
 	SWAT_RifleIdle = 0,
 	SWAT_Run,
 	SWAT_Smash,
+	SWAT_Death,
 
 
 	KNIGHT_Idle,
 	KNIGHT_Run,
 	KNIGHT_Attack1,
+	KNIGHT_Death,
 
 	END,
 	//SWAT_RifleAimIdle = 0,
@@ -112,9 +114,9 @@ inline std::vector<std::string> ObjPaths()
 		//case AnimationKinds::SWAT_CrawlBackward:
 		//	path += "Swat_CrawlBackward";
 		//	break;
-		//case AnimationKinds::SWAT_Death:
-		//	path += "Swat_Death";
-		//	break;
+		case AnimationKinds::SWAT_Death:
+			path += "Swat_Death";
+			break;
 		//case AnimationKinds::SWAT_Reload:
 		//	path += "Swat_Reload";
 		//	break;
@@ -164,9 +166,9 @@ inline std::vector<std::string> ObjPaths()
 		//case AnimationKinds::KNIGHT_CrouchBlockIdle:
 		//	path += "Knight_CrouchBlockIdle";
 		//	break;
-		//case AnimationKinds::KNIGHT_Death:
-		//	path += "Knight_Death";
-		//	break;
+		case AnimationKinds::KNIGHT_Death:
+			path += "Knight_Death";
+			break;
 		case AnimationKinds::KNIGHT_Idle:
 			path += "Knight_Idle";
 			break;

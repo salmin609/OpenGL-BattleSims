@@ -20,7 +20,7 @@ class Shader;
 class BillBoardObject
 {
 public:
-	BillBoardObject(Shader* shader_, const glm::vec3& pos_, 
+	BillBoardObject(Shader* shader_, 
 		std::vector<std::vector<FrameBuffer*>>* fb_);
 	~BillBoardObject();
 	void Render(const glm::mat4& projMat, 

@@ -1,5 +1,7 @@
 #include "BillboardObjectManager.h"
 #include <iostream>
+
+#include "BillboardAttackCS.h"
 #include "BillboardFrameBufferUsageCS.h"
 #include "BillboardManager.h"
 #include "BillboardMovingCS.h"
@@ -11,7 +13,8 @@
 BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManager* boManager_,
 												Shader* boFrameBufferUsageComputeShader,
                                                Camera* currentCam_,
-												Shader* boMovingShader_)
+												Shader* boMovingShader_,
+												Shader* boAttackShader_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
@@ -19,7 +22,8 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boFBusageComputeShader = boFrameBufferUsageComputeShader;
 	herdManager = new HerdManager(boManager, boShader);
 	boFBusageCS = new BillboardFrameBufferUsageCS(boFBusageComputeShader, currentCam, herdManager);
-	boMovingCS = new BillboardMovingCS(boMovingShader_, herdManager);
+	boMovingCS = new BillboardMovingCS(boMovingShader_, herdManager, this);
+	boAttackCS = new BillboardAttackCS(boAttackShader_, herdManager, this);
 }
 
 BillboardObjectManager::~BillboardObjectManager()
@@ -27,6 +31,7 @@ BillboardObjectManager::~BillboardObjectManager()
 	delete herdManager;
 	delete boFBusageCS;
 	delete boMovingCS;
+	delete boAttackCS;
 }
 
 void BillboardObjectManager::CheckFrameBufferUsage()
@@ -39,8 +44,9 @@ void BillboardObjectManager::Move(float dt)
 	boMovingCS->Move(dt);
 }
 
-void BillboardObjectManager::MoveBos()
+void BillboardObjectManager::Attack(float dt)
 {
+	boAttackCS->AttackComputation(dt);
 }
 
 void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)

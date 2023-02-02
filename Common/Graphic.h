@@ -64,13 +64,14 @@ public:
 	BillboardObjectManager* boObjsManager;
 private:
 
-	Shader* shader;
+	Shader* animShader;
 	Shader* billboardShader;
 	Shader* floorShader;
 	Shader* interpolationComputeShader;
 	Shader* lineShader;
 	Shader* bbCheckFrameBufferUsage;
 	Shader* bbMoving;
+	Shader* bbAttack;
 	int windowWidth;
 	int windowHeight;
 	Line* floorLine;

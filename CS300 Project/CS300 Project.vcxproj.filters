@@ -129,6 +129,9 @@
     <ClCompile Include="..\Common\ComputeShaderClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\BillboardAttackCS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\Graphic.h">
@@ -275,6 +278,9 @@
     <ClInclude Include="..\Common\ComputeShaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\BillboardAttackCS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\AnimationFragment.glsl">
@@ -311,6 +317,9 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="..\Shaders\billboardObjectMovingCompute.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\Shaders\BillboardAttackCompute.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

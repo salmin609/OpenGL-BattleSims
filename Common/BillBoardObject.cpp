@@ -15,11 +15,10 @@
 #include "Shader.h"
 #include "Texture.h"
 
-BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
+BillBoardObject::BillBoardObject(Shader* shader_,
 	std::vector<std::vector<FrameBuffer*>>* fb_)
 {
 	shader = shader_;
-	//fbs = fb_;
 	animFrames = fb_;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);

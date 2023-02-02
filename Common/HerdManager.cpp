@@ -14,10 +14,10 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 30.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f,
 		glm::vec3(-1.f, 0.f, 0.f)));
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 30.f,
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f,
 		glm::vec3(1.f, 0.f, 0.f)));
 }
 
@@ -93,7 +93,6 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 	const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
 	Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
-	const glm::vec4* posData = posBuffer->GetData<glm::vec4>();
 
 	Herd* herd = new Herd(num);
 
@@ -105,15 +104,12 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 		//const int animationIndex = rand() % animationCount;
 		//const int animationIndex = 0;
 		//const int timeDiffSlot = rand() % data->diffTimeAnimCount;
-
-		const glm::vec3& position = glm::vec3(posData[i]);
-
 		//Setting different times per animation consumes lots of fps.
+
 		herd->bos.push_back(new BillBoardObject(boShader,
-			position, &data->frameBuffers[0]));
+			&data->frameBuffers[0]));
 	}
 
-	delete[] posData;
 	return herd;
 }
 
@@ -153,8 +149,8 @@ void HerdManager::SetReachedAnimation(int* data)
 			BillBoardObject* bo = herd->bos[j];
 			const int isReached = data[bufIndex];
 
-			if (isReached > 0)
-				bo->SetAnimation(2);
+			//if (isReached > 0)
+			bo->SetAnimation(isReached);
 
 			bufIndex++;
 		}
