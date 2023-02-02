@@ -75,6 +75,19 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
 		GL_DYNAMIC_DRAW, directions.data(), 4));
+
+	float LO = 12.f;
+	float HI = 25.f;
+
+	std::vector<float> randSpeed;
+	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
+	{
+		float r3 = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+		randSpeed.push_back(r3);
+	}
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, randSpeed.data(), 6));
+
 }
 
 void BillboardMovingCS::Move(float dt) const

@@ -67,11 +67,16 @@ Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
 
 	glm::vec4 startPos = glm::vec4(pos, 1.f);
 	const glm::vec4 ogStartPos = startPos;
+	//float LO = -2.f;
+	//float HI = 2.f;
 	for (int i = 0; i < num; ++i)
 	{
+		//float r3 = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+
 		glm::vec4 newPos = startPos;
 
 		startPos.x += offset;
+		//startPos.z += r3;
 		if (i % 16 == 0 && i != 0)
 		{
 			startPos.x = ogStartPos.x;

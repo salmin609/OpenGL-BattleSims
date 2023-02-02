@@ -4,6 +4,7 @@
 #include "BillboardObjectManager.h"
 #include "Buffer.hpp"
 #include "BufferManager.h"
+#include "Herd.h"
 #include "HerdManager.h"
 #include "Shader.h"
 
@@ -28,6 +29,8 @@ void BillboardAttackCS::AttackComputation(float dt)
 	csBuffers->BindBuffers();
 	shader->SendUniformFloat("dt", dt);
 	boObjManager->boMovingCS->csBuffers->GetBuffer(0)->BindStorage(1);
+	herdManager->GetHerd(0)->posBuffer->BindStorage(2);
+	herdManager->GetHerd(1)->posBuffer->BindStorage(3);
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);

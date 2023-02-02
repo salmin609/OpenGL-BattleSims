@@ -13,6 +13,16 @@ bufferAnimationIndex {
 	int animationIndex[];
 };
 
+layout(std430, binding = 2) buffer
+bufferObjPos1 {
+	vec4 obj1Pos[];
+};
+
+layout(std430, binding = 3) buffer
+bufferObjPos2 {
+	vec4 obj2Pos[];
+};
+
 uniform float dt;
 
 void main(void)
@@ -21,9 +31,22 @@ void main(void)
 
 	int animIndex = animationIndex[index];
 
-	if(animIndex == 2)
+	if(animIndex == 2 || animIndex == 3)
 		time[index] += dt;
 
-	if (time[index] > 5.f)
+	if (time[index] > 5.f && time[index] < 6.5f)
+	{
 		animationIndex[index] = 3;
+	}
+	else if (time[index] > 6.5f)
+	{
+		if (index > 1280)
+		{
+			obj2Pos[index - 1280].y = -10000.f;
+		}
+		else
+		{
+			obj1Pos[index].y = -10000.f;
+		}
+	}
 }

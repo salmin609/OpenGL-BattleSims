@@ -33,11 +33,16 @@ bufferTimeCheck {
 	float time[];
 };
 
+layout(binding = 6) buffer
+bufferRandSpeed {
+	float randSpeed[];
+};
+
 uniform vec4 herdBoDirectionAndOffsets[32];
 uniform float dt;
 uniform int herdCount;
 vec3 boDirection;
-float speed = 18.f;
+//float speed = 25.f;
 float attackRange = 20.f;
 float radius = 10.f;
 
@@ -108,10 +113,11 @@ bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HER
 	return false;
 }
 
-bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout vec4 herdPos[MAX_COUNT_PER_HERD])
+bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout vec4 herdPos[MAX_COUNT_PER_HERD], float speed, inout int collisionIndex)
 {
 	vec4 nextPos = herdPos[index];
 	MoveToward(nextPos, direction, speed);
+	
 	
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
@@ -119,8 +125,12 @@ bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout ve
 		{
 			vec4 otherPos = herdPos[i];
 
-			if (CheckCollision(nextPos, otherPos, radius))
-				return true;
+			if(otherPos.y > 0.f)
+				if (CheckCollision(nextPos, otherPos, radius))
+				{
+					collisionIndex = i;
+					return true;
+				}
 		}
 	}
 	return false;
@@ -157,11 +167,11 @@ void main(void)
 
 	//animationIndex[animationBufferIndex] = 1;
 	int posBufferIndex = 0;
-	int bufferOffset = 0;
 	
 
 	vec4 herdPos[MAX_COUNT_PER_HERD];
 	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
+	float speed = randSpeed[index];
 
 	GetBufferOffset(posBufferIndex, index);
 	CopyToHerdPosArray(posBufferIndex, herdPos, otherHerdPos);	
@@ -173,14 +183,19 @@ void main(void)
 	else
 		direction = herdDirection2[index];
 
+
 	vec4 pos = herdPos[index];
+
 
 	//Need to move toward facing direction.
 	bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos);
-	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos);
+
+	int allyCollisionIndex = 0;
+	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);
 
 	if (collisionWithEnemy == false && collisionWithAlly == false)
 	{
+		animationIndex[animationBufferIndex] = 1;
 		if (posBufferIndex == 0)
 			MoveToward(obj1Pos[index], direction, speed);
 		else if (posBufferIndex == 1)
@@ -195,7 +210,13 @@ void main(void)
 			if (collisionWithEnemy)
 				animationIndex[animationBufferIndex] = 2;
 			else if (collisionWithAlly)
-				animationIndex[animationBufferIndex] = 0;
+			{
+				if (posBufferIndex == 1)
+					allyCollisionIndex += 1280;
+
+				if(animationIndex[allyCollisionIndex] != 1)
+					animationIndex[animationBufferIndex] = 0;
+			}
 		}
 	}
 }
