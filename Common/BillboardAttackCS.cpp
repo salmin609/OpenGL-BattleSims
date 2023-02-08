@@ -7,6 +7,7 @@
 #include "Herd.h"
 #include "HerdManager.h"
 #include "Shader.h"
+#include "CSBufferNames.h"
 
 BillboardAttackCS::BillboardAttackCS(Shader* shader_, HerdManager* herdManager_,
 	BillboardObjectManager* boObjManager_):
@@ -23,14 +24,15 @@ BillboardAttackCS::~BillboardAttackCS()
 	delete[] timers;
 }
 
-void BillboardAttackCS::AttackComputation(float dt)
+void BillboardAttackCS::AttackComputation(float dt) const
 {
 	shader->Use();
 	csBuffers->BindBuffers();
 	shader->SendUniformFloat("dt", dt);
-	boObjManager->boMovingCS->csBuffers->GetBuffer(0)->BindStorage(1);
-	herdManager->GetHerd(0)->posBuffer->BindStorage(2);
-	herdManager->GetHerd(1)->posBuffer->BindStorage(3);
+	boObjManager->boMovingCS->csBuffers->
+	GetBuffer(ToInt(MoveCS::AnimationIndex))->BindStorage(ToInt(AttackCS::AnimationIndex));
+	herdManager->GetHerd(0)->posBuffer->BindStorage(ToInt(AttackCS::obj1Pos));
+	herdManager->GetHerd(1)->posBuffer->BindStorage(ToInt(AttackCS::obj2Pos));
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -52,5 +54,5 @@ void BillboardAttackCS::PopulateBuffers()
 		timers[i] = 0.f;
 	}
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, timers, 0));
+		GL_DYNAMIC_DRAW, timers, ToInt(AttackCS::time)));
 }

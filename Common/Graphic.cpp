@@ -144,8 +144,6 @@ void Graphic::ProcessInput()
 		camLock = !camLock;
 }
 
-
-
 void Graphic::PrintCameraStatement(Camera* cam_)
 {
 	const glm::vec3 camPos = cam_->Position;
@@ -163,8 +161,6 @@ void Graphic::SetWindowWidthHeight(int w, int h)
 	windowWidth = w;
 	windowHeight = h;
 }
-
-
 
 void Graphic::ResetCamAngle()
 {

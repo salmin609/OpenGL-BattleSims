@@ -8,6 +8,7 @@
 #include "HerdManager.h"
 #include "Shader.h"
 #include "glm/vec4.hpp"
+#include "CSBufferNames.h"
 
 BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_,
 	BillboardObjectManager* boObjManager_): ComputeShaderClass(boMovingShader_), boObjManager(boObjManager_)
@@ -50,7 +51,7 @@ void BillboardMovingCS::PopulateBuffers()
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, ck.data(), 0));
+		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::AnimationIndex)));
 
 	std::vector<glm::vec4> directions;
 	const int firstHerdCount = herdManager->GetHerd(0)->count;
@@ -62,7 +63,7 @@ void BillboardMovingCS::PopulateBuffers()
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(0)->count,
-		GL_DYNAMIC_DRAW, directions.data(), 3));
+		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::herdDirection1)));
 
 	directions.clear();
 	const int secondHerdCount = herdManager->GetHerd(1)->count;
@@ -74,38 +75,43 @@ void BillboardMovingCS::PopulateBuffers()
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
-		GL_DYNAMIC_DRAW, directions.data(), 4));
+		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::herdDirection2)));
 
-	float LO = 12.f;
-	float HI = 25.f;
+	const float LO = 12.f;
+	const float HI = 25.f;
 
 	std::vector<float> randSpeed;
 	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
 	{
-		float r3 = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+		float r3 = LO + static_cast <float> (rand()) / (RAND_MAX / (HI - LO));
 		randSpeed.push_back(r3);
 	}
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, randSpeed.data(), 6));
+		GL_DYNAMIC_DRAW, randSpeed.data(), ToInt(MoveCS::randSpeed)));
 
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, nullptr, ToInt(MoveCS::targetEnemyPos)));
 }
 
 void BillboardMovingCS::Move(float dt) const
 {
 	shader->Use();
 	csBuffers->BindBuffers();
-	boObjManager->boAttackCS->csBuffers->GetBuffer(0)->BindStorage(5);
+	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::time))->
+		BindStorage(ToInt(MoveCS::time));
 	herdManager->BindHerdPositions();
 	shader->SendUniformValues();
 	shader->SendUniformFloat("dt", dt);
-
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
 
-	csBuffers->GetData(0, reached);
+	//glm::vec4* ck = new glm::vec4[herdManager->totalRenderingAmount];
+	//csBuffers->GetData(7, ck);
+
+	csBuffers->GetData(ToInt(MoveCS::AnimationIndex), reached);
 	assert(reached != nullptr);
 
 	herdManager->SetReachedAnimation(reached);

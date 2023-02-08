@@ -38,12 +38,16 @@ bufferRandSpeed {
 	float randSpeed[];
 };
 
+layout(binding = 7) buffer
+bufferTargetEnemyPosition {
+	vec4 targetEnemyPos[];
+};
+
 uniform vec4 herdBoDirectionAndOffsets[32];
 uniform float dt;
 uniform int herdCount;
 vec3 boDirection;
-//float speed = 25.f;
-float attackRange = 20.f;
+float attackRange = 25.f;
 float radius = 10.f;
 
 
@@ -101,14 +105,19 @@ void GetBufferOffset(inout int posBufferIndex, inout uint index)
 	}
 }
 
-bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HERD])
+
+
+bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HERD], uint wholeBufferIndex)
 {
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
 		vec4 otherPos = otherHerdPos[i];
 
 		if (CheckCollision(pos, otherPos, attackRange))
+		{
+			targetEnemyPos[wholeBufferIndex] = otherPos;
 			return true;
+		}
 	}
 	return false;
 }
@@ -163,7 +172,7 @@ void FindNearEnemy(inout vec4 direction, vec4 pos, vec4 otherHerdPos[MAX_COUNT_P
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	uint animationBufferIndex = index;
+	uint wholeBufferIndex = index;
 
 	//animationIndex[animationBufferIndex] = 1;
 	int posBufferIndex = 0;
@@ -188,14 +197,14 @@ void main(void)
 
 
 	//Need to move toward facing direction.
-	bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos);
+	bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, wholeBufferIndex);
 
 	int allyCollisionIndex = 0;
 	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);
 
 	if (collisionWithEnemy == false && collisionWithAlly == false)
 	{
-		animationIndex[animationBufferIndex] = 1;
+		animationIndex[wholeBufferIndex] = 1;
 		if (posBufferIndex == 0)
 			MoveToward(obj1Pos[index], direction, speed);
 		else if (posBufferIndex == 1)
@@ -204,18 +213,18 @@ void main(void)
 	else
 	{
 		//reached[reachedBufferIndex] = 1;
-		int animIndex = animationIndex[animationBufferIndex];
+		int animIndex = animationIndex[wholeBufferIndex];
 		if (animIndex != 3)
 		{
 			if (collisionWithEnemy)
-				animationIndex[animationBufferIndex] = 2;
+				animationIndex[wholeBufferIndex] = 2;
 			else if (collisionWithAlly)
 			{
 				if (posBufferIndex == 1)
 					allyCollisionIndex += 1280;
 
 				if(animationIndex[allyCollisionIndex] != 1)
-					animationIndex[animationBufferIndex] = 0;
+					animationIndex[wholeBufferIndex] = 0;
 			}
 		}
 	}

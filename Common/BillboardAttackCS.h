@@ -11,7 +11,7 @@ public:
 	BillboardAttackCS(Shader* shader_, HerdManager* herdManager_,
 		BillboardObjectManager* boObjManager_);
 	~BillboardAttackCS() override;
-	void AttackComputation(float dt);
+	void AttackComputation(float dt) const;
 	float* timers;
 private:
 	HerdManager* herdManager;

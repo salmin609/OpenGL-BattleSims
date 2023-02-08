@@ -236,6 +236,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\Camera.hpp" />
     <ClInclude Include="..\Common\BufferManager.h" />
     <ClInclude Include="..\Common\ComputeShaderClass.h" />
+    <ClInclude Include="..\Common\CSBufferNames.h" />
     <ClInclude Include="..\Common\DataTypes.h" />
     <ClInclude Include="..\Common\Floor.hpp" />
     <ClInclude Include="..\Common\FrameBuffer.h" />

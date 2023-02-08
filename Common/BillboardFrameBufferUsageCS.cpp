@@ -6,6 +6,7 @@
 #include "Herd.h"
 #include "HerdManager.h"
 #include "Shader.h"
+#include "CSBufferNames.h"
 
 BillboardFrameBufferUsageCS::BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
 	HerdManager* herdManager_): ComputeShaderClass(boFBusageComputeShader_)
@@ -43,7 +44,7 @@ void BillboardFrameBufferUsageCS::PopulateBuffers()
 {
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER,
 		sizeof(int) * herdManager->totalRenderingAmount, GL_DYNAMIC_DRAW,
-		nullptr, 0));
+		nullptr, ToInt(AngleCS::frameBufferUsageIndex)));
 
 	boFBusageDatas = new int[herdManager->totalRenderingAmount];
 }
