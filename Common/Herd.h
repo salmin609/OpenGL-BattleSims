@@ -15,7 +15,8 @@ public:
 
 	Buffer* posBuffer;
 	//xyz = boDirection, w = count
-	glm::vec4 herdBoDirAndOffset{};
+	//glm::vec4 herdBoDirAndOffset{};
+	int herdOffset{};
 	std::vector<BillBoardObject*> bos;
 	int count;
 	glm::vec4* positions;

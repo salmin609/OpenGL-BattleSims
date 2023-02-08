@@ -32,7 +32,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	interpolationComputeShader = new Shader("../Shaders/SkinningComputeShader.glsl");
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
-	bbMoving = new Shader("../Shaders/billboardObjectMovingCompute.glsl");
+	bbMoving = new Shader("../Shaders/BillboardObjectMovingCompute.glsl");
 	bbAttack = new Shader("../Shaders/BillboardAttackCompute.glsl");
 
 

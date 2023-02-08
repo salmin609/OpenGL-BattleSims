@@ -51,8 +51,8 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 	importer = new Importer();
 
 	scene = importer->ReadFile(filePath.c_str(),
-		aiProcess_Triangulate | 
-		aiProcess_GenSmoothNormals | 
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
 		aiProcess_JoinIdenticalVertices);
 
 	assert(scene != nullptr);

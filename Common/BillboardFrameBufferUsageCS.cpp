@@ -76,10 +76,11 @@ void BillboardFrameBufferUsageCS::SetShaderUniforms()
 	{
 		Herd* herd = herdManager->GetHerd(i);
 
-		herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		//herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		herd->herdOffset = herdManager->herdOffset[i];
 
-		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
-		shader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
+		const std::string uName = "herdOffset[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName, ShaderValueType::Int, &herd->herdOffset);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);

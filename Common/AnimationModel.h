@@ -24,7 +24,6 @@ typedef Assimp::Importer Importer;
 class AnimationModel
 {
 public:
-
 	AnimationModel(Shader* shaderVal, std::string _filePath, Shader* interpolationShader,
 		MeshDatas* reusableMeshDatas);
 	~AnimationModel();

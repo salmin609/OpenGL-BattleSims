@@ -32,10 +32,11 @@ void BillboardMovingCS::SetShaderUniforms()
 	{
 		Herd* herd = herdManager->GetHerd(i);
 
-		herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		//herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		herd->herdOffset = herdManager->herdOffset[i];
 
-		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
-		shader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
+		const std::string uName = "herdOffset[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName, ShaderValueType::Int, &herd->herdOffset);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
@@ -57,8 +58,9 @@ void BillboardMovingCS::PopulateBuffers()
 	const int firstHerdCount = herdManager->GetHerd(0)->count;
 	for(int i = 0; i < firstHerdCount; ++i)
 	{
-		glm::vec4 herdDir = herdManager->GetHerd(0)->herdBoDirAndOffset;
-		herdDir.w = 1.f;
+		//glm::vec4 herdDir = herdManager->GetHerd(0)->herdBoDirAndOffset;
+		//herdDir.w = 1.f;
+		glm::vec4 herdDir = glm::vec4(-1.f, 0.f, 0.f, 1.f);
 		directions.push_back(herdDir);
 	}
 
@@ -69,8 +71,9 @@ void BillboardMovingCS::PopulateBuffers()
 	const int secondHerdCount = herdManager->GetHerd(1)->count;
 	for (int i = 0; i < secondHerdCount; ++i)
 	{
-		glm::vec4 herdDir = herdManager->GetHerd(1)->herdBoDirAndOffset;
-		herdDir.w = 1.f;
+		/*glm::vec4 herdDir = herdManager->GetHerd(1)->herdBoDirAndOffset;
+		herdDir.w = 1.f;*/
+		glm::vec4 herdDir = glm::vec4(1.f, 0.f, 0.f, 1.f);
 		directions.push_back(herdDir);
 	}
 

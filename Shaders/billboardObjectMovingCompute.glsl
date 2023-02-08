@@ -43,10 +43,9 @@ bufferTargetEnemyPosition {
 	vec4 targetEnemyPos[];
 };
 
-uniform vec4 herdBoDirectionAndOffsets[32];
+uniform int herdOffset[32];
 uniform float dt;
 uniform int herdCount;
-vec3 boDirection;
 float attackRange = 25.f;
 float radius = 10.f;
 
@@ -93,13 +92,12 @@ void GetBufferOffset(inout int posBufferIndex, inout uint index)
 {
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
-		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
+		int offset = herdOffset[i];
 
-		if (index >= herdboDirectionAndOffset.w)
+		if (index >= offset)
 		{
-			boDirection = vec3(herdboDirectionAndOffset);
 			posBufferIndex = i;
-			index -= int(herdboDirectionAndOffset.w);
+			index -= offset;
 			break;
 		}
 	}
@@ -116,7 +114,6 @@ bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HER
 		if (CheckCollision(pos, otherPos, attackRange))
 		{
 			direction = otherPos - pos;
-			//targetEnemyPos[wholeBufferIndex] = otherPos;
 			return true;
 		}
 	}
@@ -127,7 +124,6 @@ bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout ve
 {
 	vec4 nextPos = herdPos[index];
 	MoveToward(nextPos, direction, speed);
-	
 	
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
@@ -175,13 +171,11 @@ void main(void)
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	uint wholeBufferIndex = index;
 
-	//animationIndex[animationBufferIndex] = 1;
 	int posBufferIndex = 0;
-	
 
 	vec4 herdPos[MAX_COUNT_PER_HERD];
 	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
-	float speed = randSpeed[index];
+	float speed = randSpeed[wholeBufferIndex];
 
 	GetBufferOffset(posBufferIndex, index);
 	CopyToHerdPosArray(posBufferIndex, herdPos, otherHerdPos);	

@@ -102,7 +102,7 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, g
 	Herd* herd = new Herd(num);
 
 	herd->posBuffer = posBuffer;
-	herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
+	//herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
 
 	for (int i = 0; i < num; ++i)
 	{
