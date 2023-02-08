@@ -1,5 +1,7 @@
 #include "BillboardFrameBufferUsageCS.h"
 
+#include "BillboardMovingCS.h"
+#include "BillboardObjectManager.h"
 #include "Buffer.hpp"
 #include "BufferManager.h"
 #include "Camera.hpp"
@@ -9,11 +11,12 @@
 #include "CSBufferNames.h"
 
 BillboardFrameBufferUsageCS::BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
-	HerdManager* herdManager_): ComputeShaderClass(boFBusageComputeShader_)
+	HerdManager* herdManager_, BillboardObjectManager* boObjManager_): ComputeShaderClass(boFBusageComputeShader_)
 {
 	currentCam = currentCam_;
 	herdManager = herdManager_;
 	boFBusageDatas = nullptr;
+	boObjManager = boObjManager_;
 	BillboardFrameBufferUsageCS::SetShaderUniforms();
 	BillboardFrameBufferUsageCS::PopulateBuffers();
 }
@@ -29,6 +32,12 @@ void BillboardFrameBufferUsageCS::CheckFrameBufferUsage() const
 	csBuffers->BindBuffers();
 	herdManager->BindHerdPositions();
 	shader->SendUniformValues();
+
+	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdDirection1))->
+		BindStorage(ToInt(AngleCS::herdDirection1));
+
+	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdDirection2))->
+		BindStorage(ToInt(AngleCS::herdDirection2));
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);

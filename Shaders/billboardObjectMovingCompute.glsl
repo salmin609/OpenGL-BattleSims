@@ -107,7 +107,7 @@ void GetBufferOffset(inout int posBufferIndex, inout uint index)
 
 
 
-bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HERD], uint wholeBufferIndex)
+bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HERD], inout vec4 direction)
 {
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
@@ -115,7 +115,8 @@ bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HER
 
 		if (CheckCollision(pos, otherPos, attackRange))
 		{
-			targetEnemyPos[wholeBufferIndex] = otherPos;
+			direction = otherPos - pos;
+			//targetEnemyPos[wholeBufferIndex] = otherPos;
 			return true;
 		}
 	}
@@ -197,7 +198,15 @@ void main(void)
 
 
 	//Need to move toward facing direction.
-	bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, wholeBufferIndex);
+	//bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, index);
+
+	bool collisionWithEnemy;
+
+	if (posBufferIndex == 0)
+		collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection1[index]);
+	else if (posBufferIndex == 1)
+		collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection2[index]);
+
 
 	int allyCollisionIndex = 0;
 	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);

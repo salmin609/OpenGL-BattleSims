@@ -39,7 +39,9 @@ enum class AngleCS
 	obj1Pos,
 	obj2Pos,
 	obj3Pos,
-	obj4Pos
+	obj4Pos,
+	herdDirection1,
+	herdDirection2
 };
 
 inline int ToInt(AngleCS val)

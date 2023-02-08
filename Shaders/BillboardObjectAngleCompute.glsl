@@ -30,6 +30,16 @@ bufferObjPos4 {
 	vec4 obj4Pos[];
 };
 
+layout(binding = 5) buffer
+bufferHerdDirection1 {
+	vec4 herdDirection1[];
+};
+
+layout(binding = 6) buffer
+bufferHerdDirection2 {
+	vec4 herdDirection2[];
+};
+
 uniform vec4 herdBoDirectionAndOffsets[32];
 uniform int herdCount;
 uniform vec3 camPos;
@@ -41,7 +51,7 @@ uniform float fovY;
 uniform float zNear;
 uniform float zFar;
 
-vec3 boDirection;
+//vec3 boDirection;
 uniform int bufferSize;
 
 
@@ -144,7 +154,9 @@ float Convert(float radian)
 	return (radian * (180.f / pi));
 }
 
-int GetUsingFrameBufferIndex(vec3 boPos)
+
+
+int GetUsingFrameBufferIndex(vec3 boPos, vec3 boDirection)
 {
 	int result = 0;
 	vec3 boToCam = camPos - boPos;
@@ -201,13 +213,14 @@ void main(void)
 	
 	int posBufferIndex;
 	int bufferOffset;
+	vec3 boDirection;
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
 		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
 
 		if (index >= herdboDirectionAndOffset.w)
 		{
-			boDirection = vec3(herdboDirectionAndOffset);
+			//boDirection = vec3(herdboDirectionAndOffset);
 			posBufferIndex = i;
 			bufferOffset = int(herdboDirectionAndOffset.w);
 			break;
@@ -215,13 +228,25 @@ void main(void)
 	}
 
 	if (posBufferIndex == 0)
+	{
 		boPosInVec4 = obj1Pos[index];
+		boDirection = vec3(herdDirection1[index]);
+	}
 	else if (posBufferIndex == 1)
+	{
 		boPosInVec4 = obj2Pos[index - bufferOffset];
+		boDirection = vec3(herdDirection2[index - bufferOffset]);
+	}
 	else if (posBufferIndex == 2)
+	{
 		boPosInVec4 = obj3Pos[index - bufferOffset];
+
+	}
 	else if (posBufferIndex == 3)
+	{
 		boPosInVec4 = obj4Pos[index - bufferOffset];
+
+	}
 
 
 
@@ -234,6 +259,6 @@ void main(void)
 		SphereBV spv = GetSPV(boPos, 0.1f);
 
 		if (isOnFrustum(camFrustum, spv))
-			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos);
+			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos, boDirection);
 	}
 }
