@@ -185,6 +185,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\AnimatingFunctions.cpp" />
     <ClCompile Include="..\Common\AnimationModel.cpp" />
     <ClCompile Include="..\Common\AnimationModelDatas.cpp" />
+    <ClCompile Include="..\Common\AnimationState.cpp" />
     <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp" />
     <ClCompile Include="..\Common\BillboardAttackCS.cpp" />
     <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp" />
@@ -223,6 +224,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\AnimatingFunctions.h" />
     <ClInclude Include="..\Common\AnimationModel.h" />
     <ClInclude Include="..\Common\AnimationModelDatas.h" />
+    <ClInclude Include="..\Common\AnimationState.h" />
     <ClInclude Include="..\Common\AnimationStructure.hpp" />
     <ClInclude Include="..\Common\BillboardAnimatingDatas.h" />
     <ClInclude Include="..\Common\BillboardAttackCS.h" />

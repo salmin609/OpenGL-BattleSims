@@ -14,11 +14,8 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f,
-		glm::vec3(-1.f, 0.f, 0.f)));
-
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f,
-		glm::vec3(1.f, 0.f, 0.f)));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f));
 }
 
 HerdManager::~HerdManager()
@@ -91,11 +88,11 @@ Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
 		GL_DYNAMIC_DRAW, resultVector.data(), posBufferIndex++);
 }
 
-Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection)
+Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
 
-	const int animationCount = static_cast<int>(data->obj->animationModels.size());
+	//const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
 	Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
 

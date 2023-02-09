@@ -36,9 +36,11 @@ public:
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;
 	glm::mat4* Interpolate(float animationTimeTicks) const;
+	void SetInitialBoneTransformData();
 	AnimationModelDatas* datas;
 	std::chrono::system_clock::time_point startTime;
 	glm::mat4x4* boneTransformsData;
+	glm::mat4x4* initialBoneTransformsData;
 
 private:
 	Importer* importer;

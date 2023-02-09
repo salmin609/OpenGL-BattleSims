@@ -20,7 +20,7 @@ public:
 	void BindHerdPositions();
 	Herd* GetHerd(int index);
 	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
-	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection);
+	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset);
 	void SetBosFrameBufferIndex(void* boFBusageDatas);
 	void SetReachedAnimation(int* data);
 	void ChangeToAttackAnimation();

@@ -8,6 +8,7 @@
 #pragma once
 #include "Object.h"
 
+class AnimationState;
 class Timer;
 
 class MultipleAnimationObject final : public Object
@@ -22,13 +23,14 @@ public:
 	std::chrono::system_clock::time_point GetAnimationStartTime() const override;
 	void ResetAnimationStartTime() override;
 	glm::mat4* Interpolate(float animationTimeTicks) override;
-	void AddAnimation(AnimationModel* model);
-	void IncrementIndex();
-	void SetAnimationIndex(int index);
-	void CheckCurrentIndexRange();
-	void ChangeCurrentAnimationWithTime();
+	//void AddAnimation(AnimationModel* model);
+	//void IncrementIndex();
+	//void SetAnimationIndex(int index);
+	//void CheckCurrentIndexRange();
+	//void ChangeCurrentAnimationWithTime();
 
-	std::vector<AnimationModel*> animationModels;
+	//std::vector<AnimationModel*> animationModels;
+	AnimationState* animState;
 	AnimationModel* currentAnimationModel;
 private:
 	int currentAnimationIndex = 0;

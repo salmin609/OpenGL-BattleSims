@@ -207,7 +207,7 @@ void main(void)
 
 	if (collisionWithEnemy == false && collisionWithAlly == false)
 	{
-		animationIndex[wholeBufferIndex] = 1;
+		animationIndex[wholeBufferIndex] = 3;
 		if (posBufferIndex == 0)
 			MoveToward(obj1Pos[index], direction, speed);
 		else if (posBufferIndex == 1)
@@ -220,13 +220,13 @@ void main(void)
 		if (animIndex != 3)
 		{
 			if (collisionWithEnemy)
-				animationIndex[wholeBufferIndex] = 2;
+				animationIndex[wholeBufferIndex] = 1;
 			else if (collisionWithAlly)
 			{
 				if (posBufferIndex == 1)
 					allyCollisionIndex += 1280;
 
-				if(animationIndex[allyCollisionIndex] != 1)
+				if(animationIndex[allyCollisionIndex] != 2)
 					animationIndex[wholeBufferIndex] = 0;
 			}
 		}

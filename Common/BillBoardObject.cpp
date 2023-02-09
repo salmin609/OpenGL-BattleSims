@@ -23,7 +23,7 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
-	SetAnimation(1);
+	SetAnimation(0);
 }
 
 BillBoardObject::~BillBoardObject()

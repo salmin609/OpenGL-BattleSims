@@ -31,12 +31,12 @@ void main(void)
 
 	int animIndex = animationIndex[index];
 
-	if(animIndex == 2 || animIndex == 3)
+	if(animIndex == 1 || animIndex == 4)
 		time[index] += dt;
 
 	if (time[index] > 5.f && time[index] < 6.5f)
 	{
-		animationIndex[index] = 3;
+		animationIndex[index] = 4;
 	}
 	else if (time[index] > 6.5f)
 	{

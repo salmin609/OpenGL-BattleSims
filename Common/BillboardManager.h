@@ -12,6 +12,7 @@
 #include <vector>
 #include "glm/mat4x4.hpp"
 
+class AnimationState;
 class FrameBuffer;
 struct aiAnimation;
 class AnimationModel;
@@ -53,14 +54,16 @@ public:
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
 	void ChangeAnimationIndexByTime();
-	void ResetFrameBufferUsage();
 	Camera* GetBoObjCamera(int camIndex);
 	BillboardAnimatingDatas* GetAnimData(int index);
 
 
 	std::vector<BillboardAnimatingDatas*> boDatas;
 	std::map<std::string, MeshDatas*> meshDatas;
-	std::vector<std::vector<AnimationModel*>> animModels;
+	//std::vector<std::vector<AnimationModel*>> animModels;
+	//std::vector<std::vector<AnimationState*>> animModels;
+	//std::vector<AnimationState*> animModels;
+	std::map<std::string, AnimationState*> animModels;
 
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current

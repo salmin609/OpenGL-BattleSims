@@ -10,6 +10,7 @@
 #include <assimp/scene.h>
 
 #include "AnimationModel.h"
+#include "AnimationState.h"
 #include "Timer.hpp"
 
 MultipleAnimationObject::MultipleAnimationObject(glm::vec3 posVal, glm::vec3 rotVal,
@@ -27,72 +28,77 @@ MultipleAnimationObject::~MultipleAnimationObject()
 void MultipleAnimationObject::Draw(const glm::mat4& projViewMat,
 	glm::mat4* transforms)
 {
-	animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, 
+	/*animationModels[currentAnimationIndex]->Draw(GetModelMatrix(), projViewMat, 
+		transforms);*/
+	animState->idleAnimations[0]->Draw(GetModelMatrix(), projViewMat,
 		transforms);
 }
 
 aiAnimation* MultipleAnimationObject::GetAiAnimation()
 {
-	return animationModels[currentAnimationIndex]->GetScene()->mAnimations[0];
+	//return animationModels[currentAnimationIndex]->GetScene()->mAnimations[0];
+	return nullptr;
 }
 
 std::chrono::system_clock::time_point MultipleAnimationObject::GetAnimationStartTime() const
 {
-	return animationModels[currentAnimationIndex]->startTime;
+	//return animationModels[currentAnimationIndex]->startTime;
+	return std::chrono::system_clock::time_point{};
 }
 
 void MultipleAnimationObject::ResetAnimationStartTime()
 {
-	animationModels[currentAnimationIndex]->startTime = std::chrono::system_clock::now();
+	//animationModels[currentAnimationIndex]->startTime = std::chrono::system_clock::now();
 }
 
 glm::mat4* MultipleAnimationObject::Interpolate(float animationTimeTicks)
 {
-	return animationModels[currentAnimationIndex]->Interpolate(animationTimeTicks);
+	//return animationModels[currentAnimationIndex]->Interpolate(animationTimeTicks);
+	return animState->idleAnimations[0]->Interpolate(animationTimeTicks);
 }
 
-void MultipleAnimationObject::AddAnimation(AnimationModel* model)
-{
-	animationModels.push_back(model);
-	currentAnimationModel = animationModels[currentAnimationIndex];
-}
+//void MultipleAnimationObject::AddAnimation(AnimationModel* model)
+//{
+//	animationModels.push_back(model);
+//	currentAnimationModel = animationModels[currentAnimationIndex];
+//}
 
-void MultipleAnimationObject::IncrementIndex()
-{
-	currentAnimationIndex++;
+//void MultipleAnimationObject::IncrementIndex()
+//{
+//	currentAnimationIndex++;
+//
+//	CheckCurrentIndexRange();
+//
+//	currentAnimationModel = animationModels[currentAnimationIndex];
+//}
 
-	CheckCurrentIndexRange();
+//void MultipleAnimationObject::SetAnimationIndex(int index)
+//{
+//	currentAnimationIndex = index;
+//
+//	CheckCurrentIndexRange();
+//
+//	currentAnimationModel = animationModels[currentAnimationIndex];
+//}
 
-	currentAnimationModel = animationModels[currentAnimationIndex];
-}
+//void MultipleAnimationObject::CheckCurrentIndexRange()
+//{
+//	if (currentAnimationIndex < 0)
+//		currentAnimationIndex = static_cast<int>(animationModels.size()) - 1;
+//
+//	else if (currentAnimationIndex >= static_cast<int>(animationModels.size()))
+//		currentAnimationIndex = 0;
+//}
 
-void MultipleAnimationObject::SetAnimationIndex(int index)
-{
-	currentAnimationIndex = index;
-
-	CheckCurrentIndexRange();
-
-	currentAnimationModel = animationModels[currentAnimationIndex];
-}
-
-void MultipleAnimationObject::CheckCurrentIndexRange()
-{
-	if (currentAnimationIndex < 0)
-		currentAnimationIndex = static_cast<int>(animationModels.size()) - 1;
-
-	else if (currentAnimationIndex >= static_cast<int>(animationModels.size()))
-		currentAnimationIndex = 0;
-}
-
-void MultipleAnimationObject::ChangeCurrentAnimationWithTime()
-{
-	float animationDuration = static_cast<float>(
-		currentAnimationModel->GetScene()->mAnimations[0]->mDuration);
-
-	if (animationDuration < 2.f)
-		animationDuration = 2.f;
-
-
-	if(timer->CheckTime(animationDuration))
-		IncrementIndex();
-}
+//void MultipleAnimationObject::ChangeCurrentAnimationWithTime()
+//{
+//	float animationDuration = static_cast<float>(
+//		currentAnimationModel->GetScene()->mAnimations[0]->mDuration);
+//
+//	if (animationDuration < 2.f)
+//		animationDuration = 2.f;
+//
+//
+//	if(timer->CheckTime(animationDuration))
+//		IncrementIndex();
+//}

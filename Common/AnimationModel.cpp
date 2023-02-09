@@ -74,7 +74,9 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 
 	datas->PopulateInterpolationShaderBuffer(scene, this);
 	boneTransformsData = new glm::mat4x4[static_cast<int>(datas->boneInfos.size())];
+	initialBoneTransformsData = new glm::mat4x4[static_cast<int>(datas->boneInfos.size())];
 
+	SetInitialBoneTransformData();
 }
 
 AnimationModel::~AnimationModel()
@@ -82,6 +84,7 @@ AnimationModel::~AnimationModel()
 	delete importer;
 	delete datas;
 	delete[] boneTransformsData;
+	delete[] initialBoneTransformsData;
 }
 
 
@@ -166,4 +169,22 @@ glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 	glUseProgram(0);
 	datas->csBuffers->GetData(15, boneTransformsData);
 	return boneTransformsData;
+}
+
+void AnimationModel::SetInitialBoneTransformData()
+{
+	assert(interpolationComputeShader != nullptr);
+
+	interpolationComputeShader->Use();
+	datas->csBuffers->BindBuffers();
+	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));
+	interpolationComputeShader->SendUniformFloat("animationTimeTicks", 0.f);
+
+	glDispatchCompute(static_cast<GLuint>(datas->transformOrder.size()), 1, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glUseProgram(0);
+	datas->csBuffers->GetData(15, initialBoneTransformsData);
 }
