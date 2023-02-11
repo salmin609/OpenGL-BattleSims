@@ -43,6 +43,12 @@ bufferTargetEnemyPosition {
 	vec4 targetEnemyPos[];
 };
 
+#define State_Idle 0
+#define State_Attack 1
+#define State_Pain 2
+#define State_Run 3
+#define State_Death 4
+
 uniform int herdOffset[32];
 uniform float dt;
 uniform int herdCount;
@@ -207,7 +213,7 @@ void main(void)
 
 	if (collisionWithEnemy == false && collisionWithAlly == false)
 	{
-		animationIndex[wholeBufferIndex] = 3;
+		animationIndex[wholeBufferIndex] = State_Run;
 		if (posBufferIndex == 0)
 			MoveToward(obj1Pos[index], direction, speed);
 		else if (posBufferIndex == 1)
@@ -217,17 +223,17 @@ void main(void)
 	{
 		//reached[reachedBufferIndex] = 1;
 		int animIndex = animationIndex[wholeBufferIndex];
-		if (animIndex != 3)
+		if (animIndex != State_Death)
 		{
 			if (collisionWithEnemy)
-				animationIndex[wholeBufferIndex] = 1;
+				animationIndex[wholeBufferIndex] = State_Attack;
 			else if (collisionWithAlly)
 			{
 				if (posBufferIndex == 1)
 					allyCollisionIndex += 1280;
 
-				if(animationIndex[allyCollisionIndex] != 2)
-					animationIndex[wholeBufferIndex] = 0;
+				if(animationIndex[allyCollisionIndex] != State_Run)
+					animationIndex[wholeBufferIndex] = State_Idle;
 			}
 		}
 	}

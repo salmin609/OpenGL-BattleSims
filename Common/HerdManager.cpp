@@ -14,8 +14,8 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 20.f));
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 20.f));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 20.f));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 20.f));
 }
 
 HerdManager::~HerdManager()
@@ -151,7 +151,6 @@ void HerdManager::SetReachedAnimation(int* data)
 			BillBoardObject* bo = herd->bos[j];
 			const int isReached = data[bufIndex];
 
-			//if (isReached > 0)
 			bo->SetAnimation(isReached);
 
 			bufIndex++;

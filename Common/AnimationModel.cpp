@@ -55,6 +55,8 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 		aiProcess_GenSmoothNormals |
 		aiProcess_JoinIdenticalVertices);
 
+	animDuration = scene->mAnimations[0]->mDuration;
+
 	assert(scene != nullptr);
 
 	datas = new AnimationModelDatas(vao, reusableMeshDatas);
@@ -187,4 +189,17 @@ void AnimationModel::SetInitialBoneTransformData()
 
 	glUseProgram(0);
 	datas->csBuffers->GetData(15, initialBoneTransformsData);
+}
+
+float AnimationModel::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current) const
+{
+	const aiAnimation* animation = scene->mAnimations[0];
+	const long long diff =
+		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
+	float animationT = static_cast<float>(diff) / 1000.f;
+
+	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
+
+	return animationTimeTicks;
 }

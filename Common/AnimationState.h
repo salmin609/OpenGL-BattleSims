@@ -6,6 +6,15 @@ class AnimationModel;
 class AnimationState
 {
 public:
+	enum class State
+	{
+		Idle = 0,
+		Attack,
+		Pain,
+		Run,
+		Death
+	};
+
 	AnimationState();
 	~AnimationState();
 

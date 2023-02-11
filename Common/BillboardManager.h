@@ -10,6 +10,8 @@
 #include <map>
 #include <string>
 #include <vector>
+
+#include "AnimationState.h"
 #include "glm/mat4x4.hpp"
 
 class AnimationState;
@@ -53,26 +55,24 @@ public:
 	~BillboardManager();
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
-	void ChangeAnimationIndexByTime();
+	void SaveAnimation(std::vector<AnimationModel*> animations, AnimationState::State state,
+		const std::chrono::system_clock::time_point& current,
+		const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
+		const glm::mat4& projMat, const glm::mat4& modelMat,
+		AnimationModel* baseModel);
 	Camera* GetBoObjCamera(int camIndex);
 	BillboardAnimatingDatas* GetAnimData(int index);
 
 
 	std::vector<BillboardAnimatingDatas*> boDatas;
 	std::map<std::string, MeshDatas*> meshDatas;
-	//std::vector<std::vector<AnimationModel*>> animModels;
-	//std::vector<std::vector<AnimationState*>> animModels;
-	//std::vector<AnimationState*> animModels;
 	std::map<std::string, AnimationState*> animModels;
 
 private:
 	void GenerateBillboard(const std::chrono::system_clock::time_point& current
 		,const glm::mat4& projMat, BillboardAnimatingDatas* datas);
 	void SaveAngleTextures(BillboardAnimatingDatas* datas);
-	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-		const std::chrono::system_clock::time_point& startTime,
-		const aiAnimation* animation, int index) const;
-	//Camera* boCamera;
+
 	std::vector<Camera*> boCams;
 	std::vector<glm::mat4> boCamMats;
 	Shader* boShader;

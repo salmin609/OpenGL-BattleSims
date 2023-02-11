@@ -41,8 +41,10 @@ public:
 	std::chrono::system_clock::time_point startTime;
 	glm::mat4x4* boneTransformsData;
 	glm::mat4x4* initialBoneTransformsData;
+	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current) const;
 
 private:
+	double animDuration;
 	Importer* importer;
 	const aiScene* scene;
 	aiNode* rootNode{};

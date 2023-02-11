@@ -148,51 +148,8 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 				animState->painAnimations.push_back(newAnimation);
 		}
 	}
-	int a = 0;
 
-
-
-	//for (size_t i = 0; i < objPathsSize; ++i)
-	//{
-	//	const std::string objPath = objPaths[i];
-	//	std::vector<std::string> vec = split(objPath, "_");
-	//	std::vector<std::string> finalParsed = split(vec[0], "/");
-	//	std::string modelKind = finalParsed[finalParsed.size() - 1];
-
-	//	if (!models.empty())
-	//	{
-	//		if (prevKind != modelKind)
-	//		{
-	//			//animModels.push_back(models);
-	//			models.clear();
-	//		}
-	//	}
-
-	//	MeshDatas* reusableMeshDatas = nullptr;
-
-	//	auto found = meshDatas.find(modelKind);
-
-	//	if (found != meshDatas.end())
-	//		reusableMeshDatas = found->second;
-
-	//	AnimationModel* newModel = new AnimationModel(boShader, objPath, boComputeShader, reusableMeshDatas);
-	//	//animModels.push_back(newModel);
-	//	models.push_back(newModel);
-
-
-	//	if (found == meshDatas.end())
-	//		meshDatas.insert(std::pair<std::string, MeshDatas*>(modelKind, newModel->datas->meshDatas));
-
-	//	prevKind = modelKind;
-
-	//}
-	//animModels.push_back(models);
-
-	const size_t animModelsSize = animModels.size();
-
-	std::map<std::string, AnimationState*>::iterator it = animModels.begin();
-
-	for (it = animModels.begin(); it != animModels.end(); ++it)
+	for (auto it = animModels.begin(); it != animModels.end(); ++it)
 	{
 		MultipleAnimationObject* mObj = new MultipleAnimationObject(objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f));
 
@@ -218,17 +175,44 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 	}
 }
 
+void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations, 
+	AnimationState::State state,
+	const std::chrono::system_clock::time_point& current,
+	const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
+	const glm::mat4& projMat, const glm::mat4& modelMat,
+	AnimationModel* baseModel)
+{
+	const int animationCount = static_cast<int>(animations.size());
 
-//void BillboardManager::ChangeAnimationIndexByTime()
-//{
-//	const int boDatasSize = static_cast<int>(boDatas.size());
-//
-//	for (int i = 0; i < boDatasSize; ++i)
-//	{
-//		boDatas[i]->obj->ChangeCurrentAnimationWithTime();
-//	}
-//}
+	for(int i = 0; i < animationCount; ++i)
+	{
+		AnimationModel* model = animations[i];
+		const float animationTimeTicks = model->GetAnimationTimeTicks(current);
 
+		glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
+
+		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+		{
+			FrameBuffer* fb = frameBuffers[i]
+				[static_cast<int>(state)][k];
+
+			if (fb->isOnUsage)
+			{
+				const glm::mat4 projViewMat = projMat * boCamMats[k];
+
+				fb->Bind();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				baseModel->Draw(modelMat, projViewMat,
+					transformMat);
+
+				fb->UnBind();
+				fb->isOnUsage = false;
+			}
+
+		}
+	}
+}
 
 
 Camera* BillboardManager::GetBoObjCamera(int camIndex)
@@ -245,190 +229,54 @@ BillboardAnimatingDatas* BillboardManager::GetAnimData(int index)
 void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_point& current
 	, const glm::mat4& projMat, BillboardAnimatingDatas* datas)
 {
-	//const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
-	//const int animationsSize = 2;
-
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	AnimationState* animState = datas->obj->animState;
+	AnimationModel* baseModel = datas->obj->animState->idleAnimations[0];
 
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
-		const int idleAnimationsCount = static_cast<int>(animState->idleAnimations.size());
-		const int attackAnimationsCount = static_cast<int>(animState->attackAnimations.size());
-		const int painAnimationsCount = static_cast<int>(animState->painAnimations.size());
-		const int runAnimationsCount = 1;
-		const int deathAnimationsCount = 1;
+		SaveAnimation(datas->obj->animState->idleAnimations,
+			AnimationState::State::Idle,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel);
 
-		for (int j = 0; j < idleAnimationsCount; ++j)
-		{
-			const AnimationModel* model = datas->obj->animState->idleAnimations[j];
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation, i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
+		SaveAnimation(datas->obj->animState->attackAnimations,
+			AnimationState::State::Attack,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel);
 
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][0][k];
+		SaveAnimation(datas->obj->animState->painAnimations,
+			AnimationState::State::Pain,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel);
 
-				if (fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
+		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->runAnimation},
+			AnimationState::State::Run,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel);
 
-					fb->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					fb->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
-
-		for (int j = 0; j < attackAnimationsCount; ++j)
-		{
-			const AnimationModel* model = datas->obj->animState->attackAnimations[j];
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation, i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][1][k];
-
-				if (fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
-
-					fb->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					fb->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
-
-		for (int j = 0; j < painAnimationsCount; ++j)
-		{
-			const AnimationModel* model = datas->obj->animState->painAnimations[j];
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation, i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][2][k];
-
-				if (fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
-
-					fb->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					fb->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
-
-		for (int j = 0; j < runAnimationsCount; ++j)
-		{
-			const AnimationModel* model = datas->obj->animState->runAnimation;
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation, i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][3][k];
-
-				if (fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
-
-					fb->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					fb->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
-
-		for (int j = 0; j < deathAnimationsCount; ++j)
-		{
-			const AnimationModel* model = datas->obj->animState->deathAnimation;
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation, i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][4][k];
-
-				if (fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
-
-					fb->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					fb->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
+		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->deathAnimation},
+			AnimationState::State::Death,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel);
 	}
-
-
-
-	//for (int i = 0; i < datas->diffTimeAnimCount; ++i)
-	//{
-	//	for (int j = 0; j < animationsSize; ++j)
-	//	{
-	//		//const AnimationModel* model = datas->obj->animationModels[j];
-	//		const AnimationModel* model = datas->obj->animState->idleAnimations[0];
-
-	//		const aiAnimation* animation = model->GetScene()->mAnimations[0];
-
-	//		const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation,
-	//			i);
-	//		glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-	//		//glm::mat4* transformMat = model->initialBoneTransformsData;
-	//		assert(transformMat != nullptr);
-
-	//		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-	//		{
-	//			FrameBuffer* fb = datas->frameBuffers[i][j][k];
-
-	//			if(fb->isOnUsage)
-	//			{
-	//				const glm::mat4 projViewMat = projMat * boCamMats[k];
-
-	//				datas->frameBuffers[i][j][k]->Bind();
-	//				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//				datas->obj->Draw(projViewMat, transformMat);
-
-	//				datas->frameBuffers[i][j][k]->UnBind();
-	//				fb->isOnUsage = false;
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
@@ -478,21 +326,4 @@ void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
 		//check->SavePNG();
 		once = false;
 	}
-}
-
-float BillboardManager::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-	const std::chrono::system_clock::time_point& startTime,
-	const aiAnimation* animation, int index) const
-{
-	const long long diff =
-		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
-	float animationT = static_cast<float>(diff) / 1000.f;
-
-	//make diff in animation
-	animationT += static_cast<float>(index) * 60.f;
-
-	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-
-	return animationTimeTicks;
 }

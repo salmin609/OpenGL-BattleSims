@@ -23,6 +23,12 @@ bufferObjPos2 {
 	vec4 obj2Pos[];
 };
 
+#define State_Idle 0
+#define State_Attack 1
+#define State_Pain 2
+#define State_Run 3
+#define State_Death 4
+
 uniform float dt;
 
 void main(void)
@@ -31,12 +37,12 @@ void main(void)
 
 	int animIndex = animationIndex[index];
 
-	if(animIndex == 1 || animIndex == 4)
+	if(animIndex == State_Attack || animIndex == State_Death)
 		time[index] += dt;
 
 	if (time[index] > 5.f && time[index] < 6.5f)
 	{
-		animationIndex[index] = 4;
+		animationIndex[index] = State_Death;
 	}
 	else if (time[index] > 6.5f)
 	{
