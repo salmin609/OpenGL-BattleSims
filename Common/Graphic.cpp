@@ -101,6 +101,8 @@ void Graphic::Draw()
 	boObjsManager->CheckFrameBufferUsage();
 	boObjsManager->Move(deltaTime);
 	boObjsManager->Attack(deltaTime);
+	boManager->CheckAnimationPlayingStatus();
+
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 

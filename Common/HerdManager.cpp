@@ -109,7 +109,7 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
 		//Setting different times per animation consumes lots of fps.
 
 		herd->bos.push_back(new BillBoardObject(boShader,
-			&data->frameBuffers[0]));
+			&data->frameBuffers[0], data->obj->animState));
 	}
 
 	return herd;
@@ -138,7 +138,7 @@ void HerdManager::SetBosFrameBufferIndex(void* boFBusageDatas)
 	}
 }
 
-void HerdManager::SetReachedAnimation(int* data)
+void HerdManager::ChangeAnimationState(int* data)
 {
 	int bufIndex = 0;
 
@@ -149,9 +149,9 @@ void HerdManager::SetReachedAnimation(int* data)
 		for (int j = 0; j < herd->count; ++j)
 		{
 			BillBoardObject* bo = herd->bos[j];
-			const int isReached = data[bufIndex];
+			const int newState = data[bufIndex];
 
-			bo->SetAnimation(isReached);
+			bo->SetAnimation(newState);
 
 			bufIndex++;
 		}

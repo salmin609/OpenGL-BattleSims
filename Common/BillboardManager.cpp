@@ -129,7 +129,8 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 			meshDatas.insert(std::pair<std::string, MeshDatas*>(modelKind, newAnimation->datas->meshDatas));
 
 			//idle is first animation of model.
-			animState->idleAnimations.push_back(newAnimation);
+			animState->AddAnimation(State::Idle,
+				newAnimation);
 		}
 		//means exist
 		else
@@ -137,15 +138,20 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 			AnimationState* animState = state->second;
 
 			if (animKind == "Idle")
-				animState->idleAnimations.push_back(newAnimation);
+				animState->AddAnimation(State::Idle,
+					newAnimation);
 			else if (animKind == "Run")
-				animState->runAnimation = newAnimation;
+				animState->AddAnimation(State::Run,
+					newAnimation);
 			else if (animKind == "Attack")
-				animState->attackAnimations.push_back(newAnimation);
+				animState->AddAnimation(State::Attack,
+					newAnimation);
 			else if (animKind == "Death")
-				animState->deathAnimation = newAnimation;
+				animState->AddAnimation(State::Death,
+					newAnimation);
 			else if (animKind == "Pain")
-				animState->painAnimations.push_back(newAnimation);
+				animState->AddAnimation(State::Pain,
+					newAnimation);
 		}
 	}
 
@@ -176,11 +182,12 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 }
 
 void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations, 
-	AnimationState::State state,
+	State state,
 	const std::chrono::system_clock::time_point& current,
 	const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
 	const glm::mat4& projMat, const glm::mat4& modelMat,
-	AnimationModel* baseModel)
+	AnimationModel* baseModel,
+	int& fbSlotIndex)
 {
 	const int animationCount = static_cast<int>(animations.size());
 
@@ -193,8 +200,8 @@ void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations,
 
 		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 		{
-			FrameBuffer* fb = frameBuffers[i]
-				[static_cast<int>(state)][k];
+			FrameBuffer* fb = frameBuffers[0]
+				[fbSlotIndex + i][k];
 
 			if (fb->isOnUsage)
 			{
@@ -211,6 +218,133 @@ void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations,
 			}
 
 		}
+	}
+	fbSlotIndex += animationCount;
+}
+
+void BillboardManager::CheckAnimationPlayingStatus()
+{
+	for(BillboardAnimatingDatas* boData : boDatas)
+	{
+		AnimationState* animState = boData->obj->animState;
+
+		const size_t idleAnimsSize = animState->idleAnimations.size();
+		const size_t attackAnimsSize = animState->attackAnimations.size();
+		const size_t painAnimsSize = animState->painAnimations.size();
+		const size_t deathAnimsSize = 1;
+		const size_t runAnimsSize = 1;
+
+		for(size_t i = 0; i < idleAnimsSize; ++i)
+		{
+			AnimationModel* model = animState->idleAnimations[i];
+
+			float currentTimeTick = model->currentTimeTicks;
+
+			//animation is almost initial status
+
+			if(model->playingStatus == AnimationModel::PlayingStatus::Ready)
+			{
+				if (currentTimeTick > 0.1f)
+					model->playingStatus = AnimationModel::PlayingStatus::Playing;
+			}
+			else if(model->playingStatus == AnimationModel::PlayingStatus::Playing)
+			{
+				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+				double animDuration = animInfo->mDuration;
+				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+					model->playingStatus = AnimationModel::PlayingStatus::Ready;
+			}
+			
+		}
+
+		for (size_t i = 0; i < attackAnimsSize; ++i)
+		{
+			AnimationModel* model = animState->attackAnimations[i];
+
+			float currentTimeTick = model->currentTimeTicks;
+
+			//animation is almost initial status
+
+			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
+			{
+				if (currentTimeTick > 0.1f)
+					model->playingStatus = AnimationModel::PlayingStatus::Playing;
+			}
+			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
+			{
+				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+				double animDuration = animInfo->mDuration;
+				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+					model->playingStatus = AnimationModel::PlayingStatus::Ready;
+			}
+		}
+
+		for (size_t i = 0; i < painAnimsSize; ++i)
+		{
+			AnimationModel* model = animState->painAnimations[i];
+
+			float currentTimeTick = model->currentTimeTicks;
+
+			//animation is almost initial status
+
+			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
+			{
+				if (currentTimeTick > 0.1f)
+					model->playingStatus = AnimationModel::PlayingStatus::Playing;
+			}
+			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
+			{
+				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+				double animDuration = animInfo->mDuration;
+				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+					model->playingStatus = AnimationModel::PlayingStatus::Ready;
+			}
+		}
+
+		for (size_t i = 0; i < deathAnimsSize; ++i)
+		{
+			AnimationModel* model = animState->deathAnimation;
+
+			float currentTimeTick = model->currentTimeTicks;
+
+			//animation is almost initial status
+
+			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
+			{
+				if (currentTimeTick > 0.1f)
+					model->playingStatus = AnimationModel::PlayingStatus::Playing;
+			}
+			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
+			{
+				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+				double animDuration = animInfo->mDuration;
+				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+					model->playingStatus = AnimationModel::PlayingStatus::Ready;
+			}
+		}
+
+		for (size_t i = 0; i < runAnimsSize; ++i)
+		{
+			AnimationModel* model = animState->runAnimation;
+
+			float currentTimeTick = model->currentTimeTicks;
+
+			//animation is almost initial status
+
+			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
+			{
+				if (currentTimeTick > 0.1f)
+					model->playingStatus = AnimationModel::PlayingStatus::Playing;
+			}
+			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
+			{
+				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+				double animDuration = animInfo->mDuration;
+				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+					model->playingStatus = AnimationModel::PlayingStatus::Ready;
+			}
+		}
+
 	}
 }
 
@@ -234,48 +368,55 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	AnimationModel* baseModel = datas->obj->animState->idleAnimations[0];
+	int fbSlotIndex = 0;
 
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		SaveAnimation(datas->obj->animState->idleAnimations,
-			AnimationState::State::Idle,
+			State::Idle,
 			current,
 			datas->frameBuffers,
 			projMat,
 			datas->obj->GetModelMatrix(),
-			baseModel);
+			baseModel,
+			fbSlotIndex);
 
+		
 		SaveAnimation(datas->obj->animState->attackAnimations,
-			AnimationState::State::Attack,
+			State::Attack,
 			current,
 			datas->frameBuffers,
 			projMat,
 			datas->obj->GetModelMatrix(),
-			baseModel);
+			baseModel,
+			fbSlotIndex);
 
 		SaveAnimation(datas->obj->animState->painAnimations,
-			AnimationState::State::Pain,
+			State::Pain,
 			current,
 			datas->frameBuffers,
 			projMat,
 			datas->obj->GetModelMatrix(),
-			baseModel);
+			baseModel,
+			fbSlotIndex);
 
 		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->runAnimation},
-			AnimationState::State::Run,
+			State::Run,
 			current,
 			datas->frameBuffers,
 			projMat,
 			datas->obj->GetModelMatrix(),
-			baseModel);
+			baseModel,
+			fbSlotIndex);
 
 		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->deathAnimation},
-			AnimationState::State::Death,
+			State::Death,
 			current,
 			datas->frameBuffers,
 			projMat,
 			datas->obj->GetModelMatrix(),
-			baseModel);
+			baseModel,
+			fbSlotIndex);
 	}
 }
 

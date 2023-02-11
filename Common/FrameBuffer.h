@@ -7,6 +7,8 @@
 
 #pragma once
 
+class AnimationModel;
+class AnimationState;
 class Texture;
 
 class FrameBuffer
@@ -22,6 +24,6 @@ public:
 	Texture* texture;
 	bool isOnUsage = false;
 private:
-	unsigned frameBuffer, rbo;
+	unsigned frameBuffer{}, rbo{};
 	int width, height;
 };

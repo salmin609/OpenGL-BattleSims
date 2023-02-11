@@ -43,6 +43,7 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 
 	numVertices = 0;
 	numIndices = 0;
+	playingStatus = PlayingStatus::Ready;
 
 	glGenVertexArrays(1, &vao);
 
@@ -191,15 +192,28 @@ void AnimationModel::SetInitialBoneTransformData()
 	datas->csBuffers->GetData(15, initialBoneTransformsData);
 }
 
-float AnimationModel::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current) const
+float AnimationModel::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current)
 {
 	const aiAnimation* animation = scene->mAnimations[0];
+
 	const long long diff =
 		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
-	float animationT = static_cast<float>(diff) / 1000.f;
+	const float animationT = static_cast<float>(diff) / 1000.f;
 
 	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
 	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
 
+	currentTimeTicks = animationTimeTicks;
+
 	return animationTimeTicks;
+}
+
+bool AnimationModel::AnimationNotOnPlay()
+{
+	bool result = false;
+
+	if (currentTimeTicks < 0.1f)
+		result = true;
+
+	return result;
 }

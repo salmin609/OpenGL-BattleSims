@@ -15,31 +15,14 @@
 BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 	, MultipleAnimationObject* mObj_)
 {
-
 	//In order to get various time difference, change this variable value
 	diffTimeAnimCount = 1;
 
 	obj = mObj_;
-	//const int animationsCount = static_cast<int>(obj->animationModels.size());
 
 	////1 : different times
 	////2 : different animations
 	////3 : different angles
-
-	//for(int i = 0; i < diffTimeAnimCount; ++i)
-	//{
-	//	std::vector<std::vector<FrameBuffer*>> fbs1;
-	//	for(int j = 0; j < animationsCount; ++j)
-	//	{
-	//		std::vector<FrameBuffer*> fbs2;
-	//		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-	//		{
-	//			fbs2.push_back(new FrameBuffer(windowW, windowH));
-	//		}
-	//		fbs1.push_back(fbs2);
-	//	}
-	//	frameBuffers.push_back(fbs1);
-	//}
 
 	for(int i = 0; i < diffTimeAnimCount; ++i)
 	{
@@ -54,61 +37,73 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 
 		for(int j = 0; j < idleAnimationsCount; ++j)
 		{
+			AnimationModel* idleAnimation = animState->idleAnimations[j];
 			std::vector<FrameBuffer*> fbs2;
 
 			for(int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				fbs2.push_back(new FrameBuffer(windowW, windowH));
+				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
+				fbs2.push_back(fb);
 			}
+			idleAnimation->fbs = fbs2;
 
 			fbs1.push_back(fbs2);
 		}
 
 		for (int j = 0; j < attackAnimationsCount; ++j)
 		{
+			AnimationModel* attackAnimation = animState->attackAnimations[j];
 			std::vector<FrameBuffer*> fbs2;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				fbs2.push_back(new FrameBuffer(windowW, windowH));
+				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
+				fbs2.push_back(fb);
 			}
+			attackAnimation->fbs = fbs2;
 
 			fbs1.push_back(fbs2);
 		}
 
 		for (int j = 0; j < painAnimationsCount; ++j)
 		{
+			AnimationModel* painAnimation = animState->painAnimations[j];
 			std::vector<FrameBuffer*> fbs2;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				fbs2.push_back(new FrameBuffer(windowW, windowH));
+				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
+				fbs2.push_back(fb);
 			}
-
+			painAnimation->fbs = fbs2;
 			fbs1.push_back(fbs2);
 		}
 
 		for (int j = 0; j < runAnimationsCount; ++j)
 		{
 			std::vector<FrameBuffer*> fbs2;
+			AnimationModel* runAnimation = animState->runAnimation;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				fbs2.push_back(new FrameBuffer(windowW, windowH));
+				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
+				fbs2.push_back(fb);
 			}
-
+			runAnimation->fbs = fbs2;
 			fbs1.push_back(fbs2);
 		}
 		
 		for (int j = 0; j < deathAnimationsCount; ++j)
 		{
 			std::vector<FrameBuffer*> fbs2;
+			AnimationModel* deathAnimation = animState->deathAnimation;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
-				fbs2.push_back(new FrameBuffer(windowW, windowH));
+				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
+				fbs2.push_back(fb);
 			}
-
+			deathAnimation->fbs = fbs2;
 			fbs1.push_back(fbs2);
 		}
 
@@ -119,23 +114,6 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 
 BillboardAnimatingDatas::~BillboardAnimatingDatas()
 {
-	//delete model;
-	//AnimationState* state = obj->animState;
-	//const int frameBufferCount = (state->painAnimations.size() + state->idleAnimations.size() +
-	//	state->attackAnimations.size() + 2);
-
-	//const int animationsCount = static_cast<int>(obj->animationModels.size());
-
-	//for (int i = 0; i < diffTimeAnimCount; ++i)
-	//{
-	//	for(int j = 0; j < animationsCount; ++j)
-	//	{
-	//		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-	//		{
-	//			delete frameBuffers[i][j][k];
-	//		}
-	//	}
-	//}
 
 	for(int i = 0; i < diffTimeAnimCount; ++i)
 	{
@@ -157,9 +135,5 @@ BillboardAnimatingDatas::~BillboardAnimatingDatas()
 		}
 
 	}
-
-
-
 	delete obj;
-
 }

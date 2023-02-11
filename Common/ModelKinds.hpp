@@ -2,6 +2,16 @@
 #include <string>
 #include <vector>
 
+
+enum class State
+{
+	Idle = 0,
+	Attack,
+	Pain,
+	Run,
+	Death
+};
+
 enum class ObjKind
 {
 	SWAT = 0,
@@ -13,8 +23,10 @@ enum class ObjKind
 enum class AnimationKinds
 {
 	SWAT_IDLE_0 = 0,
+	SWAT_IDLE_1,
 	SWAT_RUN_0,
 	SWAT_ATTACK_0,
+	SWAT_ATTACK_1,
 	SWAT_DEATH_0,
 	SWAT_PAIN_0,
 
@@ -39,6 +51,10 @@ inline std::vector<std::string> ObjPaths()
 			path += "Swat_Idle_0";
 			break;
 
+		case AnimationKinds::SWAT_IDLE_1:
+			path += "Swat_Idle_1";
+			break;
+
 		case AnimationKinds::SWAT_RUN_0:
 			path += "Swat_Run_0";
 			break;
@@ -49,6 +65,10 @@ inline std::vector<std::string> ObjPaths()
 
 		case AnimationKinds::SWAT_ATTACK_0:
 			path += "Swat_Attack_0";
+			break;
+
+		case AnimationKinds::SWAT_ATTACK_1:
+			path += "Swat_Attack_1";
 			break;
 
 		case AnimationKinds::SWAT_PAIN_0:

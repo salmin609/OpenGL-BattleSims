@@ -10,16 +10,20 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "AnimationModel.h"
 #include "BillboardManager.h"
 #include "FrameBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
 
 BillBoardObject::BillBoardObject(Shader* shader_,
-	std::vector<std::vector<FrameBuffer*>>* fb_)
+	std::vector<std::vector<FrameBuffer*>>* fb_,
+	AnimationState* animState_)
 {
 	shader = shader_;
 	animFrames = fb_;
+	currentAngleSlot = 0;
+	animState = animState_;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
@@ -57,9 +61,14 @@ void BillBoardObject::ChangeFrameBufferAngle(int index)
 {
 	usingFrameBuffer = (*fbs)[index];
 	usingFrameBuffer->isOnUsage = true;
+	currentAngleSlot = index;
 }
 
 void BillBoardObject::SetAnimation(int index)
 {
-	fbs = &(*animFrames)[index];
+	//Todo: Should read animState first, tracking that anim available.
+	AnimationModel* model = animState->RequestAnimation(index);
+
+	if(model != nullptr)
+		fbs = &model->fbs;
 }

@@ -10,6 +10,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+class AnimationState;
 class Camera;
 struct SphereBV;
 struct Frustum;
@@ -21,7 +22,8 @@ class BillBoardObject
 {
 public:
 	BillBoardObject(Shader* shader_, 
-		std::vector<std::vector<FrameBuffer*>>* fb_);
+		std::vector<std::vector<FrameBuffer*>>* fb_,
+		AnimationState* animState_);
 	~BillBoardObject();
 	void Render(const glm::mat4& projMat, 
 		const glm::mat4& viewMatWithoutRot, 
@@ -32,7 +34,9 @@ public:
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*>* fbs{};
 	std::vector<std::vector<FrameBuffer*>>* animFrames;
+	AnimationState* animState;
 private:
 	unsigned vao{};
 	Shader* shader;
+	unsigned currentAngleSlot;
 };

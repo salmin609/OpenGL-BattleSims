@@ -19,6 +19,6 @@ private:
 	void SetShaderUniforms() override;
 	void PopulateBuffers() override;
 	HerdManager* herdManager;
-	int* reached;
+	int* animationIndexBuffer;
 	BillboardObjectManager* boObjManager;
 };
