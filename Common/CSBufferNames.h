@@ -9,8 +9,8 @@ enum class MoveCS
 	herdDirection2 = 4,
 	time = 5,
 	randSpeed = 6,
-	targetEnemyPos = 7
-
+	targetEnemyPos = 7,
+	attackedCount = 8
 	
 };
 
@@ -25,7 +25,8 @@ enum class AttackCS
 	time = 0,
 	AnimationIndex,
 	obj1Pos,
-	obj2Pos
+	obj2Pos,
+	attackedCount
 };
 
 inline int ToInt(AttackCS val)

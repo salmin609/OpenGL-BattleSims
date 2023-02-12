@@ -16,6 +16,7 @@
 #include "AnimationModelDatas.h"
 #include "AnimationState.h"
 
+class BillBoardObject;
 class FrameBuffer;
 struct aiNode;
 class Camera;
@@ -56,6 +57,7 @@ public:
 	PlayingStatus playingStatus;
 	float currentTimeTicks;
 	std::vector<FrameBuffer*> fbs;
+	std::vector<BillBoardObject*> boUsingThisAnimation;
 private:
 	double animDuration;
 	Importer* importer;

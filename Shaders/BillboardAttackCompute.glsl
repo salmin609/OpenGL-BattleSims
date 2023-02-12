@@ -23,6 +23,11 @@ bufferObjPos2 {
 	vec4 obj2Pos[];
 };
 
+layout(binding = 4) buffer
+bufferTargetingCounts {
+	int attackedCount[];
+};
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -36,9 +41,10 @@ void main(void)
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
 	int animIndex = animationIndex[index];
+	int attackedNum = attackedCount[index];
 
 	if(animIndex == State_Attack || animIndex == State_Death)
-		time[index] += dt;
+		time[index] += (dt * attackedNum);
 
 	if (time[index] > 5.f && time[index] < 6.5f)
 	{
@@ -55,4 +61,5 @@ void main(void)
 			obj1Pos[index].y = -10000.f;
 		}
 	}
+	attackedCount[index] = 0;
 }

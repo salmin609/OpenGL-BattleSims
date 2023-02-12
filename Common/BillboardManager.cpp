@@ -13,6 +13,7 @@
 #include "AnimationModel.h"
 #include "AnimationState.h"
 #include "BillboardAnimatingDatas.h"
+#include "BillBoardObject.h"
 #include "Camera.hpp"
 #include "Floor.hpp"
 #include "FrameBuffer.h"
@@ -254,8 +255,20 @@ void BillboardManager::ChangeStatus(std::vector<AnimationModel*> animations)
 		{
 			aiAnimation* animInfo = model->GetScene()->mAnimations[0];
 			double animDuration = animInfo->mDuration;
-			if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+			if (currentTimeTick > (static_cast<float>(animDuration) - 0.05f))
+			{
 				model->playingStatus = AnimationModel::PlayingStatus::Ready;
+
+				//if(!model->boUsingThisAnimation.empty())
+				//{
+				//	for(BillBoardObject* bo : model->boUsingThisAnimation)
+				//	{
+				//		bo->SetAnimation(static_cast<int>(State::Idle));
+				//	}
+
+				//	model->boUsingThisAnimation.clear();
+				//}
+			}
 		}
 	}
 }

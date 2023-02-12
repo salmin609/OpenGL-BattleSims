@@ -32,7 +32,8 @@ public:
 		const glm::mat4& viewMatWithoutRot, 
 		const glm::vec4& pos);
 	void ChangeFrameBufferAngle(int index);
-	AnimationModel* SetAnimation(int index, AnimationModel* found = nullptr);
+	bool SetAnimation(int index);
+	
 	
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*>* fbs{};

@@ -9,9 +9,10 @@
 #include "Shader.h"
 #include "glm/vec4.hpp"
 #include "CSBufferNames.h"
+#include "ModelKinds.hpp"
 
 BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_,
-	BillboardObjectManager* boObjManager_): ComputeShaderClass(boMovingShader_), boObjManager(boObjManager_)
+                                     BillboardObjectManager* boObjManager_): ComputeShaderClass(boMovingShader_), boObjManager(boObjManager_)
 {
 	herdManager = herdManager_;
 	BillboardMovingCS::PopulateBuffers();
@@ -46,7 +47,7 @@ void BillboardMovingCS::PopulateBuffers()
 	std::vector<int> ck;
 	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
 	{
-		ck.push_back(1);
+		ck.push_back(static_cast<int>(State::Idle));
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
@@ -88,6 +89,15 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, ToInt(MoveCS::targetEnemyPos)));
+
+	std::vector<int> attackedCount;
+	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
+	{
+		attackedCount.push_back(0);
+	}
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::attackedCount)));
 }
 
 void BillboardMovingCS::Move(float dt) const

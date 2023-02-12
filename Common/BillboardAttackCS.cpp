@@ -30,9 +30,13 @@ void BillboardAttackCS::AttackComputation(float dt) const
 	csBuffers->BindBuffers();
 	shader->SendUniformFloat("dt", dt);
 	boObjManager->boMovingCS->csBuffers->
-	GetBuffer(ToInt(MoveCS::AnimationIndex))->BindStorage(ToInt(AttackCS::AnimationIndex));
+		GetBuffer(ToInt(MoveCS::AnimationIndex))->BindStorage(ToInt(AttackCS::AnimationIndex));
+	boObjManager->boMovingCS->csBuffers->
+		GetBuffer(ToInt(MoveCS::attackedCount))->BindStorage(ToInt(AttackCS::attackedCount));
 	herdManager->GetHerd(0)->posBuffer->BindStorage(ToInt(AttackCS::obj1Pos));
 	herdManager->GetHerd(1)->posBuffer->BindStorage(ToInt(AttackCS::obj2Pos));
+
+
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);

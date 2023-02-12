@@ -233,7 +233,7 @@ void GetBoPosAndDirection(int posBufferIndex, uint index, inout vec3 boPos, inou
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	uint wholeBufferIndex = index;
+	uint globalIndex = index;
 
 	frameBufferUsingIndex[index] = -1;
 
@@ -252,6 +252,6 @@ void main(void)
 		SphereBV spv = GetSPV(boPos, 0.1f);
 
 		if (isOnFrustum(camFrustum, spv))
-			frameBufferUsingIndex[wholeBufferIndex] = GetUsingFrameBufferIndex(boPos, boDirection);
+			frameBufferUsingIndex[globalIndex] = GetUsingFrameBufferIndex(boPos, boDirection);
 	}
 }

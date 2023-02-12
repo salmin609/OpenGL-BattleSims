@@ -26,11 +26,11 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 	animState = animState_;
 	currentState = State::Idle;
 	fbs = &(*animFrames)[static_cast<int>(currentState)];
-	
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
-	SetAnimation(0);
+	SetAnimation(static_cast<int>(State::Idle));
 }
 
 BillBoardObject::~BillBoardObject()
@@ -39,9 +39,9 @@ BillBoardObject::~BillBoardObject()
 }
 
 
-void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,const glm::vec4& pos)
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, const glm::vec4& pos)
 {
-	if(usingFrameBuffer != nullptr)
+	if (usingFrameBuffer != nullptr)
 	{
 		shader->Use();
 		glBindVertexArray(vao);
@@ -62,7 +62,7 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 
 void BillBoardObject::ChangeFrameBufferAngle(int index)
 {
-	if(fbs != nullptr)
+	if (fbs != nullptr)
 	{
 		usingFrameBuffer = (*fbs)[index];
 		usingFrameBuffer->isOnUsage = true;
@@ -70,35 +70,26 @@ void BillBoardObject::ChangeFrameBufferAngle(int index)
 	}
 }
 
-AnimationModel* BillBoardObject::SetAnimation(int index, AnimationModel* found)
+bool BillBoardObject::SetAnimation(int index)
 {
 	//Todo: Should read animState first, tracking that anim available.
 
-	if(usingFrameBuffer != nullptr)
+	if (usingFrameBuffer != nullptr)
 	{
-		if(found == nullptr)
+		const State newState = static_cast<State>(index);
+
+		if (newState != currentState)
 		{
-			const State newState = static_cast<State>(index);
+			AnimationModel* model = animState->RequestAnimation(index);
 
-			if(newState != currentState)
+			if (model != nullptr)
 			{
-				AnimationModel* model = animState->RequestAnimation(index);
-
-				if (model != nullptr)
-				{
-					fbs = &model->fbs;
-					currentState = newState;
-
-					return model;
-				}
+				model->boUsingThisAnimation.push_back(this);
+				fbs = &model->fbs;
+				currentState = newState;
+				return true;
 			}
 		}
-		else
-		{
-			fbs = &found->fbs;
-			currentState = static_cast<State>(index);
-		}
 	}
-
-	return nullptr;
+	return false;
 }
