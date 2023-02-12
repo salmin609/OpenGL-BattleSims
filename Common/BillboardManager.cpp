@@ -228,123 +228,35 @@ void BillboardManager::CheckAnimationPlayingStatus()
 	{
 		AnimationState* animState = boData->obj->animState;
 
-		const size_t idleAnimsSize = animState->idleAnimations.size();
-		const size_t attackAnimsSize = animState->attackAnimations.size();
-		const size_t painAnimsSize = animState->painAnimations.size();
-		const size_t deathAnimsSize = 1;
-		const size_t runAnimsSize = 1;
+		ChangeStatus(animState->idleAnimations);
+		ChangeStatus(animState->attackAnimations);
+		ChangeStatus(animState->painAnimations);
+		ChangeStatus({animState->deathAnimation});
+		ChangeStatus({ animState->runAnimation });
+	}
+}
 
-		for(size_t i = 0; i < idleAnimsSize; ++i)
+void BillboardManager::ChangeStatus(std::vector<AnimationModel*> animations)
+{
+	const size_t animationsSize = animations.size();
+
+	for(size_t i = 0; i < animationsSize; ++i)
+	{
+		AnimationModel* model = animations[i];
+		float currentTimeTick = model->currentTimeTicks;
+
+		if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
 		{
-			AnimationModel* model = animState->idleAnimations[i];
-
-			float currentTimeTick = model->currentTimeTicks;
-
-			//animation is almost initial status
-
-			if(model->playingStatus == AnimationModel::PlayingStatus::Ready)
-			{
-				if (currentTimeTick > 0.1f)
-					model->playingStatus = AnimationModel::PlayingStatus::Playing;
-			}
-			else if(model->playingStatus == AnimationModel::PlayingStatus::Playing)
-			{
-				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
-				double animDuration = animInfo->mDuration;
-				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
-					model->playingStatus = AnimationModel::PlayingStatus::Ready;
-			}
-			
+			if (currentTimeTick > 0.1f)
+				model->playingStatus = AnimationModel::PlayingStatus::Playing;
 		}
-
-		for (size_t i = 0; i < attackAnimsSize; ++i)
+		else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
 		{
-			AnimationModel* model = animState->attackAnimations[i];
-
-			float currentTimeTick = model->currentTimeTicks;
-
-			//animation is almost initial status
-
-			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
-			{
-				if (currentTimeTick > 0.1f)
-					model->playingStatus = AnimationModel::PlayingStatus::Playing;
-			}
-			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
-			{
-				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
-				double animDuration = animInfo->mDuration;
-				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
-					model->playingStatus = AnimationModel::PlayingStatus::Ready;
-			}
+			aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+			double animDuration = animInfo->mDuration;
+			if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
+				model->playingStatus = AnimationModel::PlayingStatus::Ready;
 		}
-
-		for (size_t i = 0; i < painAnimsSize; ++i)
-		{
-			AnimationModel* model = animState->painAnimations[i];
-
-			float currentTimeTick = model->currentTimeTicks;
-
-			//animation is almost initial status
-
-			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
-			{
-				if (currentTimeTick > 0.1f)
-					model->playingStatus = AnimationModel::PlayingStatus::Playing;
-			}
-			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
-			{
-				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
-				double animDuration = animInfo->mDuration;
-				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
-					model->playingStatus = AnimationModel::PlayingStatus::Ready;
-			}
-		}
-
-		for (size_t i = 0; i < deathAnimsSize; ++i)
-		{
-			AnimationModel* model = animState->deathAnimation;
-
-			float currentTimeTick = model->currentTimeTicks;
-
-			//animation is almost initial status
-
-			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
-			{
-				if (currentTimeTick > 0.1f)
-					model->playingStatus = AnimationModel::PlayingStatus::Playing;
-			}
-			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
-			{
-				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
-				double animDuration = animInfo->mDuration;
-				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
-					model->playingStatus = AnimationModel::PlayingStatus::Ready;
-			}
-		}
-
-		for (size_t i = 0; i < runAnimsSize; ++i)
-		{
-			AnimationModel* model = animState->runAnimation;
-
-			float currentTimeTick = model->currentTimeTicks;
-
-			//animation is almost initial status
-
-			if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
-			{
-				if (currentTimeTick > 0.1f)
-					model->playingStatus = AnimationModel::PlayingStatus::Playing;
-			}
-			else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
-			{
-				aiAnimation* animInfo = model->GetScene()->mAnimations[0];
-				double animDuration = animInfo->mDuration;
-				if (currentTimeTick > (static_cast<float>(animDuration) - 0.1f))
-					model->playingStatus = AnimationModel::PlayingStatus::Ready;
-			}
-		}
-
 	}
 }
 

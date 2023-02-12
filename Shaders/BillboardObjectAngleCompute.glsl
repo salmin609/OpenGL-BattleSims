@@ -246,7 +246,7 @@ void main(void)
 
 	float distance = distance(boPos, camPos);
 
-	if (distance < 1000.f)
+	if (distance < zFar)
 	{
 		Frustum camFrustum = GetFrustumPlans();
 		SphereBV spv = GetSPV(boPos, 0.1f);

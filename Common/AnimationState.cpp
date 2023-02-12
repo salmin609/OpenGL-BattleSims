@@ -41,31 +41,42 @@ void AnimationState::AddAnimation(State animState, AnimationModel* model)
 AnimationModel* AnimationState::RequestAnimation(int state)
 {
 	std::vector<AnimationModel*> anis;
-	switch(state)
+	const State newState = static_cast<State>(state);
+	switch(newState)
 	{
-	case static_cast<int>(State::Idle):
+	case State::Idle:
 		anis = idleAnimations;
 		break;
-	case static_cast<int>(State::Attack):
+	case State::Attack:
 		anis = attackAnimations;
 		break;
-	case static_cast<int>(State::Pain):
+	case State::Pain:
 		anis = painAnimations;
 		break;
-	case static_cast<int>(State::Run):
+	case State::Run:
 		anis = std::vector<AnimationModel*>{runAnimation};
 		break;
-	case static_cast<int>(State::Death):
+	case State::Death:
 		anis = std::vector<AnimationModel*>{deathAnimation};
 		break;
 	default: 
 		break;
 	}
 
-	for (AnimationModel* ani : anis)
+	if(newState == State::Attack || newState == State::Death ||
+		newState == State::Pain)
 	{
-		if (ani->playingStatus == AnimationModel::PlayingStatus::Ready)
-			return ani;
+		for (AnimationModel* ani : anis)
+		{
+			if (ani->playingStatus == AnimationModel::PlayingStatus::Ready)
+				return ani;
+		}
 	}
+	else
+	{
+		const int randomIndex = rand() % static_cast<int>(anis.size());
+		return anis[randomIndex];
+	}
+	
 	return nullptr;
 }

@@ -24,15 +24,21 @@ enum class AnimationKinds
 {
 	SWAT_IDLE_0 = 0,
 	SWAT_IDLE_1,
+	SWAT_IDLE_2,
 	SWAT_RUN_0,
 	SWAT_ATTACK_0,
 	SWAT_ATTACK_1,
+	SWAT_ATTACK_2,
+	SWAT_ATTACK_3,
 	SWAT_DEATH_0,
 	SWAT_PAIN_0,
 
 	KNIGHT_IDLE_0,
 	KNIGHT_RUN_0,
 	KNIGHT_ATTACK_0,
+	KNIGHT_ATTACK_1,
+	KNIGHT_ATTACK_2,
+	KNIGHT_ATTACK_3,
 	KNIGHT_DEATH_0,
 	KNIGHT_PAIN_0,
 
@@ -55,6 +61,10 @@ inline std::vector<std::string> ObjPaths()
 			path += "Swat_Idle_1";
 			break;
 
+		case AnimationKinds::SWAT_IDLE_2:
+			path += "Swat_Idle_2";
+			break;
+
 		case AnimationKinds::SWAT_RUN_0:
 			path += "Swat_Run_0";
 			break;
@@ -71,6 +81,14 @@ inline std::vector<std::string> ObjPaths()
 			path += "Swat_Attack_1";
 			break;
 
+		case AnimationKinds::SWAT_ATTACK_2:
+			path += "Swat_Attack_2";
+			break;
+
+		case AnimationKinds::SWAT_ATTACK_3:
+			path += "Swat_Attack_3";
+			break;
+
 		case AnimationKinds::SWAT_PAIN_0:
 			path += "Swat_Pain_0";
 			break;
@@ -85,6 +103,15 @@ inline std::vector<std::string> ObjPaths()
 			break;
 		case AnimationKinds::KNIGHT_ATTACK_0:
 			path += "Knight_Attack_0";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_1:
+			path += "Knight_Attack_1";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_2:
+			path += "Knight_Attack_2";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_3:
+			path += "Knight_Attack_3";
 			break;
 
 		case AnimationKinds::KNIGHT_DEATH_0:

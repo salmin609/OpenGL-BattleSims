@@ -61,10 +61,10 @@ public:
 		AnimationModel* baseModel,
 		int& fbSlotIndex);
 	void CheckAnimationPlayingStatus();
+	void ChangeStatus(std::vector<AnimationModel*> animations);
 	
 	Camera* GetBoObjCamera(int camIndex);
 	BillboardAnimatingDatas* GetAnimData(int index);
-
 
 	std::vector<BillboardAnimatingDatas*> boDatas;
 	std::map<std::string, MeshDatas*> meshDatas;

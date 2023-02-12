@@ -146,12 +146,32 @@ void HerdManager::ChangeAnimationState(int* data)
 	{
 		const Herd* herd = herds[i];
 
+		//std::map<State, AnimationModel*> modelStatus;
+
 		for (int j = 0; j < herd->count; ++j)
 		{
 			BillBoardObject* bo = herd->bos[j];
 			const int newState = data[bufIndex];
 
-			bo->SetAnimation(newState);
+			/*auto find = modelStatus.find(static_cast<State>(newState));
+
+			if(find == modelStatus.end())
+			{
+				AnimationModel* model = bo->SetAnimation(newState);
+
+				if (model != nullptr)
+				{
+					modelStatus.insert(
+						std::pair<State, AnimationModel*>(
+							static_cast<State>(newState), model));
+				}
+			}
+			else
+			{*/
+				bo->SetAnimation(newState);
+			///}
+
+			
 
 			bufIndex++;
 		}

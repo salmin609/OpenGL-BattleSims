@@ -10,6 +10,9 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "ModelKinds.hpp"
+
+class AnimationModel;
 class AnimationState;
 class Camera;
 struct SphereBV;
@@ -29,12 +32,13 @@ public:
 		const glm::mat4& viewMatWithoutRot, 
 		const glm::vec4& pos);
 	void ChangeFrameBufferAngle(int index);
-	void SetAnimation(int index);
+	AnimationModel* SetAnimation(int index, AnimationModel* found = nullptr);
 	
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*>* fbs{};
 	std::vector<std::vector<FrameBuffer*>>* animFrames;
 	AnimationState* animState;
+	State currentState;
 private:
 	unsigned vao{};
 	Shader* shader;

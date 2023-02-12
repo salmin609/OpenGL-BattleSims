@@ -24,6 +24,9 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 	animFrames = fb_;
 	currentAngleSlot = 0;
 	animState = animState_;
+	currentState = State::Idle;
+	fbs = &(*animFrames)[static_cast<int>(currentState)];
+	
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
@@ -59,16 +62,43 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 
 void BillBoardObject::ChangeFrameBufferAngle(int index)
 {
-	usingFrameBuffer = (*fbs)[index];
-	usingFrameBuffer->isOnUsage = true;
-	currentAngleSlot = index;
+	if(fbs != nullptr)
+	{
+		usingFrameBuffer = (*fbs)[index];
+		usingFrameBuffer->isOnUsage = true;
+		currentAngleSlot = index;
+	}
 }
 
-void BillBoardObject::SetAnimation(int index)
+AnimationModel* BillBoardObject::SetAnimation(int index, AnimationModel* found)
 {
 	//Todo: Should read animState first, tracking that anim available.
-	AnimationModel* model = animState->RequestAnimation(index);
 
-	if(model != nullptr)
-		fbs = &model->fbs;
+	if(usingFrameBuffer != nullptr)
+	{
+		if(found == nullptr)
+		{
+			const State newState = static_cast<State>(index);
+
+			if(newState != currentState)
+			{
+				AnimationModel* model = animState->RequestAnimation(index);
+
+				if (model != nullptr)
+				{
+					fbs = &model->fbs;
+					currentState = newState;
+
+					return model;
+				}
+			}
+		}
+		else
+		{
+			fbs = &found->fbs;
+			currentState = static_cast<State>(index);
+		}
+	}
+
+	return nullptr;
 }
