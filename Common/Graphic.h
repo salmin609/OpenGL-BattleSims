@@ -72,6 +72,7 @@ private:
 	Shader* bbCheckFrameBufferUsage;
 	Shader* bbMoving;
 	Shader* bbAttack;
+	Shader* bbChangeAnimation;
 	int windowWidth;
 	int windowHeight;
 	Line* floorLine;

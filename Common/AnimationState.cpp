@@ -71,10 +71,13 @@ AnimationModel* AnimationState::RequestAnimation(int state)
 			if (ani->playingStatus == AnimationModel::PlayingStatus::Ready)
 				return ani;
 		}
+
+		//return idleAnimations[0];
 	}
 	else
 	{
 		const int randomIndex = rand() % static_cast<int>(anis.size());
+
 		return anis[randomIndex];
 	}
 	

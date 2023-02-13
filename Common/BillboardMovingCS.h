@@ -15,6 +15,7 @@ public:
 		BillboardObjectManager* boObjManager_);
 	~BillboardMovingCS() override;
 	void Move(float dt) const;
+
 private:
 	void SetShaderUniforms() override;
 	void PopulateBuffers() override;

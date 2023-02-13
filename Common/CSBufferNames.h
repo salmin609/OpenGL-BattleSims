@@ -10,7 +10,8 @@ enum class MoveCS
 	time = 5,
 	randSpeed = 6,
 	targetEnemyPos = 7,
-	attackedCount = 8
+	attackedCount = 8,
+	prevAnimationStates = 9,
 	
 };
 
@@ -46,6 +47,18 @@ enum class AngleCS
 };
 
 inline int ToInt(AngleCS val)
+{
+	return static_cast<int>(val);
+}
+
+enum class AnimationChangeCS
+{
+	animationIndex = 0,
+	prevAnimationIndex,
+	needReset,
+};
+
+inline int ToInt(AnimationChangeCS val)
 {
 	return static_cast<int>(val);
 }

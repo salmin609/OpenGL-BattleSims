@@ -48,6 +48,11 @@ bufferTargetingCounts {
 	int attackedCount[];
 };
 
+layout(binding = 9) buffer
+bufferPrevState {
+	int prevAnimationStates[];
+};
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -198,63 +203,66 @@ void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	uint globalIndex = index;
+	prevAnimationStates[globalIndex] = animationIndex[globalIndex];
+	
+	float timer = time[globalIndex];
 
-	vec4 herdPos[MAX_COUNT_PER_HERD];
-	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
-	float speed = randSpeed[globalIndex];
-
-	GetBufferOffset(index);
-	CopyToHerdPosArray(herdPos, otherHerdPos);	
-
-	vec4 direction;
-
-	if (posBufferIndex == 0)
-		direction = herdDirection1[index];
-	else
-		direction = herdDirection2[index];
-
-
-	vec4 pos = herdPos[index];
-
-
-	//Need to move toward facing direction.
-	//bool collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, index);
-
-	bool collisionWithEnemy;
-
-	if (posBufferIndex == 0)
-		collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection1[index]);
-	else if (posBufferIndex == 1)
-		collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection2[index]);
-
-
-	int allyCollisionIndex = 0;
-	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);
-
-	if (collisionWithEnemy == false && collisionWithAlly == false)
+	if (timer < 5.f)
 	{
-		animationIndex[globalIndex] = State_Run;
+		vec4 herdPos[MAX_COUNT_PER_HERD];
+		vec4 otherHerdPos[MAX_COUNT_PER_HERD];
+		float speed = randSpeed[globalIndex];
+
+
+		GetBufferOffset(index);
+		CopyToHerdPosArray(herdPos, otherHerdPos);	
+
+		vec4 direction;
+
 		if (posBufferIndex == 0)
-			MoveToward(obj1Pos[index], direction, speed);
-		else if (posBufferIndex == 1)
-			MoveToward(obj2Pos[index], direction, speed);
-	}
-	else
-	{
-		//reached[reachedBufferIndex] = 1;
-		int animIndex = animationIndex[globalIndex];
-		if (animIndex != State_Death)
-		{
-			if (collisionWithEnemy)
-				animationIndex[globalIndex] = State_Attack;
-			else if (collisionWithAlly)
-			{
-				if (posBufferIndex == 1)
-					allyCollisionIndex += 1280;
+			direction = herdDirection1[index];
+		else
+			direction = herdDirection2[index];
 
-				if(animationIndex[allyCollisionIndex] != State_Run)
-					animationIndex[globalIndex] = State_Idle;
+		vec4 pos = herdPos[index];
+
+		bool collisionWithEnemy;
+
+		if (posBufferIndex == 0)
+			collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection1[index]);
+		else if (posBufferIndex == 1)
+			collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection2[index]);
+
+
+		int allyCollisionIndex = 0;
+		bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);
+
+		if (collisionWithEnemy == false && collisionWithAlly == false)
+		{
+			animationIndex[globalIndex] = State_Run;
+			if (posBufferIndex == 0)
+				MoveToward(obj1Pos[index], direction, speed);
+			else if (posBufferIndex == 1)
+				MoveToward(obj2Pos[index], direction, speed);
+		}
+		else
+		{
+			//reached[reachedBufferIndex] = 1;
+			int animIndex = animationIndex[globalIndex];
+			if (animIndex != State_Death)
+			{
+				if (collisionWithEnemy)
+					animationIndex[globalIndex] = State_Attack;
+				else if (collisionWithAlly)
+				{
+					if (posBufferIndex == 1)
+						allyCollisionIndex += 1280;
+
+					if(animationIndex[allyCollisionIndex] != State_Run)
+						animationIndex[globalIndex] = State_Idle;
+				}
 			}
 		}
 	}
+
 }

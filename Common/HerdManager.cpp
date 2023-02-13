@@ -152,8 +152,8 @@ void HerdManager::ChangeAnimationState(int* data)
 			const int newState = data[bufIndex];
 			bool changed = bo->SetAnimation(newState);
 
-
-
+			//Tries to change state, but failed.
+			//need to reset previous state
 			bufIndex++;
 		}
 	}

@@ -187,6 +187,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\AnimationModelDatas.cpp" />
     <ClCompile Include="..\Common\AnimationState.cpp" />
     <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp" />
+    <ClCompile Include="..\Common\BillboardAnimationChangeCS.cpp" />
     <ClCompile Include="..\Common\BillboardAttackCS.cpp" />
     <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp" />
     <ClCompile Include="..\Common\BillboardManager.cpp" />
@@ -227,6 +228,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\AnimationState.h" />
     <ClInclude Include="..\Common\AnimationStructure.hpp" />
     <ClInclude Include="..\Common\BillboardAnimatingDatas.h" />
+    <ClInclude Include="..\Common\BillboardAnimationChangeCS.h" />
     <ClInclude Include="..\Common\BillboardAttackCS.h" />
     <ClInclude Include="..\Common\BillboardFrameBufferUsageCS.h" />
     <ClInclude Include="..\Common\BillboardManager.h" />
@@ -278,6 +280,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <None Include="..\Shaders\billboardFrag.glsl" />
     <None Include="..\Shaders\billboardGeometry.glsl" />
     <None Include="..\Shaders\BillboardObjectAngleCompute.glsl" />
+    <None Include="..\Shaders\BillboardObjectAnimationStateCompute.glsl" />
     <None Include="..\Shaders\BillboardObjectMovingCompute.glsl" />
     <None Include="..\Shaders\billboardVert.glsl" />
     <None Include="..\Shaders\SkinningComputeShader.glsl" />

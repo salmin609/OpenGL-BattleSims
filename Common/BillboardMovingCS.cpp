@@ -98,6 +98,11 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::attackedCount)));
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::prevAnimationStates)));
+
+
 }
 
 void BillboardMovingCS::Move(float dt) const

@@ -1,6 +1,7 @@
 #include "BillboardObjectManager.h"
 #include <iostream>
 
+#include "BillboardAnimationChangeCS.h"
 #include "BillboardAttackCS.h"
 #include "BillboardFrameBufferUsageCS.h"
 #include "BillboardManager.h"
@@ -14,7 +15,8 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 												Shader* boFrameBufferUsageComputeShader,
                                                Camera* currentCam_,
 												Shader* boMovingShader_,
-												Shader* boAttackShader_)
+												Shader* boAttackShader_,
+												Shader* boChangeAnimationShader_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
@@ -24,6 +26,7 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boFBusageCS = new BillboardFrameBufferUsageCS(boFBusageComputeShader, currentCam, herdManager, this);
 	boMovingCS = new BillboardMovingCS(boMovingShader_, herdManager, this);
 	boAttackCS = new BillboardAttackCS(boAttackShader_, herdManager, this);
+	boAnimChangeCS = new BillboardAnimationChangeCS(boChangeAnimationShader_, herdManager, this);
 }
 
 BillboardObjectManager::~BillboardObjectManager()
@@ -47,6 +50,11 @@ void BillboardObjectManager::Move(float dt)
 void BillboardObjectManager::Attack(float dt)
 {
 	boAttackCS->AttackComputation(dt);
+}
+
+void BillboardObjectManager::ResetAnimationState()
+{
+	boAnimChangeCS->ResetAnimation();
 }
 
 void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)

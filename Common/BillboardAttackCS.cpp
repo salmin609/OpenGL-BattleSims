@@ -44,7 +44,7 @@ void BillboardAttackCS::AttackComputation(float dt) const
 	glUseProgram(0);
 
 	//csBuffers->GetData(0, timers);
-	assert(timers != nullptr);
+	//assert(timers != nullptr);
 }
 
 void BillboardAttackCS::SetShaderUniforms()

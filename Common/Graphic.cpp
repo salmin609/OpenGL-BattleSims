@@ -34,6 +34,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
 	bbMoving = new Shader("../Shaders/BillboardObjectMovingCompute.glsl");
 	bbAttack = new Shader("../Shaders/BillboardAttackCompute.glsl");
+	bbChangeAnimation = new Shader("../Shaders/BillboardObjectAnimationStateCompute.glsl");
 
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
@@ -44,7 +45,8 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	objPaths = ObjPaths();
 	boManager = new BillboardManager(animShader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
 	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
-		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack);
+		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,
+		bbChangeAnimation);
 	skybox = new SkyBox();
 
 	floorLine = new Line(lineShader);
@@ -78,6 +80,7 @@ Graphic::~Graphic()
 	delete floorShader;
 	delete bbCheckFrameBufferUsage;
 	delete bbMoving;
+	delete bbChangeAnimation;
 }
 
 void Graphic::Draw()
@@ -100,6 +103,7 @@ void Graphic::Draw()
 
 	boObjsManager->CheckFrameBufferUsage();
 	boObjsManager->Move(deltaTime);
+	//boObjsManager->ResetAnimationState();
 	boObjsManager->Attack(deltaTime);
 	boManager->CheckAnimationPlayingStatus();
 
