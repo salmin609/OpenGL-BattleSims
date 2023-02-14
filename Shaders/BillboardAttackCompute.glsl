@@ -40,11 +40,12 @@ void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
-	int animIndex = animationIndex[index];
 	int attackedNum = attackedCount[index];
 
 	if (attackedNum > 0)
 	{
+		int animIndex = animationIndex[index];
+
 		time[index] += (dt * attackedNum);
 
 		if (time[index] > 5.f && time[index] < 6.5f)

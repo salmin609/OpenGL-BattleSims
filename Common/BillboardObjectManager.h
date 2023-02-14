@@ -28,7 +28,7 @@ public:
 		Shader* boChangeAnimationShader_);
 	~BillboardObjectManager();
 
-	void SetFrameBufferIndexFromAngle() const;
+	void CalculateBOAngle() const;
 	void Move(float dt) const;
 	void Attack(float dt) const;
 	void ResetAnimationState() const;

@@ -39,9 +39,9 @@ BillboardObjectManager::~BillboardObjectManager()
 	delete boAttackCS;
 }
 
-void BillboardObjectManager::SetFrameBufferIndexFromAngle() const
+void BillboardObjectManager::CalculateBOAngle() const
 {
-	boFBusageCS->SetFrameBufferIndexFromAngle();
+	boFBusageCS->CalculateBOAngle();
 }
 
 void BillboardObjectManager::Move(float dt) const

@@ -99,7 +99,7 @@ void Graphic::Draw()
 
 	//Decide whether billboard object is in frustum or not.
 	//If it, get angle index from that
-	boObjsManager->SetFrameBufferIndexFromAngle();
+	boObjsManager->CalculateBOAngle();
 
 	//Move those billboard objects to desired direction. which is to nearest enemy.
 	boObjsManager->Move(deltaTime);

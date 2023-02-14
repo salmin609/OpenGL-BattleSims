@@ -14,7 +14,7 @@ public:
 	BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
 		HerdManager* herdManager_, BillboardObjectManager* boObjManager_);
 	~BillboardFrameBufferUsageCS() override;
-	void SetFrameBufferIndexFromAngle() const;
+	void CalculateBOAngle() const;
 	int* boFBusageDatas{};
 
 private:

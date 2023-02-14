@@ -26,7 +26,7 @@ BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 	delete[] boFBusageDatas;
 }
 
-void BillboardFrameBufferUsageCS::SetFrameBufferIndexFromAngle() const
+void BillboardFrameBufferUsageCS::CalculateBOAngle() const
 {
 	shader->Use();
 	csBuffers->BindBuffers();
