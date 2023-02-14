@@ -14,8 +14,8 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 12.f));
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 12.f));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 15.f));
+	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f));
 }
 
 HerdManager::~HerdManager()
@@ -109,57 +109,41 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
 		//Setting different times per animation consumes lots of fps.
 
 		herd->bos.push_back(new BillBoardObject(boShader,
-			&data->frameBuffers[0], data->obj->animState));
+			&data->frameBuffers[0], data->obj->animState, boObjIndex++));
+
 	}
 
 	return herd;
 }
 
-void HerdManager::SetBosFrameBufferIndex(void* boFBusageDatas)
+void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices)
 {
 	int bufIndex = 0;
 
-	for (int i = 0; i < herdCount; ++i)
+	for(int i = 0; i < herdCount; ++i)
 	{
 		const Herd* herd = herds[i];
 
-		for (int j = 0; j < herd->count; ++j)
+		for(int j = 0; j < herd->count; ++j)
 		{
 			BillBoardObject* bo = herd->bos[j];
-			const int usingFbIndex = static_cast<int*>(boFBusageDatas)[bufIndex];
 
-			if (usingFbIndex >= 0)
-				bo->ChangeFrameBufferAngle(usingFbIndex);
+			const int fbAngleIndex = fbAngleIndices[bufIndex];
+
+			if (fbAngleIndex >= 0)
+			{
+				bo->ChangeFrameBufferAngle(fbAngleIndex);
+
+				const int newState = animationStateIndices[bufIndex];
+
+				bo->SetAnimation(newState, animationStateIndices);
+			}
 			else
+			{
 				bo->usingFrameBuffer = nullptr;
+			}
 
 			bufIndex++;
 		}
 	}
-}
-
-void HerdManager::ChangeAnimationState(int* data)
-{
-	int bufIndex = 0;
-
-	for (int i = 0; i < herdCount; ++i)
-	{
-		const Herd* herd = herds[i];
-
-		for (int j = 0; j < herd->count; ++j)
-		{
-			BillBoardObject* bo = herd->bos[j];
-			const int newState = data[bufIndex];
-			bool changed = bo->SetAnimation(newState);
-
-			//Tries to change state, but failed.
-			//need to reset previous state
-			bufIndex++;
-		}
-	}
-}
-
-void HerdManager::ChangeToAttackAnimation()
-{
-
 }

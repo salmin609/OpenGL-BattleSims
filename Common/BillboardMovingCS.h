@@ -15,11 +15,11 @@ public:
 		BillboardObjectManager* boObjManager_);
 	~BillboardMovingCS() override;
 	void Move(float dt) const;
+	int* animationIndexBuffer;
 
 private:
 	void SetShaderUniforms() override;
 	void PopulateBuffers() override;
 	HerdManager* herdManager;
-	int* animationIndexBuffer;
 	BillboardObjectManager* boObjManager;
 };

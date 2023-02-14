@@ -62,8 +62,8 @@ bufferPrevState {
 uniform int herdOffset[32];
 uniform float dt;
 uniform int herdCount;
-float attackRange = 15.f;
-float radius = 10.f;
+float attackRange = 20.f;
+float radius = 15.f;
 int posBufferIndex = 0;
 
 
@@ -207,8 +207,8 @@ void main(void)
 	
 	float timer = time[globalIndex];
 
-	if (timer < 5.f)
-	{
+	//if (timer < 5.f)
+	//{
 		vec4 herdPos[MAX_COUNT_PER_HERD];
 		vec4 otherHerdPos[MAX_COUNT_PER_HERD];
 		float speed = randSpeed[globalIndex];
@@ -263,6 +263,6 @@ void main(void)
 				}
 			}
 		}
-	}
+	//}
 
 }

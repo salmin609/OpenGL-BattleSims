@@ -26,7 +26,7 @@ BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 	delete[] boFBusageDatas;
 }
 
-void BillboardFrameBufferUsageCS::CheckFrameBufferUsage() const
+void BillboardFrameBufferUsageCS::SetFrameBufferIndexFromAngle() const
 {
 	shader->Use();
 	csBuffers->BindBuffers();
@@ -43,10 +43,6 @@ void BillboardFrameBufferUsageCS::CheckFrameBufferUsage() const
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
-
-	csBuffers->GetData(0, boFBusageDatas);
-	assert(boFBusageDatas != nullptr);
-	herdManager->SetBosFrameBufferIndex(boFBusageDatas);
 }
 
 void BillboardFrameBufferUsageCS::PopulateBuffers()

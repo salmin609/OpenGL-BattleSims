@@ -63,23 +63,24 @@ AnimationModel* AnimationState::RequestAnimation(int state)
 		break;
 	}
 
-	if(newState == State::Attack || newState == State::Death ||
-		newState == State::Pain)
-	{
-		for (AnimationModel* ani : anis)
-		{
-			if (ani->playingStatus == AnimationModel::PlayingStatus::Ready)
-				return ani;
-		}
+	//if(newState == State::Attack /*|| newState == State::Death*/ ||
+	//	newState == State::Pain)
+	//{
+	//	for (AnimationModel* ani : anis)
+	//	{
+	//		if (ani->playingStatus == AnimationModel::PlayingStatus::Ready)
+	//			return ani;
+	//	}
 
-		//return idleAnimations[0];
-	}
-	else
-	{
-		const int randomIndex = rand() % static_cast<int>(anis.size());
+	//	//return idleAnimations[0];
+	//}
+	//else
+	//{
+	//	const int randomIndex = rand() % static_cast<int>(anis.size());
 
-		return anis[randomIndex];
-	}
-	
-	return nullptr;
+	//	return anis[randomIndex];
+	//}
+	const int randomIndex = rand() % static_cast<int>(anis.size());
+	return anis[randomIndex];
+	//return nullptr;
 }

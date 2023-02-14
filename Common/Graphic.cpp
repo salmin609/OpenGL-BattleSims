@@ -97,15 +97,25 @@ void Graphic::Draw()
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	/*frustum->ResetFrustumPlans(*currentCam, fov,
-		glm::radians(currentCam->Zoom), boObjsManager->zNear,
-		boObjsManager->zFar);*/
+	//Decide whether billboard object is in frustum or not.
+	//If it, get angle index from that
+	boObjsManager->SetFrameBufferIndexFromAngle();
 
-	boObjsManager->CheckFrameBufferUsage();
+	//Move those billboard objects to desired direction. which is to nearest enemy.
 	boObjsManager->Move(deltaTime);
-	//boObjsManager->ResetAnimationState();
+
+	//Check if object is attacking animation, if it, += dt to timer buffer.
+	//if timer over some certain number, change to death state.
 	boObjsManager->Attack(deltaTime);
-	boManager->CheckAnimationPlayingStatus();
+
+	//Update animation's status whether Ready or Playing
+	//boManager->CheckAnimationPlayingStatus();
+
+	//Set angle index from framebuffers[]. if index >= 0, which means
+	//billboard object is in frustum, near of camera position.
+
+	//Request to change animation state
+	boObjsManager->ChangeAnimationOfHerds();
 
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);

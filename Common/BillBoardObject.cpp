@@ -18,19 +18,21 @@
 
 BillBoardObject::BillBoardObject(Shader* shader_,
 	std::vector<std::vector<FrameBuffer*>>* fb_,
-	AnimationState* animState_)
+	AnimationState* animState_,
+	int boObjIndex_)
 {
 	shader = shader_;
 	animFrames = fb_;
 	currentAngleSlot = 0;
 	animState = animState_;
 	currentState = State::Idle;
+	boObjIndex = boObjIndex_;
 	fbs = &(*animFrames)[static_cast<int>(currentState)];
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
-	SetAnimation(static_cast<int>(State::Idle));
+	SetAnimation(static_cast<int>(State::Idle), nullptr);
 }
 
 BillBoardObject::~BillBoardObject()
@@ -70,7 +72,7 @@ void BillBoardObject::ChangeFrameBufferAngle(int index)
 	}
 }
 
-bool BillBoardObject::SetAnimation(int index)
+bool BillBoardObject::SetAnimation(int index, int* animationIndexData)
 {
 	//Todo: Should read animState first, tracking that anim available.
 
@@ -84,11 +86,19 @@ bool BillBoardObject::SetAnimation(int index)
 
 			if (model != nullptr)
 			{
-				model->boUsingThisAnimation.push_back(this);
+				//model->boUsingThisAnimation.push_back(this);
 				fbs = &model->fbs;
 				currentState = newState;
 				return true;
 			}
+			//TODO : Need to do something when Request is failed.
+			//Value of animationIndex[] was changed, but the animation was not changed.
+			else
+			{
+				if (animationIndexData != nullptr)
+					animationIndexData[boObjIndex] = static_cast<int>(currentState);
+			}
+			
 		}
 	}
 	return false;

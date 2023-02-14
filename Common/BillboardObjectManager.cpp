@@ -7,7 +7,9 @@
 #include "BillboardManager.h"
 #include "BillboardMovingCS.h"
 #include "Buffer.hpp"
+#include "BufferManager.h"
 #include "Camera.hpp"
+#include "CSBufferNames.h"
 #include "HerdManager.h"
 #include "Shader.h"
 
@@ -37,27 +39,40 @@ BillboardObjectManager::~BillboardObjectManager()
 	delete boAttackCS;
 }
 
-void BillboardObjectManager::CheckFrameBufferUsage()
+void BillboardObjectManager::SetFrameBufferIndexFromAngle() const
 {
-	boFBusageCS->CheckFrameBufferUsage();
+	boFBusageCS->SetFrameBufferIndexFromAngle();
 }
 
-void BillboardObjectManager::Move(float dt)
+void BillboardObjectManager::Move(float dt) const
 {
 	boMovingCS->Move(dt);
 }
 
-void BillboardObjectManager::Attack(float dt)
+void BillboardObjectManager::Attack(float dt) const
 {
 	boAttackCS->AttackComputation(dt);
 }
 
-void BillboardObjectManager::ResetAnimationState()
+void BillboardObjectManager::ResetAnimationState() const
 {
 	boAnimChangeCS->ResetAnimation();
 }
 
-void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
+void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat) const
 {
 	herdManager->Render(projMat, viewMat);
+}
+
+void BillboardObjectManager::ChangeAnimationOfHerds() const
+{
+	Buffer* animationIndexBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::AnimationIndex));
+	const Buffer* frameIndexBuffer = boFBusageCS->csBuffers->GetBuffer(ToInt(AngleCS::frameBufferUsageIndex));
+
+	frameIndexBuffer->GetData(boFBusageCS->boFBusageDatas);
+	animationIndexBuffer->GetData(boMovingCS->animationIndexBuffer);
+
+	herdManager->ChangeAnimationIndicesOfHerd(boFBusageCS->boFBusageDatas, boMovingCS->animationIndexBuffer);
+
+	animationIndexBuffer->WriteData(boMovingCS->animationIndexBuffer);
 }

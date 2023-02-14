@@ -43,23 +43,26 @@ void main(void)
 	int animIndex = animationIndex[index];
 	int attackedNum = attackedCount[index];
 
-	if(animIndex == State_Attack || animIndex == State_Death)
+	if (attackedNum > 0)
+	{
 		time[index] += (dt * attackedNum);
 
-	if (time[index] > 5.f && time[index] < 6.5f)
-	{
-		animationIndex[index] = State_Death;
-	}
-	else if (time[index] > 6.5f)
-	{
-		if (index > 1280)
+		if (time[index] > 5.f && time[index] < 6.5f)
 		{
-			obj2Pos[index - 1280].y = -10000.f;
+			animationIndex[index] = State_Death;
 		}
-		else
+		else if (time[index] > 6.5f)
 		{
-			obj1Pos[index].y = -10000.f;
+			if (index > 1280)
+			{
+				obj2Pos[index - 1280].y = -10000.f;
+			}
+			else
+			{
+				obj1Pos[index].y = -10000.f;
+			}
 		}
+		attackedCount[index] = 0;
 	}
-	attackedCount[index] = 0;
+
 }

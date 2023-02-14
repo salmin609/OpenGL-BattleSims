@@ -21,12 +21,11 @@ public:
 	Herd* GetHerd(int index);
 	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset);
-	void SetBosFrameBufferIndex(void* boFBusageDatas);
-	void ChangeAnimationState(int* data);
-	void ChangeToAttackAnimation();
+	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices);
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
+	int boObjIndex = 0;
 
 private:
 	std::vector<Herd*> herds;

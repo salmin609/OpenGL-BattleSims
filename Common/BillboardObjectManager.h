@@ -28,11 +28,12 @@ public:
 		Shader* boChangeAnimationShader_);
 	~BillboardObjectManager();
 
-	void CheckFrameBufferUsage();
-	void Move(float dt);
-	void Attack(float dt);
-	void ResetAnimationState();
-	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
+	void SetFrameBufferIndexFromAngle() const;
+	void Move(float dt) const;
+	void Attack(float dt) const;
+	void ResetAnimationState() const;
+	void Render(const glm::mat4& projMat, const glm::mat4& viewMat) const;
+	void ChangeAnimationOfHerds() const;
 
 	HerdManager* herdManager;
 	BillboardMovingCS* boMovingCS;
