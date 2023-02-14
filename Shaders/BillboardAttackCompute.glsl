@@ -28,6 +28,11 @@ bufferTargetingCounts {
 	int attackedCount[];
 };
 
+layout(binding = 5) buffer
+bufferObjectDead {
+	int isDead[];
+};
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -42,8 +47,8 @@ void main(void)
 
 	int attackedNum = attackedCount[index];
 
-	if (attackedNum > 0)
-	{
+	//if (attackedNum > 0)
+	//{
 		int animIndex = animationIndex[index];
 
 		time[index] += (dt * attackedNum);
@@ -54,16 +59,17 @@ void main(void)
 		}
 		else if (time[index] > 6.5f)
 		{
-			if (index > 1280)
-			{
-				obj2Pos[index - 1280].y = -10000.f;
-			}
-			else
-			{
-				obj1Pos[index].y = -10000.f;
-			}
+			//if (index > 1280)
+			//{
+			//	obj2Pos[index - 1280].y = -10000.f;
+			//}
+			//else
+			//{
+			//	obj1Pos[index].y = -10000.f;
+			//}
+			isDead[index] = 1;
 		}
 		attackedCount[index] = 0;
-	}
+	//}
 
 }

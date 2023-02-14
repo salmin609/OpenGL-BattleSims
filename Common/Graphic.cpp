@@ -117,6 +117,8 @@ void Graphic::Draw()
 	//Request to change animation state
 	boObjsManager->ChangeAnimationOfHerds();
 
+	//
+
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 

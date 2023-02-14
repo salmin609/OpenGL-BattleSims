@@ -14,7 +14,8 @@ BillboardAttackCS::BillboardAttackCS(Shader* shader_, HerdManager* herdManager_,
 ComputeShaderClass(shader_), herdManager(herdManager_), boObjManager(boObjManager_)
 {
 	timers = new float[herdManager->totalRenderingAmount];
-	
+	isDead = new int[herdManager->totalRenderingAmount];
+
 	BillboardAttackCS::PopulateBuffers();
 	BillboardAttackCS::SetShaderUniforms();
 }
@@ -22,6 +23,7 @@ ComputeShaderClass(shader_), herdManager(herdManager_), boObjManager(boObjManage
 BillboardAttackCS::~BillboardAttackCS()
 {
 	delete[] timers;
+	delete[] isDead;
 }
 
 void BillboardAttackCS::AttackComputation(float dt) const
@@ -59,4 +61,14 @@ void BillboardAttackCS::PopulateBuffers()
 	}
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, timers, ToInt(AttackCS::time)));
+
+	std::vector<int> isDead;
+
+	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
+	{
+		isDead.push_back(0);
+	}
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+		GL_DYNAMIC_DRAW, isDead.data(), ToInt(AttackCS::isDead)));
 }

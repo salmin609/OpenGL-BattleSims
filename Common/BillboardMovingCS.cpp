@@ -108,10 +108,11 @@ void BillboardMovingCS::PopulateBuffers()
 void BillboardMovingCS::Move(float dt) const
 {
 	shader->Use();
-	//csBuffers->GetBuffer(ToInt(MoveCS::AnimationIndex))->WriteData(animationIndexBuffer);
 	csBuffers->BindBuffers();
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::time))->
 		BindStorage(ToInt(MoveCS::time));
+	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))->
+		BindStorage(ToInt(MoveCS::isDead));
 	herdManager->BindHerdPositions();
 	shader->SendUniformValues();
 	shader->SendUniformFloat("dt", dt);
@@ -120,12 +121,4 @@ void BillboardMovingCS::Move(float dt) const
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
-
-	//glm::vec4* ck = new glm::vec4[herdManager->totalRenderingAmount];
-	//csBuffers->GetData(7, ck);
-
-	//csBuffers->GetData(ToInt(MoveCS::AnimationIndex), animationIndexBuffer);
-	//assert(animationIndexBuffer != nullptr);
-
-	//herdManager->ChangeAnimationState(animationIndexBuffer);
 }

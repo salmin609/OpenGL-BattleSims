@@ -12,6 +12,7 @@ enum class MoveCS
 	targetEnemyPos = 7,
 	attackedCount = 8,
 	prevAnimationStates = 9,
+	isDead = 10
 	
 };
 
@@ -27,7 +28,8 @@ enum class AttackCS
 	AnimationIndex,
 	obj1Pos,
 	obj2Pos,
-	attackedCount
+	attackedCount,
+	isDead,
 };
 
 inline int ToInt(AttackCS val)

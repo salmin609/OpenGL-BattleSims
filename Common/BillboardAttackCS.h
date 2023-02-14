@@ -13,7 +13,7 @@ public:
 	~BillboardAttackCS() override;
 	void AttackComputation(float dt) const;
 	float* timers;
-	
+	int* isDead;
 private:
 	HerdManager* herdManager;
 	void SetShaderUniforms() override;

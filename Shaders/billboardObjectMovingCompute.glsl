@@ -53,6 +53,12 @@ bufferPrevState {
 	int prevAnimationStates[];
 };
 
+layout(binding = 10) buffer
+bufferObjectDead {
+	int isDead[];
+};
+
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -65,6 +71,7 @@ uniform int herdCount;
 float attackRange = 20.f;
 float radius = 15.f;
 int posBufferIndex = 0;
+uint globalIndex;
 
 
 #define MAX_COUNT_PER_HERD 1280
@@ -127,8 +134,16 @@ bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HER
 	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
 	{
 		vec4 otherPos = otherHerdPos[i];
+		int dead;
 
-		if (CheckCollision(pos, otherPos, attackRange))
+		//enemy's death state
+		if (posBufferIndex == 0)
+			dead = isDead[i + MAX_COUNT_PER_HERD];
+		else if (posBufferIndex == 1)
+			dead = isDead[i];
+
+		if (CheckCollision(pos, otherPos, attackRange)
+			&& dead == 0)
 		{
 			if (posBufferIndex == 0)
 			{
@@ -156,15 +171,22 @@ bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout ve
 	{
 		if (i != index)
 		{
-			int animationState;
+			int dead = 0;
+
 			if (posBufferIndex == 0)
-				animationState = animationIndex[index];
+			{
+				dead = isDead[i];
+			}
 			else if (posBufferIndex == 1)
-				animationState = animationIndex[index + MAX_COUNT_PER_HERD];
+			{
+				dead = isDead[i + MAX_COUNT_PER_HERD];
+			}
 				
 			vec4 otherPos = herdPos[i];
 
-			if(otherPos.y > 0.f)
+			
+
+			if(dead == 0)
 				if (CheckCollision(nextPos, otherPos, radius))
 				{
 					collisionIndex = i;
@@ -202,7 +224,7 @@ void FindNearEnemy(inout vec4 direction, vec4 pos, vec4 otherHerdPos[MAX_COUNT_P
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	uint globalIndex = index;
+	globalIndex = index;
 	prevAnimationStates[globalIndex] = animationIndex[globalIndex];
 	
 	float timer = time[globalIndex];

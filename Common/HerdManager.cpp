@@ -116,7 +116,8 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
 	return herd;
 }
 
-void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices)
+void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
+	int* isDead)
 {
 	int bufIndex = 0;
 
@@ -129,8 +130,9 @@ void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animati
 			BillBoardObject* bo = herd->bos[j];
 
 			const int fbAngleIndex = fbAngleIndices[bufIndex];
+			const int dead = isDead[bufIndex];
 
-			if (fbAngleIndex >= 0)
+			if (fbAngleIndex >= 0 && dead == 0)
 			{
 				bo->ChangeFrameBufferAngle(fbAngleIndex);
 

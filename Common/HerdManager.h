@@ -21,7 +21,8 @@ public:
 	Herd* GetHerd(int index);
 	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset);
-	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices);
+	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
+		int* isDead);
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;

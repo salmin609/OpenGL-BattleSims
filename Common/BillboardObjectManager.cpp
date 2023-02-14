@@ -69,10 +69,15 @@ void BillboardObjectManager::ChangeAnimationOfHerds() const
 	Buffer* animationIndexBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::AnimationIndex));
 	const Buffer* frameIndexBuffer = boFBusageCS->csBuffers->GetBuffer(ToInt(AngleCS::frameBufferUsageIndex));
 
+	//also, check dead objects
+	Buffer* boIsDeadBuffer = boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead));
+
 	frameIndexBuffer->GetData(boFBusageCS->boFBusageDatas);
 	animationIndexBuffer->GetData(boMovingCS->animationIndexBuffer);
+	boIsDeadBuffer->GetData(boAttackCS->isDead);
 
-	herdManager->ChangeAnimationIndicesOfHerd(boFBusageCS->boFBusageDatas, boMovingCS->animationIndexBuffer);
+	herdManager->ChangeAnimationIndicesOfHerd(boFBusageCS->boFBusageDatas, boMovingCS->animationIndexBuffer,
+		boAttackCS->isDead);
 
 	animationIndexBuffer->WriteData(boMovingCS->animationIndexBuffer);
 }
