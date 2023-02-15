@@ -1,5 +1,4 @@
 #include "BillboardFrameBufferUsageCS.h"
-
 #include "BillboardMovingCS.h"
 #include "BillboardObjectManager.h"
 #include "Buffer.hpp"
@@ -34,7 +33,7 @@ void BillboardFrameBufferUsageCS::CalculateBOAngle() const
 	herdManager->directionBuffer->BindStorage(ToInt(AngleCS::objsDirections));
 	shader->SendUniformValues();
 
-	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
+	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);

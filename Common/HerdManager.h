@@ -19,7 +19,8 @@ public:
 	Herd* GetHerd(int index);
 	void GetHerdPositions(int num, glm::vec3 pos, float offset);
 	void PopulateBuffers();
-	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection);
+	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
+		int side);
 	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
 		int* isDead);
 	int totalRenderingAmount;

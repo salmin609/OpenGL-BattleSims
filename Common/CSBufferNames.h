@@ -9,7 +9,7 @@ enum class MoveCS
 	randSpeed,
 	targetEnemyPos,
 	attackedCount,
-	isDead
+	isDead,
 };
 
 inline int ToInt(MoveCS val)

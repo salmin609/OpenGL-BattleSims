@@ -259,6 +259,7 @@ int main()
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     (window);
+
     if(!camLock)
     {
 	    const float xpos = static_cast<float>(xposIn);

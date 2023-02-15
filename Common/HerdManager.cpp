@@ -19,12 +19,11 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boShader = boShader_;
 
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 15.f,
-		glm::vec4(-1.f, 0.f, 0.f, 1.f)));
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f,
-		glm::vec4(1.f, 0.f, 0.f, 1.f)));
-
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 100.f), 15.f,
-		glm::vec4(-1.f, 0.f, 0.f, 1.f)));
+		glm::vec4(-1.f, 0.f, 0.f, 1.f), 0));
+	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f,
+		glm::vec4(1.f, 0.f, 0.f, 1.f), 1));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, 300.f), 15.f,
+		glm::vec4(-1.f, 0.f, 0.f, 1.f), 0));
 	PopulateBuffers();
 }
 
@@ -104,12 +103,13 @@ void HerdManager::PopulateBuffers()
 		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::objsDirections));
 }
 
-Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection)
+Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
+	int side)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
 	GetHerdPositions(num, pos, offset);
 
-	Herd* herd = new Herd(num, herdDirection);
+	Herd* herd = new Herd(num, herdDirection, side);
 
 	for (int i = 0; i < num; ++i)
 	{

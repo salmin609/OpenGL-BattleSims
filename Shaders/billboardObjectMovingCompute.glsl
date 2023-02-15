@@ -45,6 +45,8 @@ bufferObjectDead {
 };
 
 
+
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -53,16 +55,17 @@ bufferObjectDead {
 
 uniform int herdOffset[32];
 uniform int herdCounts[32];
+uniform int herdSides[32];
 uniform float dt;
 uniform int herdCount;
-float attackRange = 20.f;
+float attackRange = 30.f;
 float radius = 15.f;
 int herdIndex;
 uint index;
 
 void MoveToward(inout vec4 pos, vec4 direction, float moveSpeed)
 {
-	pos = pos + direction * dt * moveSpeed;
+	pos = pos + normalize(direction) * dt * moveSpeed;
 	pos.w = 1.f;
 }
 
@@ -93,14 +96,18 @@ void GetBufferOffset()
 
 bool CheckCollisionWithEnemy()
 {
-	int herdIndexOffset = 0;
 	vec4 pos = objsPoses[index];
+	int herdIndexOffset = 0;
+	//uint closestEnemyIndexSoFar = 0;
+	//float closestDistanceBtwEnemySoFar = 10000.f;
+	int thisObjSide = herdSides[herdIndex];
+
 	for (int i = 0; i < herdCount; ++i)
 	{
-		herdIndexOffset += herdOffset[i];
 		int herdNums = herdCounts[i];
+		int otherHerdSide = herdSides[i];
 
-		if (i != herdIndex)
+		if (thisObjSide != otherHerdSide)
 		{
 			for (int j = 0; j < herdNums; ++j)
 			{
@@ -108,15 +115,31 @@ bool CheckCollisionWithEnemy()
 				vec4 otherPos = objsPoses[othersIndex];
 				int dead = isDead[othersIndex];
 
-				if (CheckCollision(pos, otherPos, attackRange) && dead == 0)
+				if (dead == 0)
 				{
-					attackedCount[othersIndex]++;
-					objsDirections[index] = otherPos - pos;
-					return true;
+					/*float dist = distance(pos, otherPos);
+
+					if (dist < closestDistanceBtwEnemySoFar)
+					{
+						closestEnemyIndexSoFar = othersIndex;
+						closestDistanceBtwEnemySoFar = dist;
+					}*/
+
+					if (CheckCollision(pos, otherPos, attackRange))
+					{
+						attackedCount[othersIndex]++;
+						objsDirections[index] = otherPos - pos;
+						return true;
+					}
+
 				}
+
 			}
 		}
+		herdIndexOffset += herdNums;
 	}
+
+	//objsDirections[index] = objsPoses[closestEnemyIndexSoFar] - pos;
 	return false;
 }
 
@@ -126,16 +149,19 @@ bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollision
 	vec4 nextPos = objsPoses[index];
 	MoveToward(nextPos, direction, speed);
 	int herdIndexOffset = 0;
+	int thisObjSide = herdSides[herdIndex];
+
 	for (int i = 0; i < herdCount; ++i)
 	{
-		herdIndexOffset += herdOffset[i];
 		int herdNums = herdCounts[i];
-		if (i == herdIndex)
+		int otherObjSide = herdSides[i];
+
+		if (thisObjSide == otherObjSide)
 		{
 			for (int j = 0; j < herdNums; ++j)
 			{
 				uint othersInSameHerdIndex = (herdIndexOffset + j);
-				
+
 				if (othersInSameHerdIndex != index)
 				{
 					int dead = isDead[othersInSameHerdIndex];
@@ -150,9 +176,10 @@ bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollision
 						}
 					}
 				}
-				
+
 			}
 		}
+		herdIndexOffset += herdNums;
 	}
 	return false;
 }
@@ -166,6 +193,7 @@ void main(void)
 	vec4 direction = objsDirections[index];
 
 	GetBufferOffset();
+
 	bool collisionWithEnemy = CheckCollisionWithEnemy();
 	int allyCollisionIndex = 0;
 	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex);
