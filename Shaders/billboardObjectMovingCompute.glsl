@@ -9,51 +9,37 @@ bufferReached {
 };
 
 layout(std430, binding = 1) buffer
-bufferObjPos1 {
-	vec4 obj1Pos[];
+bufferObjsPos {
+	vec4 objsPoses[];
 };
 
 layout(std430, binding = 2) buffer
-bufferObjPos2 {
-	vec4 obj2Pos[];
+bufferObjsDirection {
+	vec4 objsDirections[];
 };
 
-layout(std430, binding = 3) buffer
-bufferObjDirection1 {
-	vec4 herdDirection1[];
-};
 
-layout(std430, binding = 4) buffer
-bufferObjDirection2 {
-	vec4 herdDirection2[];
-};
-
-layout(binding = 5) buffer
+layout(binding = 3) buffer
 bufferTimeCheck {
 	float time[];
 };
 
-layout(binding = 6) buffer
+layout(binding = 4) buffer
 bufferRandSpeed {
 	float randSpeed[];
 };
 
-layout(binding = 7) buffer
+layout(binding = 5) buffer
 bufferTargetEnemyPosition {
 	vec4 targetEnemyPos[];
 };
 
-layout(binding = 8) buffer
+layout(binding = 6) buffer
 bufferTargetingCounts {
 	int attackedCount[];
 };
 
-layout(binding = 9) buffer
-bufferPrevState {
-	int prevAnimationStates[];
-};
-
-layout(binding = 10) buffer
+layout(binding = 7) buffer
 bufferObjectDead {
 	int isDead[];
 };
@@ -66,36 +52,16 @@ bufferObjectDead {
 #define State_Death 4
 
 uniform int herdOffset[32];
+uniform int herdCounts[32];
 uniform float dt;
 uniform int herdCount;
 float attackRange = 20.f;
 float radius = 15.f;
-int posBufferIndex = 0;
-uint globalIndex;
+int herdIndex;
+uint index;
 
+#define MAX_COUNT_PER_HERD 128
 
-#define MAX_COUNT_PER_HERD 1280
-
-void CopyToHerdPosArray(inout vec4 herdPos[MAX_COUNT_PER_HERD], inout vec4 otherHerdPos[MAX_COUNT_PER_HERD])
-{
-	if (posBufferIndex == 0)
-	{
-		for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-		{
-			herdPos[i] = obj1Pos[i];
-			otherHerdPos[i] = obj2Pos[i];
-		}
-	}
-	else if(posBufferIndex == 1)
-	{
-		for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-		{
-			herdPos[i] = obj2Pos[i];
-			otherHerdPos[i] = obj1Pos[i];
-		}
-	}
-	
-}
 
 void MoveToward(inout vec4 pos, vec4 direction, float moveSpeed)
 {
@@ -112,16 +78,15 @@ bool CheckCollision(vec4 pos, vec4 otherPos, float range)
 	return false;
 }
 
-void GetBufferOffset(inout uint index)
+void GetBufferOffset()
 {
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
 		int offset = herdOffset[i];
 
-		if (index >= offset)
+		if (index >= uint(offset))
 		{
-			posBufferIndex = i;
-			index -= offset;
+			herdIndex = i;
 			break;
 		}
 	}
@@ -129,162 +94,96 @@ void GetBufferOffset(inout uint index)
 
 
 
-bool CheckCollisionWithEnemy(vec4 pos, inout vec4 otherHerdPos[MAX_COUNT_PER_HERD], inout vec4 direction)
+bool CheckCollisionWithEnemy(vec4 pos)
 {
-	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
+	for (int i = 0; i < herdCount; ++i)
 	{
-		vec4 otherPos = otherHerdPos[i];
-		int dead;
-
-		//enemy's death state
-		if (posBufferIndex == 0)
-			dead = isDead[i + MAX_COUNT_PER_HERD];
-		else if (posBufferIndex == 1)
-			dead = isDead[i];
-
-		if (CheckCollision(pos, otherPos, attackRange)
-			&& dead == 0)
+		if (i != herdIndex)
 		{
-			if (posBufferIndex == 0)
+			for (int j = 0; j < MAX_COUNT_PER_HERD; ++j)
 			{
-				attackedCount[i + MAX_COUNT_PER_HERD]++;
-			}
-			else if (posBufferIndex == 1) 
-			{
-				attackedCount[i]++;
-			}
+				uint othersIndex = uint((i * MAX_COUNT_PER_HERD) + j);
+				vec4 otherPos = objsPoses[othersIndex];
+				int dead = isDead[othersIndex];
 
-
-			direction = otherPos - pos;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool CheckCollisionWithAllyInForthDirection(uint index, vec4 direction, inout vec4 herdPos[MAX_COUNT_PER_HERD], float speed, inout int collisionIndex)
-{
-	vec4 nextPos = herdPos[index];
-	MoveToward(nextPos, direction, speed);
-	
-	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-	{
-		if (i != index)
-		{
-			int dead = 0;
-
-			if (posBufferIndex == 0)
-			{
-				dead = isDead[i];
-			}
-			else if (posBufferIndex == 1)
-			{
-				dead = isDead[i + MAX_COUNT_PER_HERD];
-			}
-				
-			vec4 otherPos = herdPos[i];
-
-			
-
-			if(dead == 0)
-				if (CheckCollision(nextPos, otherPos, radius))
+				if (CheckCollision(pos, otherPos, attackRange) && dead == 0)
 				{
-					collisionIndex = i;
+					attackedCount[othersIndex]++;
+					objsDirections[index] = otherPos - pos;
 					return true;
 				}
+			}
 		}
 	}
 	return false;
 }
 
-void FindNearEnemy(inout vec4 direction, vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
+bool CheckCollisionWithAllyInForthDirection(vec4 direction, float speed, inout int allyCollisionIndex)
 {
-	float shortestDistanceSoFar = 1000.f;
-	int shortestOneIndex = 0;
-	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
+	vec4 nextPos = objsPoses[index];
+	MoveToward(nextPos, direction, speed);
+
+	for (int i = 0; i < herdCount; ++i)
 	{
-		vec4 otherPos = otherHerdPos[i];
-
-		float distance = distance(pos, otherPos);
-
-		if (distance < shortestDistanceSoFar)
+		if (i == herdIndex)
 		{
-			shortestDistanceSoFar = distance;
-			shortestOneIndex = i;
+			for (int j = 0; j < MAX_COUNT_PER_HERD; ++j)
+			{
+				uint othersInSameHerdIndex = ((i * MAX_COUNT_PER_HERD) + j);
+				
+				if (othersInSameHerdIndex != index)
+				{
+					int dead = isDead[othersInSameHerdIndex];
+					vec4 otherPos = objsPoses[othersInSameHerdIndex];
+
+					if (dead == 0)
+					{
+						if (CheckCollision(nextPos, otherPos, radius))
+						{
+							allyCollisionIndex = int(othersInSameHerdIndex);
+							return true;
+						}
+					}
+				}
+				
+			}
 		}
 	}
-
-	vec4 shortestOnePos = otherHerdPos[shortestOneIndex + 1];
-
-	vec4 currentToShortestOne = shortestOnePos - pos;
-	direction = currentToShortestOne;
+	return false;
 }
-
 
 void main(void)
 {
-	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	globalIndex = index;
-	prevAnimationStates[globalIndex] = animationIndex[globalIndex];
-	
-	float timer = time[globalIndex];
+	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
-	//if (timer < 5.f)
-	//{
-		vec4 herdPos[MAX_COUNT_PER_HERD];
-		vec4 otherHerdPos[MAX_COUNT_PER_HERD];
-		float speed = randSpeed[globalIndex];
+	float timer = time[index];
+	float speed = randSpeed[index];
+	vec4 pos = objsPoses[index];
+	vec4 direction = objsDirections[index];
 
-
-		GetBufferOffset(index);
-		CopyToHerdPosArray(herdPos, otherHerdPos);	
-
-		vec4 direction;
-
-		if (posBufferIndex == 0)
-			direction = herdDirection1[index];
-		else
-			direction = herdDirection2[index];
-
-		vec4 pos = herdPos[index];
-
-		bool collisionWithEnemy;
-
-		if (posBufferIndex == 0)
-			collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection1[index]);
-		else if (posBufferIndex == 1)
-			collisionWithEnemy = CheckCollisionWithEnemy(pos, otherHerdPos, herdDirection2[index]);
+	GetBufferOffset();
+	bool collisionWithEnemy = CheckCollisionWithEnemy(pos);
+	int allyCollisionIndex = 0;
+	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(direction, speed, allyCollisionIndex);
 
 
-		int allyCollisionIndex = 0;
-		bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(index, direction, herdPos, speed, allyCollisionIndex);
-
-		if (collisionWithEnemy == false && collisionWithAlly == false)
+	if (collisionWithEnemy == false && collisionWithAlly == false)
+	{
+		animationIndex[index] = State_Run;
+		MoveToward(objsPoses[index], direction, speed);
+	}
+	else
+	{
+		int animIndex = animationIndex[index];
+		if (animIndex != State_Death)
 		{
-			animationIndex[globalIndex] = State_Run;
-			if (posBufferIndex == 0)
-				MoveToward(obj1Pos[index], direction, speed);
-			else if (posBufferIndex == 1)
-				MoveToward(obj2Pos[index], direction, speed);
-		}
-		else
-		{
-			//reached[reachedBufferIndex] = 1;
-			int animIndex = animationIndex[globalIndex];
-			if (animIndex != State_Death)
+			if (collisionWithEnemy)
+				animationIndex[index] = State_Attack;
+			else if (collisionWithAlly)
 			{
-				if (collisionWithEnemy)
-					animationIndex[globalIndex] = State_Attack;
-				else if (collisionWithAlly)
-				{
-					if (posBufferIndex == 1)
-						allyCollisionIndex += 1280;
-
-					if(animationIndex[allyCollisionIndex] != State_Run)
-						animationIndex[globalIndex] = State_Idle;
-				}
+				if (animationIndex[allyCollisionIndex] != State_Run)
+					animationIndex[index] = State_Idle;
 			}
 		}
-	//}
-
+	}
 }

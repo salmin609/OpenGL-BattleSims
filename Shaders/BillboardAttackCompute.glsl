@@ -14,21 +14,16 @@ bufferAnimationIndex {
 };
 
 layout(std430, binding = 2) buffer
-bufferObjPos1 {
-	vec4 obj1Pos[];
+bufferObjsPos {
+	vec4 objsPoses[];
 };
 
-layout(std430, binding = 3) buffer
-bufferObjPos2 {
-	vec4 obj2Pos[];
-};
-
-layout(binding = 4) buffer
+layout(binding = 3) buffer
 bufferTargetingCounts {
 	int attackedCount[];
 };
 
-layout(binding = 5) buffer
+layout(binding = 4) buffer
 bufferObjectDead {
 	int isDead[];
 };
@@ -44,32 +39,21 @@ uniform float dt;
 void main(void)
 {
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-
 	int attackedNum = attackedCount[index];
+	int animIndex = animationIndex[index];
 
-	//if (attackedNum > 0)
-	//{
-		int animIndex = animationIndex[index];
-
+	if (attackedNum > 0)
+	{
 		time[index] += (dt * attackedNum);
-
-		if (time[index] > 5.f && time[index] < 6.5f)
-		{
-			animationIndex[index] = State_Death;
-		}
-		else if (time[index] > 6.5f)
-		{
-			//if (index > 1280)
-			//{
-			//	obj2Pos[index - 1280].y = -10000.f;
-			//}
-			//else
-			//{
-			//	obj1Pos[index].y = -10000.f;
-			//}
-			isDead[index] = 1;
-		}
 		attackedCount[index] = 0;
-	//}
+	}
 
+	if (time[index] > 5.f && time[index] < 6.5f)
+	{
+		animationIndex[index] = State_Death;
+	}
+	else if (time[index] > 6.5f)
+	{
+		isDead[index] = 1;
+	}
 }

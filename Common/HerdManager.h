@@ -19,7 +19,7 @@ public:
 	int& GetHerdCount();
 	void BindHerdPositions();
 	Herd* GetHerd(int index);
-	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
+	void GetHerdPositions(int num, glm::vec3 pos, float offset);
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset);
 	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
 		int* isDead);
@@ -27,7 +27,11 @@ public:
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
 	int boObjIndex = 0;
-
+	std::vector<glm::vec4> positions;
+	glm::vec4* positionDatas;
+	//all positions & all directions of herds
+	Buffer* posBuffer;
+	Buffer* directionBuffer;
 private:
 	std::vector<Herd*> herds;
 	int herdCount{};

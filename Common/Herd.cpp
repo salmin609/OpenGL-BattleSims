@@ -1,30 +1,24 @@
 #include "Herd.h"
 
 #include "BillBoardObject.h"
-#include "Buffer.hpp"
 
 Herd::Herd(int num_)
 {
-	posBuffer = nullptr;
 	count = num_;
-
-	positions = new glm::vec4[count];
 }
 
 Herd::~Herd()
 {
-	delete posBuffer;
-	delete[] positions;
+	//delete posBuffer;
 
 	for (const auto& bo : bos)
 		delete bo;
 }
 
-void Herd::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
+void Herd::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
+	glm::vec4* posDatas, int startIndex)
 {
-	posBuffer->GetData(positions);
-
-	int index = 0;
+	int index = startIndex;
 	for(const auto& bo : bos)
-		bo->Render(projMat, viewMat, positions[index++]);
+		bo->Render(projMat, viewMat, posDatas[index++]);
 }

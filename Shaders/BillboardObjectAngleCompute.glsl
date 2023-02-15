@@ -7,35 +7,16 @@ bufferOutFrameBufferUsage {
 	int frameBufferUsingIndex[];
 };
 
-layout(binding = 1) buffer
-bufferObjPos1 {
-	vec4 obj1Pos[];
+layout(std430, binding = 1) buffer
+bufferObjsPos {
+	vec4 objsPoses[];
 };
 
-layout(binding = 2) buffer
-bufferObjPos2 {
-	vec4 obj2Pos[];
+layout(std430, binding = 2) buffer
+bufferObjsDirection {
+	vec4 objsDirections[];
 };
 
-layout(binding = 3) buffer
-bufferObjPos3 {
-	vec4 obj3Pos[];
-};
-
-layout(binding = 4) buffer
-bufferObjPos4 {
-	vec4 obj4Pos[];
-};
-
-layout(binding = 5) buffer
-bufferHerdDirection1 {
-	vec4 herdDirection1[];
-};
-
-layout(binding = 6) buffer
-bufferHerdDirection2 {
-	vec4 herdDirection2[];
-};
 
 uniform int herdOffset[32];
 uniform int herdCount;
@@ -48,7 +29,8 @@ uniform float fovY;
 uniform float zNear;
 uniform float zFar;
 uniform int bufferSize;
-
+int herdIndex;
+uint index;
 
 struct Plan 
 {
@@ -149,16 +131,15 @@ float Convert(float radian)
 	return (radian * (180.f / pi));
 }
 
-void GetBufferOffset(inout int posBufferIndex, inout uint index)
+void GetBufferOffset()
 {
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
 		int offset = herdOffset[i];
 
-		if (index >= offset)
+		if (index >= uint(offset))
 		{
-			posBufferIndex = i;
-			index -= offset;
+			herdIndex = i;
 			break;
 		}
 	}
@@ -208,41 +189,16 @@ int GetUsingFrameBufferIndex(vec3 boPos, vec3 boDirection)
 	return result;
 }
 
-void GetBoPosAndDirection(int posBufferIndex, uint index, inout vec3 boPos, inout vec3 boDirection)
-{
-	if (posBufferIndex == 0)
-	{
-		boPos = vec3(obj1Pos[index]);
-		boDirection = vec3(herdDirection1[index]);
-	}
-	else if (posBufferIndex == 1)
-	{
-		boPos = vec3(obj2Pos[index]);
-		boDirection = vec3(herdDirection2[index]);
-	}
-	else if (posBufferIndex == 2)
-	{
-		boPos = vec3(obj3Pos[index]);
-	}
-	else if (posBufferIndex == 3)
-	{
-		boPos = vec3(obj4Pos[index]);
-	}
-}
 
 void main(void)
 {
-	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	uint globalIndex = index;
-
+	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	frameBufferUsingIndex[index] = -1;
 
-	vec3 boPos;
-	int posBufferIndex = 0;
-	vec3 boDirection;
+	vec3 boPos = vec3(objsPoses[index]);
+	vec3 boDirection = vec3(objsDirections[index]);
 
-	GetBufferOffset(posBufferIndex, index);
-	GetBoPosAndDirection(posBufferIndex, index, boPos, boDirection);
+	GetBufferOffset();
 
 	float distance = distance(boPos, camPos);
 
@@ -252,6 +208,6 @@ void main(void)
 		SphereBV spv = GetSPV(boPos, 0.1f);
 
 		if (isOnFrustum(camFrustum, spv))
-			frameBufferUsingIndex[globalIndex] = GetUsingFrameBufferIndex(boPos, boDirection);
+			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos, boDirection);
 	}
 }

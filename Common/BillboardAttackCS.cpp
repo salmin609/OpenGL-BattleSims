@@ -35,8 +35,11 @@ void BillboardAttackCS::AttackComputation(float dt) const
 		GetBuffer(ToInt(MoveCS::AnimationIndex))->BindStorage(ToInt(AttackCS::AnimationIndex));
 	boObjManager->boMovingCS->csBuffers->
 		GetBuffer(ToInt(MoveCS::attackedCount))->BindStorage(ToInt(AttackCS::attackedCount));
-	herdManager->GetHerd(0)->posBuffer->BindStorage(ToInt(AttackCS::obj1Pos));
-	herdManager->GetHerd(1)->posBuffer->BindStorage(ToInt(AttackCS::obj2Pos));
+	/*herdManager->GetHerd(0)->posBuffer->BindStorage(ToInt(AttackCS::obj1Pos));
+	herdManager->GetHerd(1)->posBuffer->BindStorage(ToInt(AttackCS::obj2Pos));*/
+
+	///ToDo: need to modify
+	herdManager->posBuffer->BindStorage(ToInt(AttackCS::objsPoses));
 
 
 
@@ -62,13 +65,13 @@ void BillboardAttackCS::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, timers, ToInt(AttackCS::time)));
 
-	std::vector<int> isDead;
+	std::vector<int> isDeadVec;
 
 	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
 	{
-		isDead.push_back(0);
+		isDeadVec.push_back(0);
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, isDead.data(), ToInt(AttackCS::isDead)));
+		GL_DYNAMIC_DRAW, isDeadVec.data(), ToInt(AttackCS::isDead)));
 }

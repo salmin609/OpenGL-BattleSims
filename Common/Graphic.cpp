@@ -14,8 +14,6 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
-
-#include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
 #include "Skybox.h"

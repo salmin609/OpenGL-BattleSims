@@ -1,8 +1,12 @@
 #include "HerdManager.h"
+
+#include <iostream>
+
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillBoardObject.h"
 #include "Buffer.hpp"
+#include "CSBufferNames.h"
 #include "Herd.h"
 #include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
@@ -14,21 +18,50 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
 	boManager = boManager_;
 	boShader = boShader_;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 15.f));
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f));
+	AddHerd(PopulateHerd(128, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 15.f));
+	AddHerd(PopulateHerd(128, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f));
+
+	posBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * totalRenderingAmount,
+		GL_DYNAMIC_DRAW, positions.data(), ToInt(MoveCS::objsPoses));
+
+	positionDatas = new glm::vec4[totalRenderingAmount];
+	std::vector<glm::vec4> directions;
+	glm::vec4 herdDir = glm::vec4(-1.f, 0.f, 0.f, 1.f);
+
+	for(int i = 0; i < herds[0]->count; ++i)
+	{
+		directions.push_back(herdDir);
+	}
+	herdDir = glm::vec4(1.f, 0.f, 0.f, 1.f);
+
+	for (int i = 0; i < herds[1]->count; ++i)
+	{
+		directions.push_back(herdDir);
+	}
+
+
+	directionBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * totalRenderingAmount,
+		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::objsDirections));
+
 }
 
 HerdManager::~HerdManager()
 {
 	for (const auto& herd : herds)
 		delete herd;
+
+	delete posBuffer;
+	delete directionBuffer;
 }
 
 void HerdManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
+	int startIndex = 0;
+	posBuffer->GetData(positionDatas);
 	for (const auto& herd : herds)
 	{
-		herd->Render(projMat, viewMat);
+		herd->Render(projMat, viewMat, positionDatas, startIndex);
+		startIndex += herd->count;
 	}
 }
 
@@ -47,10 +80,12 @@ int& HerdManager::GetHerdCount()
 
 void HerdManager::BindHerdPositions()
 {
-	for(const auto& herd : herds)
+	/*for(const auto& herd : herds)
 	{
 		herd->posBuffer->BindStorage();
-	}
+	}*/
+
+	posBuffer->BindStorage();
 }
 
 Herd* HerdManager::GetHerd(int index)
@@ -58,9 +93,9 @@ Herd* HerdManager::GetHerd(int index)
 	return herds[index];
 }
 
-Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
+void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset)
 {
-	std::vector<glm::vec4> resultVector;
+	//std::vector<glm::vec4> resultVector;
 
 	glm::vec4 startPos = glm::vec4(pos, 1.f);
 	const glm::vec4 ogStartPos = startPos;
@@ -80,12 +115,13 @@ Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
 			startPos.z += offset;
 		}
 
-		resultVector.push_back(newPos);
+		//resultVector.push_back(newPos);
+		positions.push_back(newPos);
 	}
 
-	return new Buffer(GL_SHADER_STORAGE_BUFFER,
-		static_cast<int>(resultVector.size()) * static_cast<int>(sizeof(glm::vec4)),
-		GL_DYNAMIC_DRAW, resultVector.data(), posBufferIndex++);
+	//return new Buffer(GL_SHADER_STORAGE_BUFFER,
+	//	static_cast<int>(resultVector.size()) * static_cast<int>(sizeof(glm::vec4)),
+	//	GL_DYNAMIC_DRAW, resultVector.data(), posBufferIndex++);
 }
 
 Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
@@ -94,11 +130,12 @@ Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset)
 
 	//const int animationCount = static_cast<int>(data->obj->animationModels.size());
 
-	Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
+	//Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
+	GetHerdPositions(num, pos, offset);
 
 	Herd* herd = new Herd(num);
 
-	herd->posBuffer = posBuffer;
+	//herd->posBuffer = posBuffer;
 	//herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
 
 	for (int i = 0; i < num; ++i)
@@ -130,6 +167,7 @@ void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animati
 			BillBoardObject* bo = herd->bos[j];
 
 			const int fbAngleIndex = fbAngleIndices[bufIndex];
+			//std::cout << "fb : " << fbAngleIndex << std::endl;
 			const int dead = isDead[bufIndex];
 
 			if (fbAngleIndex >= 0 && dead == 0)

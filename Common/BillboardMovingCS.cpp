@@ -53,27 +53,8 @@ void BillboardMovingCS::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::AnimationIndex)));
 
-	std::vector<glm::vec4> directions;
-	const int firstHerdCount = herdManager->GetHerd(0)->count;
-	for(int i = 0; i < firstHerdCount; ++i)
-	{
-		glm::vec4 herdDir = glm::vec4(-1.f, 0.f, 0.f, 1.f);
-		directions.push_back(herdDir);
-	}
 
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(0)->count,
-		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::herdDirection1)));
 
-	directions.clear();
-	const int secondHerdCount = herdManager->GetHerd(1)->count;
-	for (int i = 0; i < secondHerdCount; ++i)
-	{
-		glm::vec4 herdDir = glm::vec4(1.f, 0.f, 0.f, 1.f);
-		directions.push_back(herdDir);
-	}
-
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->GetHerd(1)->count,
-		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::herdDirection2)));
 
 	const float LO = 12.f;
 	const float HI = 25.f;
@@ -98,11 +79,6 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::attackedCount)));
-
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::prevAnimationStates)));
-
-
 }
 
 void BillboardMovingCS::Move(float dt) const
@@ -113,7 +89,10 @@ void BillboardMovingCS::Move(float dt) const
 		BindStorage(ToInt(MoveCS::time));
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))->
 		BindStorage(ToInt(MoveCS::isDead));
-	herdManager->BindHerdPositions();
+	//herdManager->BindHerdPositions();
+	herdManager->posBuffer->BindStorage(ToInt(MoveCS::objsPoses));
+	herdManager->directionBuffer->BindStorage(ToInt(MoveCS::objsDirections));
+
 	shader->SendUniformValues();
 	shader->SendUniformFloat("dt", dt);
 

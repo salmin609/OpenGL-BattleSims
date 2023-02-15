@@ -3,17 +3,13 @@
 enum class MoveCS
 {
 	AnimationIndex = 0,
-	obj1Pos = 1,
-	obj2Pos = 2,
-	herdDirection1 = 3,
-	herdDirection2 = 4,
-	time = 5,
-	randSpeed = 6,
-	targetEnemyPos = 7,
-	attackedCount = 8,
-	prevAnimationStates = 9,
-	isDead = 10
-	
+	objsPoses,
+	objsDirections,
+	time,
+	randSpeed,
+	targetEnemyPos,
+	attackedCount,
+	isDead
 };
 
 inline int ToInt(MoveCS val)
@@ -26,10 +22,9 @@ enum class AttackCS
 {
 	time = 0,
 	AnimationIndex,
-	obj1Pos,
-	obj2Pos,
+	objsPoses,
 	attackedCount,
-	isDead,
+	isDead
 };
 
 inline int ToInt(AttackCS val)
@@ -40,12 +35,8 @@ inline int ToInt(AttackCS val)
 enum class AngleCS
 {
 	frameBufferUsageIndex = 0,
-	obj1Pos,
-	obj2Pos,
-	obj3Pos,
-	obj4Pos,
-	herdDirection1,
-	herdDirection2
+	objsPoses,
+	objsDirections
 };
 
 inline int ToInt(AngleCS val)
