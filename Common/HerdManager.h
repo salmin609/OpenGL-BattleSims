@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
 class Shader;
@@ -17,21 +16,19 @@ public:
 
 	void AddHerd(Herd* herd);
 	int& GetHerdCount();
-	void BindHerdPositions();
 	Herd* GetHerd(int index);
 	void GetHerdPositions(int num, glm::vec3 pos, float offset);
-	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset);
+	void PopulateBuffers();
+	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection);
 	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
 		int* isDead);
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
 	int boObjIndex = 0;
-	std::vector<glm::vec4> positions;
-	glm::vec4* positionDatas;
-	//all positions & all directions of herds
-	Buffer* posBuffer;
-	Buffer* directionBuffer;
+	std::vector<glm::vec4> positionDatas;
+	Buffer* posBuffer{};
+	Buffer* directionBuffer{};
 private:
 	std::vector<Herd*> herds;
 	int herdCount{};

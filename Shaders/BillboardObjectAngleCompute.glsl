@@ -18,8 +18,6 @@ bufferObjsDirection {
 };
 
 
-uniform int herdOffset[32];
-uniform int herdCount;
 uniform vec3 camPos;
 uniform vec3 camFront;
 uniform vec3 camRight;
@@ -29,7 +27,6 @@ uniform float fovY;
 uniform float zNear;
 uniform float zFar;
 uniform int bufferSize;
-int herdIndex;
 uint index;
 
 struct Plan 
@@ -131,20 +128,6 @@ float Convert(float radian)
 	return (radian * (180.f / pi));
 }
 
-void GetBufferOffset()
-{
-	for (int i = herdCount - 1; i >= 0; --i)
-	{
-		int offset = herdOffset[i];
-
-		if (index >= uint(offset))
-		{
-			herdIndex = i;
-			break;
-		}
-	}
-}
-
 int GetUsingFrameBufferIndex(vec3 boPos, vec3 boDirection)
 {
 	int result = 0;
@@ -198,7 +181,6 @@ void main(void)
 	vec3 boPos = vec3(objsPoses[index]);
 	vec3 boDirection = vec3(objsDirections[index]);
 
-	GetBufferOffset();
 
 	float distance = distance(boPos, camPos);
 

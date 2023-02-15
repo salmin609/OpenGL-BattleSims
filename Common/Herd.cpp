@@ -2,9 +2,10 @@
 
 #include "BillBoardObject.h"
 
-Herd::Herd(int num_)
+Herd::Herd(int num_, glm::vec4 herdDirection_)
 {
 	count = num_;
+	herdDirection = herdDirection_;
 }
 
 Herd::~Herd()

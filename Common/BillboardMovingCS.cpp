@@ -36,6 +36,9 @@ void BillboardMovingCS::SetShaderUniforms()
 
 		const std::string uName = "herdOffset[" + std::to_string(i) + "]";
 		shader->AddUniformValues(uName, ShaderValueType::Int, &herd->herdOffset);
+
+		const std::string uName2 = "herdCounts[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName2, ShaderValueType::Int, &herd->count);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);

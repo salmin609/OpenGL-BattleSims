@@ -60,9 +60,6 @@ float radius = 15.f;
 int herdIndex;
 uint index;
 
-#define MAX_COUNT_PER_HERD 128
-
-
 void MoveToward(inout vec4 pos, vec4 direction, float moveSpeed)
 {
 	pos = pos + direction * dt * moveSpeed;
@@ -94,15 +91,20 @@ void GetBufferOffset()
 
 
 
-bool CheckCollisionWithEnemy(vec4 pos)
+bool CheckCollisionWithEnemy()
 {
+	int herdIndexOffset = 0;
+	vec4 pos = objsPoses[index];
 	for (int i = 0; i < herdCount; ++i)
 	{
+		herdIndexOffset += herdOffset[i];
+		int herdNums = herdCounts[i];
+
 		if (i != herdIndex)
 		{
-			for (int j = 0; j < MAX_COUNT_PER_HERD; ++j)
+			for (int j = 0; j < herdNums; ++j)
 			{
-				uint othersIndex = uint((i * MAX_COUNT_PER_HERD) + j);
+				uint othersIndex = uint(herdIndexOffset + j);
 				vec4 otherPos = objsPoses[othersIndex];
 				int dead = isDead[othersIndex];
 
@@ -118,18 +120,21 @@ bool CheckCollisionWithEnemy(vec4 pos)
 	return false;
 }
 
-bool CheckCollisionWithAllyInForthDirection(vec4 direction, float speed, inout int allyCollisionIndex)
+bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollisionIndex)
 {
+	vec4 direction = objsDirections[index];
 	vec4 nextPos = objsPoses[index];
 	MoveToward(nextPos, direction, speed);
-
+	int herdIndexOffset = 0;
 	for (int i = 0; i < herdCount; ++i)
 	{
+		herdIndexOffset += herdOffset[i];
+		int herdNums = herdCounts[i];
 		if (i == herdIndex)
 		{
-			for (int j = 0; j < MAX_COUNT_PER_HERD; ++j)
+			for (int j = 0; j < herdNums; ++j)
 			{
-				uint othersInSameHerdIndex = ((i * MAX_COUNT_PER_HERD) + j);
+				uint othersInSameHerdIndex = (herdIndexOffset + j);
 				
 				if (othersInSameHerdIndex != index)
 				{
@@ -158,13 +163,12 @@ void main(void)
 
 	float timer = time[index];
 	float speed = randSpeed[index];
-	vec4 pos = objsPoses[index];
 	vec4 direction = objsDirections[index];
 
 	GetBufferOffset();
-	bool collisionWithEnemy = CheckCollisionWithEnemy(pos);
+	bool collisionWithEnemy = CheckCollisionWithEnemy();
 	int allyCollisionIndex = 0;
-	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(direction, speed, allyCollisionIndex);
+	bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex);
 
 
 	if (collisionWithEnemy == false && collisionWithAlly == false)
