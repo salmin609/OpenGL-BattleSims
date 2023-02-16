@@ -48,8 +48,8 @@
         <Button x:Name="addButton" Grid.Row="3" Content="Add" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="60" FontSize="15" Grid.Column="1" Click="addButton_Click" Height="23" Margin="405,0,0,0" />
         <Button x:Name="removeButton" Grid.Row="3" Content="Remove" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="60" FontSize="15" Grid.Column="2" Click="removeButton_Click" Height="24" Margin="460,0,0,0"/>
         <TextBlock x:Name="fileListText_Copy" Grid.Row="6" HorizontalAlignment="Center"  TextWrapping="Wrap"  VerticalAlignment="Center" FontSize="15" Width="105" Height="25"><Run Language="ko-kr" Text="Implement List"/></TextBlock>
-        <ListBox x:Name="implmentListBox" Grid.Row="7" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,0,10,0"  Grid.ColumnSpan="4"/>
-        <Button x:Name="saveButton" Grid.Row="8" Content="Save" HorizontalAlignment="Center"  VerticalAlignment="Bottom" Width="60" FontSize="15" Grid.Column="3" Height="24" Click="saveButton_Click"/>
+        <ListBox x:Name="implmentListBox" Grid.Row="7" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,0,10,0"  Grid.ColumnSpan="4" SelectionChanged="implmentListBox_SelectionChanged"/>
+        <Button x:Name="saveButton" Grid.Row="8" Content="Save" HorizontalAlignment="Center" Width="60" FontSize="15" Grid.Column="3" Click="saveButton_Click" Margin="0,1,0,0" Height="24" VerticalAlignment="Top"/>
         <Button x:Name="searchXbox" Grid.Row="1" Content="X" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="19" FontSize="15" Grid.Column="2" Height="20" Margin="490,0,0,0" Background="Transparent" BorderThickness="0" Foreground="Red" Click="searchXbox_Click"/>
     </Grid>
 </Window>

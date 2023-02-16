@@ -9,6 +9,8 @@ using System.Windows;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
+using System.Collections.Generic;
+
 namespace AresTool
 {
     /// <summary>
@@ -100,13 +102,13 @@ namespace AresTool
                         // Add to Implement List
                         ImplementListItem implItem = new ImplementListItem();
                         implItem.fileNameBlock.Text = fileName;
+                        implItem.m_startFolder = m_startFolder;
                         if(existNames.Contains(fileName))
                         {
                             implItem.WasExisted = true;
                             implItem.existCheckBox.IsChecked= true;
                         }
                         m_implementListItems.Add(implItem);
-
                     }
                 }
             }
@@ -128,6 +130,7 @@ namespace AresTool
 
             changedListBox.ItemsSource = m_changedListItems;
         }
+
         public void Clear()
         {
             m_directoryList.Clear();
@@ -250,7 +253,7 @@ namespace AresTool
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
             string currImplList = string.Empty;
-
+            
             foreach (var item in m_implementListItems)
             {
                 if(item.existCheckBox.IsChecked == true)
@@ -265,14 +268,20 @@ namespace AresTool
                     item.setColorOfBox();
                 }
             }
-
-            File.WriteAllTextAsync(m_startFolder + "\\ImplementedFileList.ipl", currImplList);
+            //currImplList = File.ReadAllText(m_startFolder + "\\ImplementedFileList.ipl");
+            //currImplList += ("../Models/" + item.fileNameBlock.Text + ".dae\n");
+            //File.WriteAllTextAsync(m_startFolder + "\\ImplementedFileList.ipl", currImplList);
             MessageBox.Show($"New List Saved");
         }
 
         private void searchXbox_Click(object sender, RoutedEventArgs e)
         {
             searchBox.Text = string.Empty;
+        }
+
+        private void implmentListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

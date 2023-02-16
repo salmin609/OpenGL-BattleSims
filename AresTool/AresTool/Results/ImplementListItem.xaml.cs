@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace AresTool.Results
 {
@@ -21,6 +22,7 @@ namespace AresTool.Results
     public partial class ImplementListItem : UserControl
     {
         public bool WasExisted { get; set; }
+        public string m_startFolder = string.Empty;
         public ImplementListItem()
         {
             InitializeComponent();
@@ -49,6 +51,9 @@ namespace AresTool.Results
         private void existCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             setColorOfBox();
+            string currImplList = File.ReadAllText(m_startFolder + "\\ImplementedFileList.ipl");
+            currImplList += ("../Models/" + fileNameBlock.Text + ".dae\n");
+            File.WriteAllTextAsync(m_startFolder + "\\ImplementedFileList.ipl", currImplList);
         }
         private void existCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
