@@ -18,13 +18,14 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
                                                Camera* currentCam_,
 												Shader* boMovingShader_,
 												Shader* boAttackShader_,
-												Shader* boChangeAnimationShader_)
+												Shader* boChangeAnimationShader_,
+												Shader* lineShader_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
 	currentCam = currentCam_;
 	boFBusageComputeShader = boFrameBufferUsageComputeShader;
-	herdManager = new HerdManager(boManager, boShader);
+	herdManager = new HerdManager(boManager, boShader, lineShader_);
 	boFBusageCS = new BillboardFrameBufferUsageCS(boFBusageComputeShader, currentCam, herdManager, this);
 	boMovingCS = new BillboardMovingCS(boMovingShader_, herdManager, this);
 	boAttackCS = new BillboardAttackCS(boAttackShader_, herdManager, this);

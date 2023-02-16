@@ -6,7 +6,6 @@ enum class MoveCS
 	objsPoses,
 	objsDirections,
 	time,
-	randSpeed,
 	targetEnemyPos,
 	attackedCount,
 	isDead,

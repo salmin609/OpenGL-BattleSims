@@ -10,19 +10,23 @@ class Herd;
 class HerdManager
 {
 public:
-	HerdManager(BillboardManager* boManager_, Shader* boShader_);
+	HerdManager(BillboardManager* boManager_, Shader* boShader_,
+		Shader* lineShader_);
 	~HerdManager();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 
 	void AddHerd(Herd* herd);
 	int& GetHerdCount();
 	Herd* GetHerd(int index);
-	void GetHerdPositions(int num, glm::vec3 pos, float offset);
+	void GetHerdPositions(int num, glm::vec3 pos, float offset, int herdWidth);
 	void PopulateBuffers();
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
-		int side);
+		int side, int herdWidth, float speed);
 	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
 		int* isDead);
+	void SelectHerd(int herdIndex);
+	void ChangeHerdDirection(glm::vec4 direction);
+
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
@@ -30,9 +34,11 @@ public:
 	std::vector<glm::vec4> positionDatas;
 	Buffer* posBuffer{};
 	Buffer* directionBuffer{};
+	Herd* selectedHerd;
 private:
 	std::vector<Herd*> herds;
 	int herdCount{};
 	BillboardManager* boManager;
 	Shader* boShader;
+	Shader* lineShader;
 };

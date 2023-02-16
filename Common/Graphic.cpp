@@ -16,6 +16,7 @@
 #include <fstream>
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
+#include "HerdManager.h"
 #include "Skybox.h"
 #include "Line.h"
 #include "ModelKinds.hpp"
@@ -44,10 +45,12 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	boManager = new BillboardManager(animShader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
 	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
 		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,
-		bbChangeAnimation);
+		bbChangeAnimation,
+		lineShader);
 	skybox = new SkyBox();
 
-	floorLine = new Line(lineShader);
+	floorLine = new Line(lineShader, std::vector<glm::vec3>{},
+		glm::vec4(1.f, 1.f, 1.f, 1.f), true);
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
 
@@ -176,6 +179,16 @@ void Graphic::SetWindowWidthHeight(int w, int h)
 {
 	windowWidth = w;
 	windowHeight = h;
+}
+
+void Graphic::SelectHerd(int index) const
+{
+	boObjsManager->herdManager->SelectHerd(index);
+}
+
+void Graphic::ChangeHerdDirection(glm::vec4 herdDir)
+{
+	boObjsManager->herdManager->ChangeHerdDirection(herdDir);
 }
 
 void Graphic::ResetCamAngle()

@@ -164,6 +164,7 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 		mObj->animState = state;
 
 		BillboardAnimatingDatas* boData = new BillboardAnimatingDatas(windowW, windowH, mObj);
+		boData->name = it->first;
 		boDatas.push_back(boData);
 	}
 }
@@ -232,8 +233,8 @@ void BillboardManager::CheckAnimationPlayingStatus()
 		ChangeStatus(animState->idleAnimations);
 		ChangeStatus(animState->attackAnimations);
 		ChangeStatus(animState->painAnimations);
-		ChangeStatus({animState->deathAnimation});
-		ChangeStatus({ animState->runAnimation });
+		ChangeStatus(animState->deathAnimations);
+		ChangeStatus( animState->runAnimations);
 	}
 }
 
@@ -325,7 +326,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			baseModel,
 			fbSlotIndex);
 
-		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->runAnimation},
+		SaveAnimation(datas->obj->animState->runAnimations,
 			State::Run,
 			current,
 			datas->frameBuffers,
@@ -334,7 +335,7 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			baseModel,
 			fbSlotIndex);
 
-		SaveAnimation(std::vector<AnimationModel*>{datas->obj->animState->deathAnimation},
+		SaveAnimation(datas->obj->animState->deathAnimations,
 			State::Death,
 			current,
 			datas->frameBuffers,

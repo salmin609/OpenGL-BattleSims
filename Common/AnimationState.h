@@ -16,9 +16,8 @@ public:
 	std::vector<AnimationModel*> idleAnimations;
 	std::vector<AnimationModel*> attackAnimations;
 	std::vector<AnimationModel*> painAnimations;
-
-	AnimationModel* runAnimation;
-	AnimationModel* deathAnimation;
+	std::vector<AnimationModel*> runAnimations;
+	std::vector<AnimationModel*> deathAnimations;
 private:
 	
 };

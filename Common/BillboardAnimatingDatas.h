@@ -6,6 +6,7 @@
  */
 
 #pragma once
+#include <string>
 #include <vector>
 
 
@@ -29,6 +30,7 @@ public:
 	std::vector<std::vector<std::vector<FrameBuffer*>>> frameBuffers;
 	MultipleAnimationObject* obj;
 	int diffTimeAnimCount;
+	std::string name;
 private:
 
 

@@ -25,7 +25,8 @@ public:
 		Camera* currentCam_,
 		Shader* boMovingShader_,
 		Shader* boAttackShader_,
-		Shader* boChangeAnimationShader_);
+		Shader* boChangeAnimationShader_,
+		Shader* lineShader_);
 	~BillboardObjectManager();
 
 	void CalculateBOAngle() const;

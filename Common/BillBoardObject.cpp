@@ -27,7 +27,11 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 	animState = animState_;
 	currentState = State::Idle;
 	boObjIndex = boObjIndex_;
-	fbs = &(*animFrames)[static_cast<int>(currentState)];
+	//fbs = &(*animFrames)[static_cast<int>(currentState)];
+
+	AnimationModel* model = animState->RequestAnimation(static_cast<int>(currentState));
+
+	fbs = &model->fbs;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);

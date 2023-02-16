@@ -32,8 +32,8 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 		const int idleAnimationsCount = static_cast<int>(animState->idleAnimations.size());
 		const int attackAnimationsCount = static_cast<int>(animState->attackAnimations.size());
 		const int painAnimationsCount = static_cast<int>(animState->painAnimations.size());
-		const int runAnimationsCount = 1;
-		const int deathAnimationsCount = 1;
+		const int runAnimationsCount = static_cast<int>(animState->runAnimations.size());
+		const int deathAnimationsCount = static_cast<int>(animState->deathAnimations.size());
 
 		for(int j = 0; j < idleAnimationsCount; ++j)
 		{
@@ -82,7 +82,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 		for (int j = 0; j < runAnimationsCount; ++j)
 		{
 			std::vector<FrameBuffer*> fbs2;
-			AnimationModel* runAnimation = animState->runAnimation;
+			AnimationModel* runAnimation = animState->runAnimations[j];
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{
@@ -96,7 +96,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 		for (int j = 0; j < deathAnimationsCount; ++j)
 		{
 			std::vector<FrameBuffer*> fbs2;
-			AnimationModel* deathAnimation = animState->deathAnimation;
+			AnimationModel* deathAnimation = animState->deathAnimations[j];
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
 			{

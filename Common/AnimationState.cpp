@@ -29,10 +29,12 @@ void AnimationState::AddAnimation(State animState, AnimationModel* model)
 		painAnimations.push_back(model);
 		break;
 	case State::Run:
-		runAnimation = model;
+		//runAnimation = model;
+		runAnimations.push_back(model);
 		break;
 	case State::Death:
-		deathAnimation = model;
+		//deathAnimation = model;
+		deathAnimations.push_back(model);
 		break;
 	default: ;
 	}
@@ -54,10 +56,12 @@ AnimationModel* AnimationState::RequestAnimation(int state)
 		anis = painAnimations;
 		break;
 	case State::Run:
-		anis = std::vector<AnimationModel*>{runAnimation};
+		//anis = std::vector<AnimationModel*>{runAnimation};
+		anis = runAnimations;
 		break;
 	case State::Death:
-		anis = std::vector<AnimationModel*>{deathAnimation};
+		//anis = std::vector<AnimationModel*>{deathAnimation};
+		anis = deathAnimations;
 		break;
 	default: 
 		break;

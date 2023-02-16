@@ -42,6 +42,12 @@ void BillboardMovingCS::SetShaderUniforms()
 
 		const std::string uName3 = "herdSides[" + std::to_string(i) + "]";
 		shader->AddUniformValues(uName3, ShaderValueType::Int, &herd->side);
+
+		const std::string uName4 = "herdDirections[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName4, ShaderValueType::Vec4, &herd->herdDirection);
+
+		const std::string uName5 = "herdSpeeds[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName5, ShaderValueType::Float, &herd->speed);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
@@ -59,18 +65,6 @@ void BillboardMovingCS::PopulateBuffers()
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::AnimationIndex)));
 	
-	const float LO = 12.f;
-	const float HI = 25.f;
-
-	std::vector<float> randSpeed;
-	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
-	{
-		float r3 = LO + static_cast <float> (rand()) / (RAND_MAX / (HI - LO));
-		randSpeed.push_back(r3);
-	}
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, randSpeed.data(), ToInt(MoveCS::randSpeed)));
-
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, ToInt(MoveCS::targetEnemyPos)));
 

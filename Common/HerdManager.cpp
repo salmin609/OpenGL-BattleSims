@@ -11,19 +11,38 @@
 #include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
 
-HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
+HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
+	Shader* lineShader_)
 {
 	totalRenderingAmount = 0;
 	herdCount = 0;
 	boManager = boManager_;
 	boShader = boShader_;
+	lineShader = lineShader_;
+	selectedHerd = nullptr;
 
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, -20.f), 15.f,
-		glm::vec4(-1.f, 0.f, 0.f, 1.f), 0));
-	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-200.f, 12.f, -20.f), 15.f,
-		glm::vec4(1.f, 0.f, 0.f, 1.f), 1));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(200.f, 12.f, 300.f), 15.f,
-		glm::vec4(-1.f, 0.f, 0.f, 1.f), 0));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -20.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 600.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -20.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 600.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+
+	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, -20.f), 25.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 32, 25.f));
+	
+
+
 	PopulateBuffers();
 }
 
@@ -43,8 +62,14 @@ void HerdManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 	for (const auto& herd : herds)
 	{
 		herd->Render(projMat, viewMat, positionDatas.data(), startIndex);
+
+		if (herd->selected)
+			herd->DrawLine(projMat, viewMat, positionDatas.data(), startIndex);
+
 		startIndex += herd->count;
 	}
+
+
 }
 
 void HerdManager::AddHerd(Herd* herd)
@@ -65,7 +90,7 @@ Herd* HerdManager::GetHerd(int index)
 	return herds[index];
 }
 
-void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset)
+void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset, int herdWidth)
 {
 	glm::vec4 startPos = glm::vec4(pos, 1.f);
 	const glm::vec4 ogStartPos = startPos;
@@ -74,14 +99,14 @@ void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset)
 		glm::vec4 newPos = startPos;
 
 		startPos.x += offset;
-		if (i % 16 == 0 && i != 0)
+		if (i % herdWidth == 0 && i != 0)
 		{
 			startPos.x = ogStartPos.x;
 			startPos.z += offset;
 		}
-
 		positionDatas.push_back(newPos);
 	}
+
 }
 
 void HerdManager::PopulateBuffers()
@@ -95,7 +120,15 @@ void HerdManager::PopulateBuffers()
 	{
 		for (int i = 0; i < herd->count; ++i)
 		{
-			directions.push_back(herd->herdDirection);
+			if(herd->side == 0)
+			{
+				directions.emplace_back(-1.f, 0.f, 0.f, 1.f);
+			}
+			else
+			{
+				directions.emplace_back(1.f, 0.f, 0.f, 1.f);
+			}
+			//directions.push_back(herd->herdDirection);
 		}
 	}
 
@@ -104,12 +137,12 @@ void HerdManager::PopulateBuffers()
 }
 
 Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
-	int side)
+	int side, int herdWidth, float speed)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
-	GetHerdPositions(num, pos, offset);
+	GetHerdPositions(num, pos, offset, herdWidth);
 
-	Herd* herd = new Herd(num, herdDirection, side);
+	Herd* herd = new Herd(num, herdDirection, side, lineShader, herdWidth, speed);
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -152,5 +185,24 @@ void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animati
 
 			bufIndex++;
 		}
+	}
+}
+
+void HerdManager::SelectHerd(int herdIndex)
+{
+	if (selectedHerd != nullptr)
+		selectedHerd->selected = false;
+
+	selectedHerd = herds[herdIndex];
+	selectedHerd->selected = true;
+}
+
+void HerdManager::ChangeHerdDirection(glm::vec4 direction)
+{
+	if(selectedHerd != nullptr)
+	{
+		selectedHerd->herdDirection = direction;
+		selectedHerd->selected = false;
+		selectedHerd = nullptr;
 	}
 }
