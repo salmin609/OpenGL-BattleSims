@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AresTool", "AresTool\AresTool.csproj", "{AB756888-5403-4A3C-A607-9AD325B23F39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB756888-5403-4A3C-A607-9AD325B23F39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB756888-5403-4A3C-A607-9AD325B23F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB756888-5403-4A3C-A607-9AD325B23F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB756888-5403-4A3C-A607-9AD325B23F39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBBBD5C7-B2B3-4226-9501-16B4E0AA906B}
+	EndGlobalSection
+EndGlobal
