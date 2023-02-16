@@ -2,7 +2,7 @@
  * Author		: Ryan Kim.
  * Date			: 2022-10-07
  * Description	: Class for animating object.
- * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ * Copyright ?2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
  */
 
 

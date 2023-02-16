@@ -206,6 +206,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\Interpolation.cpp" />
     <ClCompile Include="..\Common\Line.cpp" />
     <ClCompile Include="..\Common\MeshDatas.cpp" />
+    <ClCompile Include="..\Common\ModelKinds.cpp" />
     <ClCompile Include="..\Common\MultipleAnimationObject.cpp" />
     <ClCompile Include="..\Common\Object.cpp" />
     <ClCompile Include="..\Common\Quaternion.cpp" />
@@ -252,7 +253,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\Line.h" />
     <ClInclude Include="..\Common\Material.h" />
     <ClInclude Include="..\Common\MeshDatas.h" />
-    <ClInclude Include="..\Common\ModelKinds.hpp" />
+    <ClInclude Include="..\Common\ModelKinds.h" />
     <ClInclude Include="..\Common\MultipleAnimationObject.h" />
     <ClInclude Include="..\Common\Object.h" />
     <ClInclude Include="..\Common\Quaternion.h" />

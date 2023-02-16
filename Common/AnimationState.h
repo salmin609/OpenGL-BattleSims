@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "ModelKinds.hpp"
+#include "ModelKinds.h"
 
 class AnimationModel;
 

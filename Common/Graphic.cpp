@@ -2,7 +2,7 @@
  * Author		: Ryan Kim.
  * Date			: 2022-10-07
  * Description	: Class for openGL calls.
- * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ * Copyright ?2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
  */
 
 
@@ -19,7 +19,7 @@
 #include "HerdManager.h"
 #include "Skybox.h"
 #include "Line.h"
-#include "ModelKinds.hpp"
+#include "ModelKinds.h"
 #include "assimp/anim.h"
 
 Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w), windowHeight(h)
@@ -41,7 +41,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 		50.8f, -14.0999f);
 	currentCam = cam;
 
-	objPaths = ObjPaths();
+	objPaths = GetObjStr();
 	boManager = new BillboardManager(animShader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
 	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
 		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,

@@ -2,7 +2,7 @@
  *	File for GAM400 - OpenGL MAs project.
  *	Term			- 2022F
  *	Author			- Ryan Kim
- *	Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ *	Copyright ?2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
  */
 
 #pragma once
@@ -10,7 +10,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
-#include "ModelKinds.hpp"
+#include "ModelKinds.h"
 
 class AnimationModel;
 class AnimationState;

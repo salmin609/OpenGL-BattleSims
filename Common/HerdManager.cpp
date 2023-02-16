@@ -8,7 +8,7 @@
 #include "Buffer.hpp"
 #include "CSBufferNames.h"
 #include "Herd.h"
-#include "ModelKinds.hpp"
+#include "ModelKinds.h"
 #include "MultipleAnimationObject.h"
 
 HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
@@ -35,7 +35,9 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 300.f), 15.f,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 600.f), 15.f,
+
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::VIKING), glm::vec3(800.f, 12.f, 600.f), 15.f,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
 
 	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, -20.f), 25.f,

@@ -2,7 +2,7 @@
  *	File for GAM400 - OpenGL MAs project.
  *	Term			- 2022F
  *	Author			- Ryan Kim
- *	Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ *	Copyright ?2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
  */
 
 #include "BillboardManager.h"

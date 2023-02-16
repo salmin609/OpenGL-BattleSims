@@ -9,7 +9,7 @@
 #include "Shader.h"
 #include "glm/vec4.hpp"
 #include "CSBufferNames.h"
-#include "ModelKinds.hpp"
+#include "ModelKinds.h"
 
 BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdManager_,
                                      BillboardObjectManager* boObjManager_): ComputeShaderClass(boMovingShader_), boObjManager(boObjManager_)
