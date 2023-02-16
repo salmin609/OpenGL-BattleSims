@@ -54,6 +54,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         camLock = !camLock;
 
+    if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || 
+        key == GLFW_KEY_4 || key == GLFW_KEY_5 || key == GLFW_KEY_6 || 
+        key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
+        && action == GLFW_PRESS)
+    {
+        graphic->SelectHerd(key - GLFW_KEY_1);
+    }
+
+    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+    {
+        graphic->ChangeHerdDirection(glm::vec4(-1.f, 0.f, 0.f, 0.f));
+    }
+    else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
+    {
+        graphic->ChangeHerdDirection(glm::vec4(1.f, 0.f, 0.f, 0.f));
+    }
+    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    {
+        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, 1.f, 0.f));
+    }
+    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    {
+        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, -1.f, 0.f));
+    }
+    else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+    {
+        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, 0.f, 0.f));
+    }
+
     //if (key == GLFW_KEY_C && action == GLFW_PRESS)
         //graphic->ResetCamAngle();
 
@@ -74,6 +103,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 ///////////////////////////////////////////////////////////////////////////////////
 int main()
 {
+    bool oneTime = true;
     if (!glfwInit())
     {
         fprintf(stderr, "Failed to initialize GLFW\n");
@@ -216,6 +246,12 @@ int main()
         ImGui::End();
 //#endif
 
+        if(oneTime == true)
+        {
+            graphic->lastFrame = static_cast<float>(glfwGetTime());
+            oneTime = false;
+        }
+
         float currentFrame = static_cast<float>(glfwGetTime());
         graphic->deltaTime = currentFrame - graphic->lastFrame;
         graphic->lastFrame = currentFrame;
@@ -252,6 +288,7 @@ int main()
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     (window);
+
     if(!camLock)
     {
 	    const float xpos = static_cast<float>(xposIn);

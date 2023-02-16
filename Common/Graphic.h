@@ -44,7 +44,8 @@ public:
 	void ProcessInput();
 	void PrintCameraStatement(Camera* cam_);
 	void SetWindowWidthHeight(int w, int h);
-
+	void SelectHerd(int index) const;
+	void ChangeHerdDirection(glm::vec4 herdDir);
 	void ResetCamAngle();
 
 	GLFWwindow* window{};
@@ -64,13 +65,15 @@ public:
 	BillboardObjectManager* boObjsManager;
 private:
 
-	Shader* shader;
+	Shader* animShader;
 	Shader* billboardShader;
 	Shader* floorShader;
 	Shader* interpolationComputeShader;
 	Shader* lineShader;
 	Shader* bbCheckFrameBufferUsage;
 	Shader* bbMoving;
+	Shader* bbAttack;
+	Shader* bbChangeAnimation;
 	int windowWidth;
 	int windowHeight;
 	Line* floorLine;

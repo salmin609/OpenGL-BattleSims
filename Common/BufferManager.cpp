@@ -5,9 +5,7 @@
 #include "Buffer.hpp"
 
 BufferManager::BufferManager()
-{
-
-}
+= default;
 
 BufferManager::~BufferManager()
 {
@@ -38,11 +36,11 @@ void BufferManager::BindBuffer(int bufferIndex, int storageIndex)
 
 int BufferManager::GetBufferSize(int storageIndex)
 {
-	for(const auto& buffer : buffers)
-	{
-		if (buffer->GetStorageIndex() == storageIndex)
-			return buffer->GetSize();
-	}
+	Buffer* buffer = GetBuffer(storageIndex);
+
+	if (buffer != nullptr)
+		return buffer->GetSize();
+
 	//StorageIndex does not exist.
 	assert(0);
 	return -1;
@@ -50,15 +48,13 @@ int BufferManager::GetBufferSize(int storageIndex)
 
 void BufferManager::GetData(int storageIndex, void* dataPtr)
 {
-	for (const auto& buffer : buffers)
-	{
-		if (buffer->GetStorageIndex() == storageIndex)
-		{
-			buffer->GetData(dataPtr);
-			return;
-		}
-	}
+	Buffer* buffer = GetBuffer(storageIndex);
 
+	if(buffer != nullptr)
+	{
+		buffer->GetData(dataPtr);
+		return;
+	}
 	//Storage Index does not exist, somethings wrong.
 	assert(0);
 	dataPtr = nullptr;
@@ -85,15 +81,10 @@ Buffer* BufferManager::GetBuffer(int storageIndex)
 template <typename T>
 std::vector<T> BufferManager::GetDataVector(int storageIndex)
 {
-	for (const auto& buffer : buffers)
-	{
-		if (buffer->GetStorageIndex() == storageIndex)
-		{
-			return buffer->GetDataVector<T>();
-		}
-	}
+	Buffer* buffer = GetBuffer(storageIndex);
+
+	if (buffer != nullptr)
+		return buffer->GetDataVector<T>();
 	
-	assert(0);
-	
-	return std::vector<T>();
+	return std::vector<T>{};
 }

@@ -11,7 +11,9 @@
 #include <assimp/scene.h>
 
 #include "AnimationModel.h"
+#include "AnimationState.h"
 #include "BillboardAnimatingDatas.h"
+#include "BillBoardObject.h"
 #include "Camera.hpp"
 #include "Floor.hpp"
 #include "FrameBuffer.h"
@@ -71,7 +73,7 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 		135.f, -7.f));
 
 	const int boCamsSize = static_cast<int>(boCams.size());
-	for(int i = 0; i < boCamsSize; ++i)
+	for (int i = 0; i < boCamsSize; ++i)
 		boCamMats.push_back(boCams[i]->GetViewMatrix());
 
 	PopulateBoDatas(objPaths);
@@ -97,7 +99,8 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 	const size_t objPathsSize = objPaths.size();
 	const glm::vec3 objPos(0.f, 10.f, 0.f);
 
-	std::vector<AnimationModel*> models;
+	//std::vector<AnimationModel*> models;
+
 	std::string prevKind;
 
 	for (size_t i = 0; i < objPathsSize; ++i)
@@ -106,51 +109,62 @@ void BillboardManager::PopulateBoDatas(const std::vector<std::string>& objPaths)
 		std::vector<std::string> vec = split(objPath, "_");
 		std::vector<std::string> finalParsed = split(vec[0], "/");
 		std::string modelKind = finalParsed[finalParsed.size() - 1];
-
-		if (!models.empty())
-		{
-			if (prevKind != modelKind)
-			{
-				animModels.push_back(models);
-				models.clear();
-			}
-		}
+		std::string animKind = vec[1];
 
 		MeshDatas* reusableMeshDatas = nullptr;
 
-		auto found = meshDatas.find(modelKind);
+		auto reuse = meshDatas.find(modelKind);
+		if (reuse != meshDatas.end())
+			reusableMeshDatas = reuse->second;
 
-		if (found != meshDatas.end())
-			reusableMeshDatas = found->second;
+		AnimationModel* newAnimation = new AnimationModel(boShader, objPath, boComputeShader, reusableMeshDatas);
 
-		AnimationModel* newModel = new AnimationModel(boShader, objPath, boComputeShader, reusableMeshDatas);
-		//animModels.push_back(newModel);
-		models.push_back(newModel);
+		//means not exist
+		auto state = animModels.find(modelKind);
 
+		if (state == animModels.end())
+		{
+			AnimationState* animState = new AnimationState();
 
-		if (found == meshDatas.end())
-			meshDatas.insert(std::pair<std::string, MeshDatas*>(modelKind, newModel->datas->meshDatas));
+			animModels.insert(std::pair<std::string, AnimationState*>(modelKind, animState));
+			meshDatas.insert(std::pair<std::string, MeshDatas*>(modelKind, newAnimation->datas->meshDatas));
 
-		prevKind = modelKind;
+			//idle is first animation of model.
+			animState->AddAnimation(State::Idle,
+				newAnimation);
+		}
+		//means exist
+		else
+		{
+			AnimationState* animState = state->second;
 
+			if (animKind == "Idle")
+				animState->AddAnimation(State::Idle,
+					newAnimation);
+			else if (animKind == "Run")
+				animState->AddAnimation(State::Run,
+					newAnimation);
+			else if (animKind == "Attack")
+				animState->AddAnimation(State::Attack,
+					newAnimation);
+			else if (animKind == "Death")
+				animState->AddAnimation(State::Death,
+					newAnimation);
+			else if (animKind == "Pain")
+				animState->AddAnimation(State::Pain,
+					newAnimation);
+		}
 	}
-	animModels.push_back(models);
 
-	const size_t animModelsSize = animModels.size();
-
-	for (size_t i = 0; i < animModelsSize; ++i)
+	for (auto it = animModels.begin(); it != animModels.end(); ++it)
 	{
 		MultipleAnimationObject* mObj = new MultipleAnimationObject(objPos, glm::vec3(0.f, -5.f, 0.f), glm::vec3(30.f, 30.f, 30.f));
 
-		std::vector<AnimationModel*>& modelVec = animModels[i];
-
-		for(const auto& model : modelVec)
-		{
-			mObj->AddAnimation(model);
-		}
+		AnimationState* state = it->second;
+		mObj->animState = state;
 
 		BillboardAnimatingDatas* boData = new BillboardAnimatingDatas(windowW, windowH, mObj);
-
+		boData->name = it->first;
 		boDatas.push_back(boData);
 	}
 }
@@ -169,40 +183,97 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 	}
 }
 
-
-void BillboardManager::ChangeAnimationIndexByTime()
+void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations, 
+	State state,
+	const std::chrono::system_clock::time_point& current,
+	const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
+	const glm::mat4& projMat, const glm::mat4& modelMat,
+	AnimationModel* baseModel,
+	int& fbSlotIndex)
 {
-	const int boDatasSize = static_cast<int>(boDatas.size());
+	const int animationCount = static_cast<int>(animations.size());
 
-	for (int i = 0; i < boDatasSize; ++i)
+	for(int i = 0; i < animationCount; ++i)
 	{
-		boDatas[i]->obj->ChangeCurrentAnimationWithTime();
+		AnimationModel* model = animations[i];
+		const float animationTimeTicks = model->GetAnimationTimeTicks(current);
+
+		glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
+
+		for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+		{
+			FrameBuffer* fb = frameBuffers[0]
+				[fbSlotIndex + i][k];
+
+			if (fb->isOnUsage)
+			{
+				const glm::mat4 projViewMat = projMat * boCamMats[k];
+
+				fb->Bind();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				baseModel->Draw(modelMat, projViewMat,
+					transformMat);
+
+				fb->UnBind();
+				fb->isOnUsage = false;
+			}
+
+		}
+	}
+	fbSlotIndex += animationCount;
+}
+
+void BillboardManager::CheckAnimationPlayingStatus()
+{
+	for(BillboardAnimatingDatas* boData : boDatas)
+	{
+		AnimationState* animState = boData->obj->animState;
+
+		ChangeStatus(animState->idleAnimations);
+		ChangeStatus(animState->attackAnimations);
+		ChangeStatus(animState->painAnimations);
+		ChangeStatus(animState->deathAnimations);
+		ChangeStatus( animState->runAnimations);
 	}
 }
 
-void BillboardManager::ResetFrameBufferUsage()
+void BillboardManager::ChangeStatus(std::vector<AnimationModel*> animations)
 {
-	const size_t boDatasSize = boDatas.size();
+	const size_t animationsSize = animations.size();
 
-	for(size_t a = 0; a < boDatasSize; ++a)
+	for(size_t i = 0; i < animationsSize; ++i)
 	{
-		BillboardAnimatingDatas* boData = boDatas[a];
+		AnimationModel* model = animations[i];
+		float currentTimeTick = model->currentTimeTicks;
 
-		std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers = boData->frameBuffers;
-
-		for (int i = 0; i < boData->diffTimeAnimCount; ++i)
+		if (model->playingStatus == AnimationModel::PlayingStatus::Ready)
 		{
-			const int animationsSize = static_cast<int>(boData->obj->animationModels.size());
-			for (int j = 0; j < animationsSize; ++j)
+			if (currentTimeTick > 0.1f)
+				model->playingStatus = AnimationModel::PlayingStatus::Playing;
+		}
+		else if (model->playingStatus == AnimationModel::PlayingStatus::Playing)
+		{
+			aiAnimation* animInfo = model->GetScene()->mAnimations[0];
+			double animDuration = animInfo->mDuration;
+			if (currentTimeTick > (static_cast<float>(animDuration) - 0.05f))
 			{
-				for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-				{
-					frameBuffers[i][j][k]->isOnUsage = false;
-				}
+				model->playingStatus = AnimationModel::PlayingStatus::Ready;
+
+				//if(!model->boUsingThisAnimation.empty())
+				//{
+				//	for(BillBoardObject* bo : model->boUsingThisAnimation)
+				//	{
+				//		bo->SetAnimation(static_cast<int>(State::Idle));
+				//	}
+
+				//	model->boUsingThisAnimation.clear();
+				//}
 			}
 		}
 	}
 }
+
 
 Camera* BillboardManager::GetBoObjCamera(int camIndex)
 {
@@ -218,42 +289,60 @@ BillboardAnimatingDatas* BillboardManager::GetAnimData(int index)
 void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_point& current
 	, const glm::mat4& projMat, BillboardAnimatingDatas* datas)
 {
-	const int animationsSize = static_cast<int>(datas->obj->animationModels.size());
-
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	AnimationModel* baseModel = datas->obj->animState->idleAnimations[0];
+	int fbSlotIndex = 0;
+
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
-		for (int j = 0; j < animationsSize; ++j)
-		{
-			const AnimationModel* model = datas->obj->animationModels[j];
-			const aiAnimation* animation = model->GetScene()->mAnimations[0];
+		SaveAnimation(datas->obj->animState->idleAnimations,
+			State::Idle,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel,
+			fbSlotIndex);
 
-			const float animationTimeTicks = GetAnimationTimeTicks(current, model->startTime, animation,
-				i);
-			glm::mat4* transformMat = model->Interpolate(animationTimeTicks);
-			assert(transformMat != nullptr);
+		
+		SaveAnimation(datas->obj->animState->attackAnimations,
+			State::Attack,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel,
+			fbSlotIndex);
 
-			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
-			{
-				FrameBuffer* fb = datas->frameBuffers[i][j][k];
+		SaveAnimation(datas->obj->animState->painAnimations,
+			State::Pain,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel,
+			fbSlotIndex);
 
-				if(fb->isOnUsage)
-				{
-					const glm::mat4 projViewMat = projMat * boCamMats[k];
+		SaveAnimation(datas->obj->animState->runAnimations,
+			State::Run,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel,
+			fbSlotIndex);
 
-					datas->frameBuffers[i][j][k]->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-					datas->obj->Draw(projViewMat, transformMat);
-
-					datas->frameBuffers[i][j][k]->UnBind();
-					fb->isOnUsage = false;
-				}
-			}
-		}
+		SaveAnimation(datas->obj->animState->deathAnimations,
+			State::Death,
+			current,
+			datas->frameBuffers,
+			projMat,
+			datas->obj->GetModelMatrix(),
+			baseModel,
+			fbSlotIndex);
 	}
 }
 
@@ -304,21 +393,4 @@ void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
 		//check->SavePNG();
 		once = false;
 	}
-}
-
-float BillboardManager::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current,
-                                              const std::chrono::system_clock::time_point& startTime,
-                                              const aiAnimation* animation, int index) const
-{
-	const long long diff =
-		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
-	float animationT = static_cast<float>(diff) / 1000.f;
-
-	//make diff in animation
-	animationT += static_cast<float>(index) * 60.f;
-
-	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
-	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
-
-	return animationTimeTicks;
 }

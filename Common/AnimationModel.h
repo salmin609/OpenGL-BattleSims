@@ -14,7 +14,10 @@
 #include "AnimatingFunctions.h"
 #include "AnimationStructure.hpp"
 #include "AnimationModelDatas.h"
+#include "AnimationState.h"
 
+class BillBoardObject;
+class FrameBuffer;
 struct aiNode;
 class Camera;
 class Shader;
@@ -24,6 +27,11 @@ typedef Assimp::Importer Importer;
 class AnimationModel
 {
 public:
+	enum class PlayingStatus
+	{
+		Ready,
+		Playing,
+	};
 
 	AnimationModel(Shader* shaderVal, std::string _filePath, Shader* interpolationShader,
 		MeshDatas* reusableMeshDatas);
@@ -37,11 +45,21 @@ public:
 	aiNode* GetRootNode() const;
 	const aiScene* GetScene() const;
 	glm::mat4* Interpolate(float animationTimeTicks) const;
+	void SetInitialBoneTransformData();
+	float GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current);
+	bool AnimationNotOnPlay();
+	
 	AnimationModelDatas* datas;
 	std::chrono::system_clock::time_point startTime;
 	glm::mat4x4* boneTransformsData;
-
+	glm::mat4x4* initialBoneTransformsData;
+	State thisState;
+	PlayingStatus playingStatus;
+	float currentTimeTicks;
+	std::vector<FrameBuffer*> fbs;
+	std::vector<BillBoardObject*> boUsingThisAnimation;
 private:
+	double animDuration;
 	Importer* importer;
 	const aiScene* scene;
 	aiNode* rootNode{};

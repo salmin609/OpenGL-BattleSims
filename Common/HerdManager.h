@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
 
 class Shader;
@@ -11,26 +10,35 @@ class Herd;
 class HerdManager
 {
 public:
-	HerdManager(BillboardManager* boManager_, Shader* boShader_);
+	HerdManager(BillboardManager* boManager_, Shader* boShader_,
+		Shader* lineShader_);
 	~HerdManager();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat);
 
 	void AddHerd(Herd* herd);
 	int& GetHerdCount();
-	void BindHerdPositions();
 	Herd* GetHerd(int index);
-	Buffer* GetHerdPositionBuffer(int num, glm::vec3 pos, float offset);
-	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection);
-	void SetBosFrameBufferIndex(void* boFBusageDatas);
-	void SetReachedAnimation(int* data);
-	void ChangeToAttackAnimation();
+	void GetHerdPositions(int num, glm::vec3 pos, float offset, int herdWidth);
+	void PopulateBuffers();
+	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
+		int side, int herdWidth, float speed);
+	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
+		int* isDead);
+	void SelectHerd(int herdIndex);
+	void ChangeHerdDirection(glm::vec4 direction);
+
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;
 	int posBufferIndex = 1;
-
+	int boObjIndex = 0;
+	std::vector<glm::vec4> positionDatas;
+	Buffer* posBuffer{};
+	Buffer* directionBuffer{};
+	Herd* selectedHerd;
 private:
 	std::vector<Herd*> herds;
 	int herdCount{};
 	BillboardManager* boManager;
 	Shader* boShader;
+	Shader* lineShader;
 };

@@ -68,7 +68,7 @@ namespace AnimatingFunctions
 	{
 		void InitAllMeshes(AnimationModel* model)
 		{
-			unsigned size = static_cast<unsigned>(model->datas->meshes.size());
+			const unsigned size = static_cast<unsigned>(model->datas->meshes.size());
 
 			for (unsigned i = 0; i < size; ++i)
 			{

@@ -1,38 +1,75 @@
 #include "HerdManager.h"
+
+#include <iostream>
+
 #include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillBoardObject.h"
 #include "Buffer.hpp"
+#include "CSBufferNames.h"
 #include "Herd.h"
 #include "ModelKinds.hpp"
 #include "MultipleAnimationObject.h"
 
-HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_)
+HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
+	Shader* lineShader_)
 {
 	totalRenderingAmount = 0;
 	herdCount = 0;
 	boManager = boManager_;
 	boShader = boShader_;
+	lineShader = lineShader_;
+	selectedHerd = nullptr;
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::SWAT), glm::vec3(500.f, 12.f, -20.f), 30.f,
-		glm::vec3(-1.f, 0.f, 0.f)));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -20.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 600.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -20.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 600.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
 
-	AddHerd(PopulateHerd(1280, static_cast<int>(ObjKind::KNIGHT), glm::vec3(-500.f, 12.f, -20.f), 30.f,
-		glm::vec3(1.f, 0.f, 0.f)));
+	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, -20.f), 25.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 32, 25.f));
+	
+
+
+	PopulateBuffers();
 }
 
 HerdManager::~HerdManager()
 {
 	for (const auto& herd : herds)
 		delete herd;
+
+	delete posBuffer;
+	delete directionBuffer;
 }
 
 void HerdManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
+	int startIndex = 0;
+	posBuffer->GetData(positionDatas.data());
 	for (const auto& herd : herds)
 	{
-		herd->Render(projMat, viewMat);
+		herd->Render(projMat, viewMat, positionDatas.data(), startIndex);
+
+		if (herd->selected)
+			herd->DrawLine(projMat, viewMat, positionDatas.data(), startIndex);
+
+		startIndex += herd->count;
 	}
+
+
 }
 
 void HerdManager::AddHerd(Herd* herd)
@@ -48,23 +85,13 @@ int& HerdManager::GetHerdCount()
 	return herdCount;
 }
 
-void HerdManager::BindHerdPositions()
-{
-	for(const auto& herd : herds)
-	{
-		herd->posBuffer->BindStorage();
-	}
-}
-
 Herd* HerdManager::GetHerd(int index)
 {
 	return herds[index];
 }
 
-Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
+void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset, int herdWidth)
 {
-	std::vector<glm::vec4> resultVector;
-
 	glm::vec4 startPos = glm::vec4(pos, 1.f);
 	const glm::vec4 ogStartPos = startPos;
 	for (int i = 0; i < num; ++i)
@@ -72,96 +99,110 @@ Buffer* HerdManager::GetHerdPositionBuffer(int num, glm::vec3 pos, float offset)
 		glm::vec4 newPos = startPos;
 
 		startPos.x += offset;
-		if (i % 16 == 0 && i != 0)
+		if (i % herdWidth == 0 && i != 0)
 		{
 			startPos.x = ogStartPos.x;
 			startPos.z += offset;
 		}
-
-		resultVector.push_back(newPos);
+		positionDatas.push_back(newPos);
 	}
 
-	return new Buffer(GL_SHADER_STORAGE_BUFFER,
-		static_cast<int>(resultVector.size()) * static_cast<int>(sizeof(glm::vec4)),
-		GL_DYNAMIC_DRAW, resultVector.data(), posBufferIndex++);
 }
 
-Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec3 boDirection)
+void HerdManager::PopulateBuffers()
+{
+	posBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * totalRenderingAmount,
+		GL_DYNAMIC_DRAW, positionDatas.data(), ToInt(MoveCS::objsPoses));
+
+	std::vector<glm::vec4> directions;
+
+	for (const Herd* herd : herds)
+	{
+		for (int i = 0; i < herd->count; ++i)
+		{
+			if(herd->side == 0)
+			{
+				directions.emplace_back(-1.f, 0.f, 0.f, 1.f);
+			}
+			else
+			{
+				directions.emplace_back(1.f, 0.f, 0.f, 1.f);
+			}
+			//directions.push_back(herd->herdDirection);
+		}
+	}
+
+	directionBuffer = new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * totalRenderingAmount,
+		GL_DYNAMIC_DRAW, directions.data(), ToInt(MoveCS::objsDirections));
+}
+
+Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
+	int side, int herdWidth, float speed)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
+	GetHerdPositions(num, pos, offset, herdWidth);
 
-	const int animationCount = static_cast<int>(data->obj->animationModels.size());
-
-	Buffer* posBuffer = GetHerdPositionBuffer(num, pos, offset);
-	const glm::vec4* posData = posBuffer->GetData<glm::vec4>();
-
-	Herd* herd = new Herd(num);
-
-	herd->posBuffer = posBuffer;
-	herd->herdBoDirAndOffset = glm::vec4{ boDirection.x, boDirection.y, boDirection.z, 1.f };
+	Herd* herd = new Herd(num, herdDirection, side, lineShader, herdWidth, speed);
 
 	for (int i = 0; i < num; ++i)
 	{
-		//const int animationIndex = rand() % animationCount;
-		//const int animationIndex = 0;
-		//const int timeDiffSlot = rand() % data->diffTimeAnimCount;
-
-		const glm::vec3& position = glm::vec3(posData[i]);
-
-		//Setting different times per animation consumes lots of fps.
 		herd->bos.push_back(new BillBoardObject(boShader,
-			position, &data->frameBuffers[0]));
+			&data->frameBuffers[0], data->obj->animState, boObjIndex++));
 	}
 
-	delete[] posData;
 	return herd;
 }
 
-void HerdManager::SetBosFrameBufferIndex(void* boFBusageDatas)
+void HerdManager::ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
+	int* isDead)
 {
 	int bufIndex = 0;
 
-	for (int i = 0; i < herdCount; ++i)
+	for(int i = 0; i < herdCount; ++i)
 	{
 		const Herd* herd = herds[i];
 
-		for (int j = 0; j < herd->count; ++j)
+		for(int j = 0; j < herd->count; ++j)
 		{
 			BillBoardObject* bo = herd->bos[j];
-			const int usingFbIndex = static_cast<int*>(boFBusageDatas)[bufIndex];
 
-			if (usingFbIndex >= 0)
-				bo->ChangeFrameBufferAngle(usingFbIndex);
+			const int fbAngleIndex = fbAngleIndices[bufIndex];
+			//std::cout << "fb : " << fbAngleIndex << std::endl;
+			const int dead = isDead[bufIndex];
+
+			if (fbAngleIndex >= 0 && dead == 0)
+			{
+				bo->ChangeFrameBufferAngle(fbAngleIndex);
+
+				const int newState = animationStateIndices[bufIndex];
+
+				bo->SetAnimation(newState, animationStateIndices);
+			}
 			else
+			{
 				bo->usingFrameBuffer = nullptr;
+			}
 
 			bufIndex++;
 		}
 	}
 }
 
-void HerdManager::SetReachedAnimation(int* data)
+void HerdManager::SelectHerd(int herdIndex)
 {
-	int bufIndex = 0;
+	if (selectedHerd != nullptr)
+		selectedHerd->selected = false;
 
-	for (int i = 0; i < herdCount; ++i)
+	selectedHerd = herds[herdIndex];
+	selectedHerd->selected = true;
+}
+
+void HerdManager::ChangeHerdDirection(glm::vec4 direction)
+{
+	if(selectedHerd != nullptr)
 	{
-		const Herd* herd = herds[i];
-
-		for (int j = 0; j < herd->count; ++j)
-		{
-			BillBoardObject* bo = herd->bos[j];
-			const int isReached = data[bufIndex];
-
-			if (isReached > 0)
-				bo->SetAnimation(2);
-
-			bufIndex++;
-		}
+		selectedHerd->herdDirection = direction;
+		selectedHerd->selected = false;
+		selectedHerd = nullptr;
 	}
-}
-
-void HerdManager::ChangeToAttackAnimation()
-{
-
 }

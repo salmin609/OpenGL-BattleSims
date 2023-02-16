@@ -43,6 +43,7 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 
 	numVertices = 0;
 	numIndices = 0;
+	playingStatus = PlayingStatus::Ready;
 
 	glGenVertexArrays(1, &vao);
 
@@ -51,9 +52,11 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 	importer = new Importer();
 
 	scene = importer->ReadFile(filePath.c_str(),
-		aiProcess_Triangulate | 
-		aiProcess_GenSmoothNormals | 
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
 		aiProcess_JoinIdenticalVertices);
+
+	animDuration = scene->mAnimations[0]->mDuration;
 
 	assert(scene != nullptr);
 
@@ -74,7 +77,9 @@ AnimationModel::AnimationModel(Shader* shaderVal, std::string _filePath, Shader*
 
 	datas->PopulateInterpolationShaderBuffer(scene, this);
 	boneTransformsData = new glm::mat4x4[static_cast<int>(datas->boneInfos.size())];
+	initialBoneTransformsData = new glm::mat4x4[static_cast<int>(datas->boneInfos.size())];
 
+	SetInitialBoneTransformData();
 }
 
 AnimationModel::~AnimationModel()
@@ -82,6 +87,7 @@ AnimationModel::~AnimationModel()
 	delete importer;
 	delete datas;
 	delete[] boneTransformsData;
+	delete[] initialBoneTransformsData;
 }
 
 
@@ -166,4 +172,48 @@ glm::mat4* AnimationModel::Interpolate(float animationTimeTicks) const
 	glUseProgram(0);
 	datas->csBuffers->GetData(15, boneTransformsData);
 	return boneTransformsData;
+}
+
+void AnimationModel::SetInitialBoneTransformData()
+{
+	assert(interpolationComputeShader != nullptr);
+
+	interpolationComputeShader->Use();
+	datas->csBuffers->BindBuffers();
+	interpolationComputeShader->SendUniformInt("inTransformsSize", static_cast<int>(datas->nodeTransforms.size()));
+	interpolationComputeShader->SendUniformFloat("animationTimeTicks", 0.f);
+
+	glDispatchCompute(static_cast<GLuint>(datas->transformOrder.size()), 1, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glUseProgram(0);
+	datas->csBuffers->GetData(15, initialBoneTransformsData);
+}
+
+float AnimationModel::GetAnimationTimeTicks(const std::chrono::system_clock::time_point& current)
+{
+	const aiAnimation* animation = scene->mAnimations[0];
+
+	const long long diff =
+		std::chrono::duration_cast<std::chrono::milliseconds>(current - startTime).count();
+	const float animationT = static_cast<float>(diff) / 1000.f;
+
+	const float timeInTicks = animationT * static_cast<float>(animation->mTicksPerSecond);
+	const float animationTimeTicks = fmod(timeInTicks, static_cast<float>(animation->mDuration));
+
+	currentTimeTicks = animationTimeTicks;
+
+	return animationTimeTicks;
+}
+
+bool AnimationModel::AnimationNotOnPlay()
+{
+	bool result = false;
+
+	if (currentTimeTicks < 0.1f)
+		result = true;
+
+	return result;
 }

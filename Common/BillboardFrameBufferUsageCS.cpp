@@ -1,18 +1,21 @@
 #include "BillboardFrameBufferUsageCS.h"
-
+#include "BillboardMovingCS.h"
+#include "BillboardObjectManager.h"
 #include "Buffer.hpp"
 #include "BufferManager.h"
 #include "Camera.hpp"
 #include "Herd.h"
 #include "HerdManager.h"
 #include "Shader.h"
+#include "CSBufferNames.h"
 
 BillboardFrameBufferUsageCS::BillboardFrameBufferUsageCS(Shader* boFBusageComputeShader_, Camera* currentCam_,
-	HerdManager* herdManager_): ComputeShaderClass(boFBusageComputeShader_)
+	HerdManager* herdManager_, BillboardObjectManager* boObjManager_): ComputeShaderClass(boFBusageComputeShader_)
 {
 	currentCam = currentCam_;
 	herdManager = herdManager_;
 	boFBusageDatas = nullptr;
+	boObjManager = boObjManager_;
 	BillboardFrameBufferUsageCS::SetShaderUniforms();
 	BillboardFrameBufferUsageCS::PopulateBuffers();
 }
@@ -22,28 +25,25 @@ BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 	delete[] boFBusageDatas;
 }
 
-void BillboardFrameBufferUsageCS::CheckFrameBufferUsage() const
+void BillboardFrameBufferUsageCS::CalculateBOAngle() const
 {
 	shader->Use();
 	csBuffers->BindBuffers();
-	herdManager->BindHerdPositions();
+	herdManager->posBuffer->BindStorage(ToInt(AngleCS::objsPoses));
+	herdManager->directionBuffer->BindStorage(ToInt(AngleCS::objsDirections));
 	shader->SendUniformValues();
 
-	glDispatchCompute(herdManager->totalRenderingAmount / 128, 1, 1);
+	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
 	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glUseProgram(0);
-
-	csBuffers->GetData(0, boFBusageDatas);
-	assert(boFBusageDatas != nullptr);
-	herdManager->SetBosFrameBufferIndex(boFBusageDatas);
 }
 
 void BillboardFrameBufferUsageCS::PopulateBuffers()
 {
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER,
 		sizeof(int) * herdManager->totalRenderingAmount, GL_DYNAMIC_DRAW,
-		nullptr, 0));
+		nullptr, ToInt(AngleCS::frameBufferUsageIndex)));
 
 	boFBusageDatas = new int[herdManager->totalRenderingAmount];
 }
@@ -66,10 +66,11 @@ void BillboardFrameBufferUsageCS::SetShaderUniforms()
 	{
 		Herd* herd = herdManager->GetHerd(i);
 
-		herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		//herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
+		herd->herdOffset = herdManager->herdOffset[i];
 
-		const std::string uName = "herdBoDirectionAndOffsets[" + std::to_string(i) + "]";
-		shader->AddUniformValues(uName, ShaderValueType::Vec4, &herd->herdBoDirAndOffset);
+		const std::string uName = "herdOffset[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName, ShaderValueType::Int, &herd->herdOffset);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);

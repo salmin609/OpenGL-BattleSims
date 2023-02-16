@@ -8,10 +8,10 @@ class ComputeShaderClass
 public:
 	ComputeShaderClass(Shader* shader_);
 	virtual ~ComputeShaderClass();
+	BufferManager* csBuffers{};
 
 protected:
 	Shader* shader;
-	BufferManager* csBuffers{};
 
 private:
 	virtual void SetShaderUniforms() = 0;

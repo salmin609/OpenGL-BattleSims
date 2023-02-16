@@ -10,6 +10,10 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+#include "ModelKinds.hpp"
+
+class AnimationModel;
+class AnimationState;
 class Camera;
 struct SphereBV;
 struct Frustum;
@@ -20,19 +24,26 @@ class Shader;
 class BillBoardObject
 {
 public:
-	BillBoardObject(Shader* shader_, const glm::vec3& pos_, 
-		std::vector<std::vector<FrameBuffer*>>* fb_);
+	BillBoardObject(Shader* shader_, 
+		std::vector<std::vector<FrameBuffer*>>* fb_,
+		AnimationState* animState_,
+		int boObjIndex_);
 	~BillBoardObject();
 	void Render(const glm::mat4& projMat, 
 		const glm::mat4& viewMatWithoutRot, 
 		const glm::vec4& pos);
 	void ChangeFrameBufferAngle(int index);
-	void SetAnimation(int index);
+	bool SetAnimation(int index, int* animationIndexData);
+	
 	
 	FrameBuffer* usingFrameBuffer = nullptr;
 	std::vector<FrameBuffer*>* fbs{};
 	std::vector<std::vector<FrameBuffer*>>* animFrames;
+	AnimationState* animState;
+	State currentState;
+	int boObjIndex;
 private:
 	unsigned vao{};
 	Shader* shader;
+	unsigned currentAngleSlot;
 };

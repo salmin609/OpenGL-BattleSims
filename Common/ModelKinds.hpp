@@ -2,79 +2,66 @@
 #include <string>
 #include <vector>
 
+
+enum class State
+{
+	Idle = 0,
+	Attack,
+	Pain,
+	Run,
+	Death
+};
+
 enum class ObjKind
 {
-	SWAT = 0,
+	MUTANT = 0,
+	SWAT,
 	KNIGHT,
 
 	END,
-
-	AMY,
-	MICHELLE,
-	ADAM,
-
 };
 
 enum class AnimationKinds
 {
-	SWAT_RifleIdle = 0,
-	SWAT_Run,
-	SWAT_Smash,
+	SWAT_IDLE_0 = 0,
+	SWAT_IDLE_1,
+	SWAT_IDLE_2,
+	SWAT_RUN_0,
+	SWAT_RUN_1,
+	SWAT_ATTACK_0,
+	SWAT_ATTACK_1,
+	SWAT_ATTACK_2,
+	SWAT_ATTACK_3,
+	SWAT_DEATH_0,
+	SWAT_PAIN_0,
 
+	KNIGHT_IDLE_0,
+	KNIGHT_IDLE_1,
+	KNIGHT_IDLE_2,
+	KNIGHT_RUN_0,
+	KNIGHT_RUN_1,
+	KNIGHT_RUN_2,
+	KNIGHT_ATTACK_0,
+	KNIGHT_ATTACK_1,
+	KNIGHT_ATTACK_2,
+	KNIGHT_ATTACK_3,
+	KNIGHT_DEATH_0,
+	KNIGHT_DEATH_1,
+	KNIGHT_DEATH_2,
+	KNIGHT_PAIN_0,
 
-	KNIGHT_Idle,
-	KNIGHT_Run,
-	KNIGHT_Attack1,
+	MUTANT_IDLE_0,
+	MUTANT_IDLE_1,
+	MUTANT_IDLE_2,
+	MUTANT_RUN_0,
+	MUTANT_RUN_1,
+	MUTANT_ATTACK_0,
+	MUTANT_ATTACK_1,
+	MUTANT_DEATH_0,
+	MUTANT_DEATH_1,
+	MUTANT_PAIN_0,
 
 	END,
-	//SWAT_RifleAimIdle = 0,
-	//SWAT_RifleCrouch,
-	//SWAT_RifleWalk,
-	//SWAT_SteppingBackward,
-	//SWAT_Strafing,
-	//SWAT_TurnLeft45Degree,
-	//SWAT_CrawlBackward,
-	//SWAT_Death,
-	//SWAT_Reload,
-	//SWAT_Reload2,
-	//KNIGHT_Block,
-	//KNIGHT_BlockIdle,
-	//KNIGHT_CrouchBlockIdle,
-	//KNIGHT_Death,
-	//KNIGHT_Idle2,
-	//KNIGHT_Impact,
-	//KNIGHT_PowerUp,
-	//KNIGHT_Slash,
-	AMY_Excited,
-	AMY_Floating,
-	AMY_HappyIdle,
-	AMY_Jogging,
-	AMY_Singing,
-	AMY_StandingUp,
-	AMY_Surprised,
-	AMY_TalkingOnPhone,
-	AMY_TwistDance,
-
-	MICHELLE_BreakDance,
-	MICHELLE_BreakDanceReady,
-	MICHELLE_Dancing,
-	MICHELLE_DancingTwerk,
-	MICHELLE_Flair,
-	MICHELLE_HipHopDance1,
-	MICHELLE_HipHopDance2,
-	MICHELLE_HipHopDance3,
-	MICHELLE_HipHopDance4,
-	MICHELLE_RumbaDance,
-	MICHELLE_Twist,
-	MICHELLE_WaveHipHop,
-
-	ADAM_ComboPunch,
-	ADAM_ElbowPunch,
-	ADAM_Idle,
-	ADAM_Idle2,
-	ADAM_Jab,
-	ADAM_MMAKick,
-	ADAM_Victory,
 };
 
 inline std::vector<std::string> ObjPaths()
@@ -85,167 +72,127 @@ inline std::vector<std::string> ObjPaths()
 		std::string path = "../Models/";
 		switch (static_cast<AnimationKinds>(i))
 		{
-		//case AnimationKinds::SWAT_RifleAimIdle:
-		//	path += "Swat_RifleAimingIdle";
-		//	break;
-		//case AnimationKinds::SWAT_RifleCrouch:
-		//	path += "Swat_RifleCrouchWalk";
-		//	break;
-		case AnimationKinds::SWAT_RifleIdle:
-			path += "Swat_RifleIdle";
-			break;
-		/*case AnimationKinds::SWAT_RifleWalk:
-			path += "Swat_RifleWalk";
-			break;*/
-		case AnimationKinds::SWAT_Run:
-			path += "Swat_Run";
-			break;
-		//case AnimationKinds::SWAT_SteppingBackward:
-		//	path += "Swat_SteppingBackward";
-		//	break;
-		//case AnimationKinds::SWAT_Strafing:
-		//	path += "Swat_Strafing";
-		//	break;
-		//case AnimationKinds::SWAT_TurnLeft45Degree:
-		//	path += "Swat_TurnLeft45Degree";
-		//	break;
-		//case AnimationKinds::SWAT_CrawlBackward:
-		//	path += "Swat_CrawlBackward";
-		//	break;
-		//case AnimationKinds::SWAT_Death:
-		//	path += "Swat_Death";
-		//	break;
-		//case AnimationKinds::SWAT_Reload:
-		//	path += "Swat_Reload";
-		//	break;
-		//case AnimationKinds::SWAT_Reload2:
-		//	path += "Swat_Reload2";
-		//	break;
-		case AnimationKinds::SWAT_Smash:
-			path += "Swat_Smash";
+		case AnimationKinds::SWAT_IDLE_0:
+			path += "Swat_Idle_0";
 			break;
 
-		case AnimationKinds::AMY_Excited:
-			path += "Amy_Excited";
-			break;
-		case AnimationKinds::AMY_Floating:
-			path += "Amy_Floating";
-			break;
-		case AnimationKinds::AMY_HappyIdle:
-			path += "Amy_HappyIdle";
-			break;
-		case AnimationKinds::AMY_Jogging:
-			path += "Amy_Jogging";
-			break;
-		case AnimationKinds::AMY_Singing:
-			path += "Amy_Singing";
-			break;
-		case AnimationKinds::AMY_StandingUp:
-			path += "Amy_StandingUp";
-			break;
-		case AnimationKinds::AMY_Surprised:
-			path += "Amy_Surprised";
-			break;
-		case AnimationKinds::AMY_TalkingOnPhone:
-			path += "Amy_TalkingOnPhone";
-			break;
-		case AnimationKinds::AMY_TwistDance:
-			path += "Amy_TwistDance";
-			break;
-		case AnimationKinds::KNIGHT_Attack1:
-			path += "Knight_Attack1";
-			break;
-		//case AnimationKinds::KNIGHT_Block:
-		//	path += "Knight_Block";
-		//	break;
-		//case AnimationKinds::KNIGHT_BlockIdle:
-		//	path += "Knight_BlockIdle";
-		//	break;
-		//case AnimationKinds::KNIGHT_CrouchBlockIdle:
-		//	path += "Knight_CrouchBlockIdle";
-		//	break;
-		//case AnimationKinds::KNIGHT_Death:
-		//	path += "Knight_Death";
-		//	break;
-		case AnimationKinds::KNIGHT_Idle:
-			path += "Knight_Idle";
-			break;
-		//case AnimationKinds::KNIGHT_Idle2:
-		//	path += "Knight_Idle2";
-		//	break;
-		//case AnimationKinds::KNIGHT_Impact:
-		//	path += "Knight_Impact";
-		//	break;
-		//case AnimationKinds::KNIGHT_PowerUp:
-		//	path += "Knight_PowerUp";
-		//	break;
-		case AnimationKinds::KNIGHT_Run:
-			path += "Knight_Run";
-			break;
-		//case AnimationKinds::KNIGHT_Slash:
-		//	path += "Knight_Slash";
-		//	break;
-
-		case AnimationKinds::MICHELLE_BreakDance:
-			path += "Michelle_BreakDance";
-			break;
-		case AnimationKinds::MICHELLE_BreakDanceReady:
-			path += "Michelle_BreakDanceReady";
-			break;
-		case AnimationKinds::MICHELLE_Dancing:
-			path += "Michelle_Dancing";
-			break;
-		case AnimationKinds::MICHELLE_DancingTwerk:
-			path += "Michelle_DancingTwerk";
-			break;
-		case AnimationKinds::MICHELLE_Flair:
-			path += "Michelle_Flair";
-			break;
-		case AnimationKinds::MICHELLE_HipHopDance1:
-			path += "Michelle_HipHopDance1";
-			break;
-		case AnimationKinds::MICHELLE_HipHopDance2:
-			path += "Michelle_HipHopDance2";
-			break;
-		case AnimationKinds::MICHELLE_HipHopDance3:
-			path += "Michelle_HipHopDance3";
-			break;
-		case AnimationKinds::MICHELLE_HipHopDance4:
-			path += "Michelle_HipHopDance4";
-			break;
-		case AnimationKinds::MICHELLE_RumbaDance:
-			path += "Michelle_RumbaDance";
-			break;
-		case AnimationKinds::MICHELLE_Twist:
-			path += "Michelle_Twist";
-			break;
-		case AnimationKinds::MICHELLE_WaveHipHop:
-			path += "Michelle_WaveHipHop";
+		case AnimationKinds::SWAT_IDLE_1:
+			path += "Swat_Idle_1";
 			break;
 
-		case AnimationKinds::ADAM_ComboPunch:
-			path += "Adam_ComboPunch";
+		case AnimationKinds::SWAT_IDLE_2:
+			path += "Swat_Idle_2";
 			break;
-		case AnimationKinds::ADAM_ElbowPunch:
-			path += "Adam_ElbowPunch";
+
+		case AnimationKinds::SWAT_RUN_0:
+			path += "Swat_Run_0";
 			break;
-		case AnimationKinds::ADAM_Idle:
-			path += "Adam_Idle1";
+
+		case AnimationKinds::SWAT_DEATH_0:
+			path += "Swat_Death_0";
 			break;
-		case AnimationKinds::ADAM_Idle2:
-			path += "Adam_Idle2";
+
+		case AnimationKinds::SWAT_ATTACK_0:
+			path += "Swat_Attack_0";
 			break;
-		case AnimationKinds::ADAM_Jab:
-			path += "Adam_Jab";
+
+		case AnimationKinds::SWAT_ATTACK_1:
+			path += "Swat_Attack_1";
 			break;
-		case AnimationKinds::ADAM_MMAKick:
-			path += "Adam_MMAKick";
+
+		case AnimationKinds::SWAT_ATTACK_2:
+			path += "Swat_Attack_2";
 			break;
-		case AnimationKinds::ADAM_Victory:
-			path += "Adam_Victory";
+
+		case AnimationKinds::SWAT_ATTACK_3:
+			path += "Swat_Attack_3";
+			break;
+
+		case AnimationKinds::SWAT_PAIN_0:
+			path += "Swat_Pain_0";
+			break;
+
+
+		case AnimationKinds::KNIGHT_IDLE_0:
+			path += "Knight_Idle_0";
+			break;
+
+		case AnimationKinds::KNIGHT_RUN_0:
+			path += "Knight_Run_0";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_0:
+			path += "Knight_Attack_0";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_1:
+			path += "Knight_Attack_1";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_2:
+			path += "Knight_Attack_2";
+			break;
+		case AnimationKinds::KNIGHT_ATTACK_3:
+			path += "Knight_Attack_3";
+			break;
+
+		case AnimationKinds::KNIGHT_DEATH_0:
+			path += "Knight_Death_0";
+			break;
+
+		case AnimationKinds::KNIGHT_PAIN_0:
+			path += "Knight_Pain_0";
 			break;
 
 		case AnimationKinds::END:
+			break;
+		case AnimationKinds::KNIGHT_IDLE_1:
+			path += "Knight_Idle_1";
+			break;
+		case AnimationKinds::KNIGHT_IDLE_2: 
+			path += "Knight_Idle_2";
+			break;
+		case AnimationKinds::KNIGHT_RUN_1:
+			path += "Knight_Run_1";
+			break;
+		case AnimationKinds::KNIGHT_RUN_2:
+			path += "Knight_Run_2";
+			break;
+		case AnimationKinds::KNIGHT_DEATH_1: 
+			path += "Knight_Death_1";
+			break;
+		case AnimationKinds::KNIGHT_DEATH_2:
+			path += "Knight_Death_2";
+			break;
+		case AnimationKinds::SWAT_RUN_1:
+			path += "Swat_Run_1";
+			break;
+		case AnimationKinds::MUTANT_IDLE_0:
+			path += "Mutant_Idle_0";
+			break;
+		case AnimationKinds::MUTANT_IDLE_1:
+			path += "Mutant_Idle_1";
+			break;
+		case AnimationKinds::MUTANT_IDLE_2: 
+			path += "Mutant_Idle_2";
+			break;
+		case AnimationKinds::MUTANT_RUN_0: 
+			path += "Mutant_Run_0";
+			break;
+		case AnimationKinds::MUTANT_RUN_1: 
+			path += "Mutant_Run_1";
+			break;
+		case AnimationKinds::MUTANT_ATTACK_0: 
+			path += "Mutant_Attack_0";
+			break;
+		case AnimationKinds::MUTANT_ATTACK_1: 
+			path += "Mutant_Attack_1";
+			break;
+		case AnimationKinds::MUTANT_DEATH_0: 
+			path += "Mutant_Death_0";
+			break;
+		case AnimationKinds::MUTANT_DEATH_1: 
+			path += "Mutant_Death_1";
+			break;
+		case AnimationKinds::MUTANT_PAIN_0: 
+			path += "Mutant_Pain_0";
 			break;
 		default:;
 		}

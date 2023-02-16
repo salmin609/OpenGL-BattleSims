@@ -10,21 +10,33 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "AnimationModel.h"
 #include "BillboardManager.h"
 #include "FrameBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
 
-BillBoardObject::BillBoardObject(Shader* shader_, const glm::vec3& pos_,
-	std::vector<std::vector<FrameBuffer*>>* fb_)
+BillBoardObject::BillBoardObject(Shader* shader_,
+	std::vector<std::vector<FrameBuffer*>>* fb_,
+	AnimationState* animState_,
+	int boObjIndex_)
 {
 	shader = shader_;
-	//fbs = fb_;
 	animFrames = fb_;
+	currentAngleSlot = 0;
+	animState = animState_;
+	currentState = State::Idle;
+	boObjIndex = boObjIndex_;
+	//fbs = &(*animFrames)[static_cast<int>(currentState)];
+
+	AnimationModel* model = animState->RequestAnimation(static_cast<int>(currentState));
+
+	fbs = &model->fbs;
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(0);
 
-	SetAnimation(1);
+	SetAnimation(static_cast<int>(State::Idle), nullptr);
 }
 
 BillBoardObject::~BillBoardObject()
@@ -33,9 +45,9 @@ BillBoardObject::~BillBoardObject()
 }
 
 
-void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,const glm::vec4& pos)
+void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat, const glm::vec4& pos)
 {
-	if(usingFrameBuffer != nullptr)
+	if (usingFrameBuffer != nullptr)
 	{
 		shader->Use();
 		glBindVertexArray(vao);
@@ -56,11 +68,42 @@ void BillBoardObject::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 
 void BillBoardObject::ChangeFrameBufferAngle(int index)
 {
-	usingFrameBuffer = (*fbs)[index];
-	usingFrameBuffer->isOnUsage = true;
+	if (fbs != nullptr)
+	{
+		usingFrameBuffer = (*fbs)[index];
+		usingFrameBuffer->isOnUsage = true;
+		currentAngleSlot = index;
+	}
 }
 
-void BillBoardObject::SetAnimation(int index)
+bool BillBoardObject::SetAnimation(int index, int* animationIndexData)
 {
-	fbs = &(*animFrames)[index];
+	//Todo: Should read animState first, tracking that anim available.
+
+	if (usingFrameBuffer != nullptr)
+	{
+		const State newState = static_cast<State>(index);
+
+		if (newState != currentState)
+		{
+			AnimationModel* model = animState->RequestAnimation(index);
+
+			if (model != nullptr)
+			{
+				//model->boUsingThisAnimation.push_back(this);
+				fbs = &model->fbs;
+				currentState = newState;
+				return true;
+			}
+			//TODO : Need to do something when Request is failed.
+			//Value of animationIndex[] was changed, but the animation was not changed.
+			else
+			{
+				if (animationIndexData != nullptr)
+					animationIndexData[boObjIndex] = static_cast<int>(currentState);
+			}
+			
+		}
+	}
+	return false;
 }

@@ -3,142 +3,243 @@
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 
-layout(binding = 0) writeonly buffer
+layout(binding = 0) buffer
 bufferReached {
-	int reached[];
+	int animationIndex[];
 };
 
 layout(std430, binding = 1) buffer
-bufferObjPos1 {
-	vec4 obj1Pos[];
+bufferObjsPos {
+	vec4 objsPoses[];
 };
 
 layout(std430, binding = 2) buffer
-bufferObjPos2 {
-	vec4 obj2Pos[];
+bufferObjsDirection {
+	vec4 objsDirections[];
 };
 
-//layout(std430, binding = 3) buffer
-//herdPosBuffer {
-//	vec4 herdPos[];
-//};
-//
-//layout(std430, binding = 4) buffer
-//otherHerdPosBuffer {
-//	vec4 otherHerdPos[];
-//};
+
+layout(binding = 3) buffer
+bufferTimeCheck {
+	float time[];
+};
+
+layout(binding = 4) buffer
+bufferTargetEnemyPosition {
+	vec4 targetEnemyPos[];
+};
+
+layout(binding = 5) buffer
+bufferTargetingCounts {
+	int attackedCount[];
+};
+
+layout(binding = 6) buffer
+bufferObjectDead {
+	int isDead[];
+};
 
 
 
-uniform vec4 herdBoDirectionAndOffsets[32];
+
+#define State_Idle 0
+#define State_Attack 1
+#define State_Pain 2
+#define State_Run 3
+#define State_Death 4
+
+uniform int herdOffset[32];
+uniform int herdCounts[32];
+uniform int herdSides[32];
+uniform vec4 herdDirections[32];
+uniform float herdSpeeds[32];
+
 uniform float dt;
 uniform int herdCount;
-vec3 boDirection;
-float speed = 18.f;
-float distanceCheck = 20.f;
-#define MAX_COUNT_PER_HERD 1280
-
-void CopyToHerdPosArray(int posBufferIndex, inout vec4 herdPos[MAX_COUNT_PER_HERD], inout vec4 otherHerdPos[MAX_COUNT_PER_HERD])
-{
-	if (posBufferIndex == 0)
-	{
-		for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-		{
-			herdPos[i] = obj1Pos[i];
-			otherHerdPos[i] = obj2Pos[i];
-		}
-	}
-	else if(posBufferIndex == 1)
-	{
-		for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-		{
-			herdPos[i] = obj2Pos[i];
-			otherHerdPos[i] = obj1Pos[i];
-		}
-	}
-	
-}
+float attackRange = 30.f;
+float radius = 15.f;
+int herdIndex;
+uint index;
+//float speed = 25.f;
 
 void MoveToward(inout vec4 pos, vec4 direction, float moveSpeed)
 {
-	pos = pos + direction * dt * moveSpeed;
+	pos = pos + normalize(direction) * dt * moveSpeed;
 	pos.w = 1.f;
 }
 
-bool CheckReached(vec4 pos, vec4 otherPos)
+bool CheckCollision(vec4 pos, vec4 otherPos, float range)
 {
 	float distance = distance(pos, otherPos);
 
-	if (distance < distanceCheck)
+	if (distance < range)
 		return true;
 	return false;
 }
 
-void GetBufferOffset(inout int posBufferIndex, inout int bufferOffset, inout uint index)
+void GetBufferOffset()
 {
 	for (int i = herdCount - 1; i >= 0; --i)
 	{
-		vec4 herdboDirectionAndOffset = herdBoDirectionAndOffsets[i];
+		int offset = herdOffset[i];
 
-		if (index >= herdboDirectionAndOffset.w)
+		if (index >= uint(offset))
 		{
-			boDirection = vec3(herdboDirectionAndOffset);
-			posBufferIndex = i;
-			bufferOffset = int(herdboDirectionAndOffset.w);
+			herdIndex = i;
 			break;
 		}
 	}
-	index -= bufferOffset;
 }
 
-bool CheckCollisionWithEnemy(vec4 pos, vec4 otherHerdPos[MAX_COUNT_PER_HERD])
-{
-	for (int i = 0; i < MAX_COUNT_PER_HERD; ++i)
-	{
-		vec4 otherPos = otherHerdPos[i];
 
-		if (CheckReached(pos, otherPos))
-			return true;
+
+bool CheckCollisionWithEnemy()
+{
+	vec4 pos = objsPoses[index];
+	int herdIndexOffset = 0;
+	//uint closestEnemyIndexSoFar = 0;
+	//float closestDistanceBtwEnemySoFar = 10000.f;
+	int thisObjSide = herdSides[herdIndex];
+
+	for (int i = 0; i < herdCount; ++i)
+	{
+		int herdNums = herdCounts[i];
+		int otherHerdSide = herdSides[i];
+
+		if (thisObjSide != otherHerdSide)
+		{
+			for (int j = 0; j < herdNums; ++j)
+			{
+				uint othersIndex = uint(herdIndexOffset + j);
+				vec4 otherPos = objsPoses[othersIndex];
+				int dead = isDead[othersIndex];
+
+				if (dead == 0)
+				{
+					/*float dist = distance(pos, otherPos);
+
+					if (dist < closestDistanceBtwEnemySoFar)
+					{
+						closestEnemyIndexSoFar = othersIndex;
+						closestDistanceBtwEnemySoFar = dist;
+					}*/
+
+					if (CheckCollision(pos, otherPos, attackRange))
+					{
+						attackedCount[othersIndex]++;
+						objsDirections[index] = otherPos - pos;
+						return true;
+					}
+
+				}
+
+			}
+		}
+		herdIndexOffset += herdNums;
+	}
+
+	//objsDirections[index] = objsPoses[closestEnemyIndexSoFar] - pos;
+	return false;
+}
+
+bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollisionIndex,
+	vec4 herdDirection)
+{
+	//vec4 direction = objsDirections[index];
+	vec4 nextPos = objsPoses[index];
+	MoveToward(nextPos, herdDirection, speed);
+	int herdIndexOffset = 0;
+	int thisObjSide = herdSides[herdIndex];
+
+	for (int i = 0; i < herdCount; ++i)
+	{
+		int herdNums = herdCounts[i];
+		int otherObjSide = herdSides[i];
+
+		if (thisObjSide == otherObjSide)
+		{
+			for (int j = 0; j < herdNums; ++j)
+			{
+				uint othersInSameHerdIndex = (herdIndexOffset + j);
+
+				if (othersInSameHerdIndex != index)
+				{
+					int dead = isDead[othersInSameHerdIndex];
+					vec4 otherPos = objsPoses[othersInSameHerdIndex];
+					int animState = animationIndex[othersInSameHerdIndex];
+
+					//collision if statement
+					if (dead == 0)
+					{
+						if (CheckCollision(nextPos, otherPos, radius))
+						{
+							allyCollisionIndex = int(othersInSameHerdIndex);
+							return true;
+						}
+					}
+				}
+
+			}
+		}
+		herdIndexOffset += herdNums;
 	}
 	return false;
 }
 
-bool CheckCollisionWithAllie(uint index, vec4 herdPos[MAX_COUNT_PER_HERD])
-{
-
-
-
-}
-
 void main(void)
 {
-	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
-	uint reachedBufferIndex = index;
+	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
-	reached[reachedBufferIndex] = 0;
-	
-	int posBufferIndex = 0;
-	int bufferOffset = 0;
+	float timer = time[index];
+	//float speed = randSpeed[index];
+	vec4 direction = objsDirections[index];
+	int animIndex = animationIndex[index];
 
-	vec4 herdPos[MAX_COUNT_PER_HERD];
-	vec4 otherHerdPos[MAX_COUNT_PER_HERD];
+	GetBufferOffset();
+	vec4 herdDirection = herdDirections[herdIndex];
+	float speed = herdSpeeds[herdIndex];
 
-	GetBufferOffset(posBufferIndex, bufferOffset, index);
-	CopyToHerdPosArray(posBufferIndex, herdPos, otherHerdPos);	
+	bool isStop = dot(herdDirection, herdDirection) == 0;
 
-	vec4 pos = herdPos[index];
-
-	bool doesReached = CheckCollisionWithEnemy(index, otherHerdPos, herdPos);
-
-	//Need to move toward facing direction.
-	if (doesReached == false)
+	if (isStop == false)
 	{
-		if (posBufferIndex == 0)
-			MoveToward(obj1Pos[index], vec4(boDirection, 1.f), speed);
-		else if (posBufferIndex == 1)
-			MoveToward(obj2Pos[index], vec4(boDirection, 1.f), speed);
+		//if (animIndex != State_Death)
+		//{
+			bool collisionWithEnemy = CheckCollisionWithEnemy();
+
+			if (collisionWithEnemy)
+			{
+				animationIndex[index] = State_Attack;
+			}
+			else
+			{
+				int allyCollisionIndex = 0;
+				bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex, herdDirection);
+
+				if (collisionWithAlly)
+				{
+					if (animationIndex[allyCollisionIndex] != State_Run)
+						animationIndex[index] = State_Idle;
+				}
+				else
+				{
+					animationIndex[index] = State_Run;
+					objsDirections[index] = herdDirection;
+					MoveToward(objsPoses[index], herdDirection, speed);
+				}
+			}
+		//}
 	}
-	//Change animation
 	else
-		reached[reachedBufferIndex] = 1;
+	{
+		animationIndex[index] = State_Idle;
+
+		bool collisionWithEnemy = CheckCollisionWithEnemy();
+
+		if (collisionWithEnemy)
+		{
+			animationIndex[index] = State_Attack;
+		}
+	}
+
 }

@@ -14,10 +14,9 @@
 #include "AnimationModel.h"
 #include "Object.h"
 #include <fstream>
-
-#include "BillboardAnimatingDatas.h"
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
+#include "HerdManager.h"
 #include "Skybox.h"
 #include "Line.h"
 #include "ModelKinds.hpp"
@@ -25,14 +24,17 @@
 
 Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w), windowHeight(h)
 {
-	shader = new Shader("../Shaders/AnimationVertex.glsl", "../Shaders/AnimationFragment.glsl");
+	animShader = new Shader("../Shaders/AnimationVertex.glsl", "../Shaders/AnimationFragment.glsl");
 	floorShader = new Shader("../Shaders/floorVertex.glsl", "../Shaders/floorFragment.glsl");
 	billboardShader = new Shader("../Shaders/billboardVert.glsl", "../Shaders/billboardFrag.glsl", 
 		"../Shaders/billboardGeometry.glsl");
 	interpolationComputeShader = new Shader("../Shaders/SkinningComputeShader.glsl");
 	lineShader = new Shader("../Shaders/lineVert.glsl", "../Shaders/lineFrag.glsl");
 	bbCheckFrameBufferUsage = new Shader("../Shaders/BillboardObjectAngleCompute.glsl");
-	bbMoving = new Shader("../Shaders/billboardObjectMovingCompute.glsl");
+	bbMoving = new Shader("../Shaders/BillboardObjectMovingCompute.glsl");
+	bbAttack = new Shader("../Shaders/BillboardAttackCompute.glsl");
+	bbChangeAnimation = new Shader("../Shaders/BillboardObjectAnimationStateCompute.glsl");
+
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
@@ -40,11 +42,15 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	currentCam = cam;
 
 	objPaths = ObjPaths();
-	boManager = new BillboardManager(shader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
-	boObjsManager = new BillboardObjectManager(billboardShader, boManager, bbCheckFrameBufferUsage, currentCam, bbMoving);
+	boManager = new BillboardManager(animShader, interpolationComputeShader, windowWidth, windowHeight, objPaths);
+	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
+		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,
+		bbChangeAnimation,
+		lineShader);
 	skybox = new SkyBox();
 
-	floorLine = new Line(lineShader);
+	floorLine = new Line(lineShader, std::vector<glm::vec3>{},
+		glm::vec4(1.f, 1.f, 1.f, 1.f), true);
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
 
@@ -67,13 +73,15 @@ Graphic::~Graphic()
 	delete skybox;
 	//delete frustum;
 	delete cam;
-	delete shader;
+	delete animShader;
 	delete interpolationComputeShader;
 	delete lineShader;
 	delete billboardShader;
 	delete floorLine;
 	delete floorShader;
 	delete bbCheckFrameBufferUsage;
+	delete bbMoving;
+	delete bbChangeAnimation;
 }
 
 void Graphic::Draw()
@@ -90,12 +98,28 @@ void Graphic::Draw()
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	/*frustum->ResetFrustumPlans(*currentCam, fov,
-		glm::radians(currentCam->Zoom), boObjsManager->zNear,
-		boObjsManager->zFar);*/
+	//Decide whether billboard object is in frustum or not.
+	//If it, get angle index from that
+	boObjsManager->CalculateBOAngle();
 
-	boObjsManager->CheckFrameBufferUsage();
+	//Move those billboard objects to desired direction. which is to nearest enemy.
 	boObjsManager->Move(deltaTime);
+
+	//Check if object is attacking animation, if it, += dt to timer buffer.
+	//if timer over some certain number, change to death state.
+	boObjsManager->Attack(deltaTime);
+
+	//Update animation's status whether Ready or Playing
+	//boManager->CheckAnimationPlayingStatus();
+
+	//Set angle index from framebuffers[]. if index >= 0, which means
+	//billboard object is in frustum, near of camera position.
+
+	//Request to change animation state
+	boObjsManager->ChangeAnimationOfHerds();
+
+	//
+
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 
@@ -139,8 +163,6 @@ void Graphic::ProcessInput()
 		camLock = !camLock;
 }
 
-
-
 void Graphic::PrintCameraStatement(Camera* cam_)
 {
 	const glm::vec3 camPos = cam_->Position;
@@ -159,7 +181,15 @@ void Graphic::SetWindowWidthHeight(int w, int h)
 	windowHeight = h;
 }
 
+void Graphic::SelectHerd(int index) const
+{
+	boObjsManager->herdManager->SelectHerd(index);
+}
 
+void Graphic::ChangeHerdDirection(glm::vec4 herdDir)
+{
+	boObjsManager->herdManager->ChangeHerdDirection(herdDir);
+}
 
 void Graphic::ResetCamAngle()
 {

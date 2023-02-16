@@ -19,6 +19,48 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{6ec950ce-e1a7-4bab-908c-927bd7fd5212}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\ComputeShader">
+      <UniqueIdentifier>{f0e6af14-d1d7-4d4c-9671-0ca33f5f8c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Billboards">
+      <UniqueIdentifier>{ec70c228-2fc6-4f26-bc29-57a35af78570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Animations">
+      <UniqueIdentifier>{b636b306-e55e-4fe6-84d6-d89b19c8d21d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\Other">
+      <UniqueIdentifier>{01f9db27-32c3-4005-83f0-deb5a452ac6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ComputeShader">
+      <UniqueIdentifier>{50032d1f-25bf-46fd-8d33-d09b9b2f30d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Buffer">
+      <UniqueIdentifier>{929a14b6-1adb-476e-9a72-ea06774e3ebd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Billboard">
+      <UniqueIdentifier>{62387d90-f831-4ffc-b6ec-4d3684ac642f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Animation">
+      <UniqueIdentifier>{1bb0e0a6-bd4d-47e6-a02f-7620a9e93d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComputeShader">
+      <UniqueIdentifier>{d1c01e81-d735-4f9d-a5a0-47f637087720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Buffer">
+      <UniqueIdentifier>{6acd349c-6fe9-471b-87b2-7f98f900a817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Animation">
+      <UniqueIdentifier>{4c1f8958-7394-46c2-879d-7ce9a832ed2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Billboard">
+      <UniqueIdentifier>{9785e5f3-7fbd-45ea-9ff9-4bfb3497f8ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Herd">
+      <UniqueIdentifier>{b46f2aa2-12f3-4393-9c19-525530c6d530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Herd">
+      <UniqueIdentifier>{05adc366-9212-4abe-9092-223b8ef248d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\1.0 - Simple Scene\GLApplication.cpp">
@@ -33,22 +75,10 @@
     <ClCompile Include="..\Common\Interpolation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\AnimationModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AnimatingFunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AnimationModelDatas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BoneStorageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Quaternion.cpp">
@@ -78,16 +108,7 @@
     <ClCompile Include="..\Common\Floor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\BillBoardObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\FrameBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BillboardManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\SkyBox.cpp">
@@ -99,35 +120,65 @@
     <ClCompile Include="..\Common\MeshDatas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\SingleAnimationObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\MultipleAnimationObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\BillboardObjectManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BufferManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Herd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\HerdManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\BillboardMovingCS.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Common\BillboardAttackCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\ComputeShaderClass.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardMovingCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BufferManager.cpp">
+      <Filter>Source Files\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AnimatingFunctions.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AnimationModel.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AnimationModelDatas.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BoneStorageManager.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\MultipleAnimationObject.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\SingleAnimationObject.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp">
+      <Filter>Source Files\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardManager.cpp">
+      <Filter>Source Files\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillBoardObject.cpp">
+      <Filter>Source Files\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardObjectManager.cpp">
+      <Filter>Source Files\Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Herd.cpp">
+      <Filter>Source Files\Herd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\HerdManager.cpp">
+      <Filter>Source Files\Herd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AnimationState.cpp">
+      <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardAnimationChangeCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,19 +194,7 @@
     <ClInclude Include="..\Common\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Buffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Interpolation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AnimationModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AnimatingFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AnimationStructure.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Texture.h">
@@ -165,12 +204,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AnimationModelDatas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BoneStorageManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Quaternion.h">
@@ -206,16 +239,7 @@
     <ClInclude Include="..\Common\Floor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\BillBoardObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\FrameBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BillboardAnimatingDatas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BillboardManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Skybox.h">
@@ -233,12 +257,6 @@
     <ClInclude Include="..\Common\StringParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\SingleAnimationObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\MultipleAnimationObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -248,70 +266,121 @@
     <ClInclude Include="..\Common\ModelKinds.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\BillboardObjectManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BufferManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\DataTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Herd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\HerdManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BillboardFrameBufferUsageCS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\BillboardMovingCS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\SSBODatas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\BillboardAttackCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardFrameBufferUsageCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
     <ClInclude Include="..\Common\ComputeShaderClass.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardMovingCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CSBufferNames.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Buffer.hpp">
+      <Filter>Header Files\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BufferManager.h">
+      <Filter>Header Files\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardManager.h">
+      <Filter>Header Files\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillBoardObject.h">
+      <Filter>Header Files\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardObjectManager.h">
+      <Filter>Header Files\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardAnimatingDatas.h">
+      <Filter>Header Files\Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BoneStorageManager.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AnimatingFunctions.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AnimationModel.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AnimationModelDatas.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AnimationStructure.hpp">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\SingleAnimationObject.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\MultipleAnimationObject.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Herd.h">
+      <Filter>Header Files\Herd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\HerdManager.h">
+      <Filter>Header Files\Herd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AnimationState.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardAnimationChangeCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Shaders\AnimationFragment.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\BillboardObjectAngleCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
     </None>
-    <None Include="..\Shaders\AnimationVertex.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\BillboardObjectMovingCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
     </None>
     <None Include="..\Shaders\SkinningComputeShader.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\ComputeShader</Filter>
     </None>
-    <None Include="..\Shaders\billboardVert.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\BillboardAttackCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
     </None>
     <None Include="..\Shaders\billboardFrag.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Billboards</Filter>
     </None>
     <None Include="..\Shaders\billboardGeometry.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Billboards</Filter>
     </None>
-    <None Include="..\Shaders\SkyboxVertex.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\billboardVert.glsl">
+      <Filter>Shader\Billboards</Filter>
     </None>
-    <None Include="..\Shaders\SkyboxFragment.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\AnimationFragment.glsl">
+      <Filter>Shader\Animations</Filter>
     </None>
-    <None Include="..\Shaders\lineVert.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\AnimationVertex.glsl">
+      <Filter>Shader\Animations</Filter>
     </None>
     <None Include="..\Shaders\lineFrag.glsl">
-      <Filter>Shader</Filter>
+      <Filter>Shader\Other</Filter>
     </None>
-    <None Include="..\Shaders\BillboardObjectAngleCompute.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\lineVert.glsl">
+      <Filter>Shader\Other</Filter>
     </None>
-    <None Include="..\Shaders\billboardObjectMovingCompute.glsl">
-      <Filter>Shader</Filter>
+    <None Include="..\Shaders\SkyboxFragment.glsl">
+      <Filter>Shader\Other</Filter>
+    </None>
+    <None Include="..\Shaders\SkyboxVertex.glsl">
+      <Filter>Shader\Other</Filter>
+    </None>
+    <None Include="..\Shaders\BillboardObjectAnimationStateCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
     </None>
   </ItemGroup>
 </Project>
