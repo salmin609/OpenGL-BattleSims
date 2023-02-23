@@ -10,8 +10,11 @@
 #include <string>
 #include <vector>
 #include <glm/vec3.hpp>
+#include "glm/mat4x4.hpp"
+
 #include <glm/detail/type_vec.hpp>
 
+class Cube;
 class BillboardObjectManager;
 class Line;
 class Timer;
@@ -23,7 +26,6 @@ class BillboardAnimatingDatas;
 class FrameBuffer;
 class BillBoardObject;
 class Buffer;
-class Floor;
 class Shader;
 struct aiScene;
 class Camera;
@@ -47,6 +49,9 @@ public:
 	void SelectHerd(int index) const;
 	void ChangeHerdDirection(glm::vec4 herdDir);
 	void ResetCamAngle();
+	void GetMousePosInWorldCoord(float mouseX, float mouseY);
+	void ForwardPickingPos();
+	void ForwardToPickedPos();
 
 	GLFWwindow* window{};
 	Camera* cam;
@@ -63,6 +68,9 @@ public:
 	bool testOneTime = true;
 	SkyBox* skybox;
 	BillboardObjectManager* boObjsManager;
+	Cube* floor;
+	Cube* mouseClicker;
+	glm::vec3 mouseClickDir;
 private:
 
 	Shader* animShader;
@@ -76,6 +84,6 @@ private:
 	Shader* bbChangeAnimation;
 	int windowWidth;
 	int windowHeight;
-	Line* floorLine;
+	//Line* floorLine;
 };
 

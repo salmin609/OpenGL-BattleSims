@@ -11,7 +11,7 @@ public:
 	AnimationState();
 	~AnimationState();
 	void AddAnimation(State animState, AnimationModel* model);
-	AnimationModel* RequestAnimation(int state);
+	AnimationModel* RequestAnimation(State newState, int randomIndex);
 
 	std::vector<AnimationModel*> idleAnimations;
 	std::vector<AnimationModel*> attackAnimations;

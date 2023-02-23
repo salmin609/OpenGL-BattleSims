@@ -23,13 +23,19 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 {
 	shader = shader_;
 	animFrames = fb_;
-	currentAngleSlot = 0;
 	animState = animState_;
 	currentState = State::Idle;
 	boObjIndex = boObjIndex_;
-	//fbs = &(*animFrames)[static_cast<int>(currentState)];
 
-	AnimationModel* model = animState->RequestAnimation(static_cast<int>(currentState));
+	randomIndices = new int[static_cast<int>(State::END)];
+	const int randomIndex = rand();  // NOLINT(concurrency-mt-unsafe)
+	randomIndices[static_cast<int>(State::Idle)] = randomIndex % static_cast<int>(animState->idleAnimations.size()); 
+	randomIndices[static_cast<int>(State::Attack)] = randomIndex % static_cast<int>(animState->attackAnimations.size());
+	randomIndices[static_cast<int>(State::Death)] = randomIndex % static_cast<int>(animState->deathAnimations.size());
+	randomIndices[static_cast<int>(State::Pain)] = randomIndex % static_cast<int>(animState->painAnimations.size());
+	randomIndices[static_cast<int>(State::Run)] = randomIndex % static_cast<int>(animState->runAnimations.size());
+
+	AnimationModel* model = animState->RequestAnimation(currentState, randomIndices[static_cast<int>(currentState)]);
 
 	fbs = &model->fbs;
 
@@ -42,6 +48,7 @@ BillBoardObject::BillBoardObject(Shader* shader_,
 BillBoardObject::~BillBoardObject()
 {
 	glDeleteVertexArrays(1, &vao);
+	delete[] randomIndices;
 }
 
 
@@ -72,7 +79,6 @@ void BillBoardObject::ChangeFrameBufferAngle(int index)
 	{
 		usingFrameBuffer = (*fbs)[index];
 		usingFrameBuffer->isOnUsage = true;
-		currentAngleSlot = index;
 	}
 }
 
@@ -86,7 +92,7 @@ bool BillBoardObject::SetAnimation(int index, int* animationIndexData)
 
 		if (newState != currentState)
 		{
-			AnimationModel* model = animState->RequestAnimation(index);
+			AnimationModel* model = animState->RequestAnimation(newState, randomIndices[static_cast<int>(newState)]);
 
 			if (model != nullptr)
 			{

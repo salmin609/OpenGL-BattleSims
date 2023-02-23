@@ -13,15 +13,15 @@
 class Shader;
 class Buffer;
 
-class Floor
+class Cube
 {
 public:
-	Floor(Shader* shader_);
-	~Floor();
+	Cube(Shader* shader_);
+	~Cube();
 	void Draw(const glm::mat4& projViewMat) const;
 	glm::mat4 GetModelMatrix() const;
 	glm::vec3 scale, rot, pos;
-
+	glm::vec4 color;
 private:
     unsigned vao;
     Buffer* positionBuffer;

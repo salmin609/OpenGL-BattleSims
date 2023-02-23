@@ -11,7 +11,8 @@ enum class State
 	Attack,
 	Pain,
 	Run,
-	Death
+	Death,
+	END
 };
 
 enum class ObjKind

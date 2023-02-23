@@ -16,10 +16,12 @@
 #include <fstream>
 #include "BillboardManager.h"
 #include "BillboardObjectManager.h"
+#include "Cube.h"
 #include "HerdManager.h"
 #include "Skybox.h"
 #include "Line.h"
 #include "ModelKinds.h"
+#include "Ray.h"
 #include "assimp/anim.h"
 
 Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w), windowHeight(h)
@@ -49,10 +51,27 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 		lineShader);
 	skybox = new SkyBox();
 
-	floorLine = new Line(lineShader, std::vector<glm::vec3>{},
-		glm::vec4(1.f, 1.f, 1.f, 1.f), true);
+	//floorLine = new Line(lineShader, std::vector<glm::vec3>{},
+	//	glm::vec4(1.f, 1.f, 1.f, 1.f), true);
+	floor = new Cube(lineShader);
+	floor->pos = glm::vec3(660.f, 0.f, 670.f);
+	floor->scale = glm::vec3(20000.f, 1.f, 20000.f);
+	floor->rot = glm::vec3(0.f, 1.f, 0.f);
+	floor->color = glm::vec4{ .7f, .7f, .7f, 1.f };
+
+	mouseClicker = new Cube(lineShader);
+	mouseClicker->pos = glm::vec3(0.f, 0.f, 0.f);
+	mouseClicker->scale = glm::vec3(10.f, 10.f, 10.f);
+	mouseClicker->rot = glm::vec3(0.f, 1.f, 0.f);
+	mouseClicker->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
+	const float tanVal = tan(cam->fov / 2);
+	cam->width = (tanVal * cam->zNear) * 2.f;
+	cam->height = cam->width / 1.f;
+
+	mouseClickDir = glm::vec3(0.f, 0.f, 0.f);
 
 	//BillboardAnimatingDatas* data = boManager->boDatas[0];
 
@@ -77,7 +96,8 @@ Graphic::~Graphic()
 	delete interpolationComputeShader;
 	delete lineShader;
 	delete billboardShader;
-	delete floorLine;
+	//delete floorLine;
+	delete floor;
 	delete floorShader;
 	delete bbCheckFrameBufferUsage;
 	delete bbMoving;
@@ -118,13 +138,18 @@ void Graphic::Draw()
 	//Request to change animation state
 	boObjsManager->ChangeAnimationOfHerds();
 
-	//
+	if(glm::dot(mouseClickDir, mouseClickDir) != 0.f)
+	{
+		boObjsManager->herdManager->CheckPicking(mouseClicker->pos);
+	}
 
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
 
 	skybox->Draw(projMat, viewMat);
-	floorLine->Draw(projViewMat);
+	//floorLine->Draw(projViewMat);
+	floor->Draw(projViewMat);
+	//mouseClicker->Draw(projViewMat);
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
@@ -196,4 +221,52 @@ void Graphic::ResetCamAngle()
 	*cam = Camera(currentCam->Position,
 		currentCam->Up,
 		0.f, 0.f);
+}
+
+void Graphic::GetMousePosInWorldCoord(float mouseX, float mouseY)
+{
+	glm::vec4 currPos{ mouseX, mouseY, 1.f, 1.f };
+
+	const glm::mat4 projMat = glm::perspective(glm::radians(currentCam->Zoom),
+		static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
+		currentCam->zNear, currentCam->zFar);
+
+	const glm::mat4 viewMat = currentCam->GetViewMatrix();
+
+	float x = (2.f * mouseX) / static_cast<float>(windowWidth) - 1.f;
+	float y = (2.f * mouseY) / static_cast<float>(windowHeight) - 1.f;
+
+	glm::vec4 clipCoords{ x, y, 1.f, 1.f };
+	
+	glm::mat4 inverseProjMat = glm::inverse(projMat);
+	glm::vec4 invProjCoords = inverseProjMat * clipCoords;
+	invProjCoords.w = 0.f;
+
+	glm::mat4 inverseViewMat = glm::inverse(viewMat);
+	inverseViewMat[1][1] *= -1.f;
+	glm::vec4 invViewCoords = inverseViewMat * invProjCoords;
+
+	glm::vec3 dir{ invViewCoords.x, invViewCoords.y, invViewCoords.z };
+	dir = glm::normalize(dir);
+
+	mouseClickDir = dir;
+
+	mouseClicker->pos = cam->Position;
+
+	ForwardPickingPos();
+}
+
+
+
+void Graphic::ForwardPickingPos()
+{
+	while (mouseClicker->pos.y > 15.f)
+	{
+		mouseClicker->pos += mouseClickDir;
+	}
+}
+
+void Graphic::ForwardToPickedPos()
+{
+	boObjsManager->herdManager->ForwardSelectedHerdToPos(mouseClicker->pos);
 }

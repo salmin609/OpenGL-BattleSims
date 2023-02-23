@@ -39,32 +39,34 @@ void Herd::Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		bo->Render(projMat, viewMat, posDatas[index++]);
 }
 
-void Herd::DrawLine(const glm::mat4& projMat, const glm::mat4& viewMat,
-	glm::vec4* posDatas, int startIndex)
+void Herd::DrawLine(const glm::mat4& projMat, const glm::mat4& viewMat)
 {
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	std::vector<glm::vec3> temp;
-	temp.emplace_back(posDatas[startIndex]);
-	temp.emplace_back(posDatas[startIndex + (herdWidth - 1)]);
-	temp.emplace_back(posDatas[startIndex + (count - (herdWidth - 1))]);
-	temp.emplace_back(posDatas[startIndex + (count - 1)]);
-
 	std::vector<glm::vec3> outPos;
 
-	outPos.emplace_back(temp[0]);
-	outPos.emplace_back(temp[1]);
+	outPos.emplace_back(boundingBoxes[0]);
+	outPos.emplace_back(boundingBoxes[1]);
 
-	outPos.emplace_back(temp[1]);
-	outPos.emplace_back(temp[3]);
+	outPos.emplace_back(boundingBoxes[1]);
+	outPos.emplace_back(boundingBoxes[3]);
 
-	outPos.emplace_back(temp[0]);
-	outPos.emplace_back(temp[2]);
+	outPos.emplace_back(boundingBoxes[0]);
+	outPos.emplace_back(boundingBoxes[2]);
 
-	outPos.emplace_back(temp[2]);
-	outPos.emplace_back(temp[3]);
+	outPos.emplace_back(boundingBoxes[2]);
+	outPos.emplace_back(boundingBoxes[3]);
 
 	outline->UpdatePosBuffer(outPos);
 	
 	outline->Draw(projViewMat);
+}
+
+void Herd::UpdateBoundingBox(glm::vec4* posDatas, int startIndex)
+{
+	boundingBoxes.clear();
+	boundingBoxes.emplace_back(posDatas[startIndex]);
+	boundingBoxes.emplace_back(posDatas[startIndex + (herdWidth - 1)]);
+	boundingBoxes.emplace_back(posDatas[startIndex + (count - (herdWidth - 1))]);
+	boundingBoxes.emplace_back(posDatas[startIndex + (count - 1)]);
 }

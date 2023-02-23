@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+
+#include "Ray.h"
 #include "glm/mat4x4.hpp"
 
 class Shader;
@@ -26,6 +28,8 @@ public:
 		int* isDead);
 	void SelectHerd(int herdIndex);
 	void ChangeHerdDirection(glm::vec4 direction);
+	void CheckPicking(glm::vec3 pos);
+	void ForwardSelectedHerdToPos(glm::vec3 pos);
 
 	int totalRenderingAmount;
 	std::vector<int> herdOffset;

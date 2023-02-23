@@ -42,8 +42,13 @@ public:
 	AnimationState* animState;
 	State currentState;
 	int boObjIndex;
+	int* randomIndices;
+	/*int randomIdleIndex;
+	int randomAttackIndex;
+	int randomRunningIndex;
+	int randomPainIndex;
+	int randomDeathIndex;*/
 private:
 	unsigned vao{};
 	Shader* shader;
-	unsigned currentAngleSlot;
 };

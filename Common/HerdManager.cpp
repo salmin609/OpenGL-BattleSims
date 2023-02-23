@@ -12,7 +12,7 @@
 #include "MultipleAnimationObject.h"
 
 HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
-	Shader* lineShader_)
+                         Shader* lineShader_)
 {
 	totalRenderingAmount = 0;
 	herdCount = 0;
@@ -35,16 +35,12 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 300.f), 15.f,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-
-
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::VIKING), glm::vec3(800.f, 12.f, 600.f), 15.f,
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 600.f), 15.f,
 		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
 
-	AddHerd(PopulateHerd(256 * 3, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, -20.f), 25.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 32, 25.f));
+	AddHerd(PopulateHerd(256 * 6, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, -20.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f));
 	
-
-
 	PopulateBuffers();
 }
 
@@ -65,13 +61,13 @@ void HerdManager::Render(const glm::mat4& projMat, const glm::mat4& viewMat)
 	{
 		herd->Render(projMat, viewMat, positionDatas.data(), startIndex);
 
+		herd->UpdateBoundingBox(positionDatas.data(), startIndex);
+
 		if (herd->selected)
-			herd->DrawLine(projMat, viewMat, positionDatas.data(), startIndex);
+			herd->DrawLine(projMat, viewMat);
 
 		startIndex += herd->count;
 	}
-
-
 }
 
 void HerdManager::AddHerd(Herd* herd)
@@ -206,5 +202,42 @@ void HerdManager::ChangeHerdDirection(glm::vec4 direction)
 		selectedHerd->herdDirection = direction;
 		selectedHerd->selected = false;
 		selectedHerd = nullptr;
+	}
+}
+
+
+
+void HerdManager::CheckPicking(glm::vec3 pos)
+{
+	int herdIndex = 0;
+	for(Herd* herd : herds)
+	{
+		std::vector<glm::vec3> bounding = herd->boundingBoxes;
+		if((bounding[0].x < pos.x && pos.x < bounding[1].x) &&
+			(bounding[0].z < pos.z && pos.z < bounding[2].z) &&
+			(bounding[2].x < pos.x && pos.x < bounding[3].x) &&
+			(bounding[1].z < pos.z && pos.z < bounding[3].z))
+		{
+			SelectHerd(herdIndex);
+		}
+		herdIndex++;
+	}
+}
+
+void HerdManager::ForwardSelectedHerdToPos(glm::vec3 pos)
+{
+	if(selectedHerd != nullptr)
+	{
+		//calc mid pos
+		std::vector<glm::vec3> boundingBoxes = selectedHerd->boundingBoxes;
+
+		glm::vec3 midPos;
+		midPos.x = (boundingBoxes[0].x + boundingBoxes[1].x) / 2.f;
+		midPos.z = (boundingBoxes[0].z + boundingBoxes[2].z) / 2.f;
+		midPos.y = boundingBoxes[0].y;
+
+		glm::vec3 temp = pos - midPos;
+
+		selectedHerd->herdDirection = glm::vec4(temp, 0.f);
 	}
 }

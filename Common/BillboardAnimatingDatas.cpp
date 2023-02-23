@@ -24,6 +24,9 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 	////2 : different animations
 	////3 : different angles
 
+	const int camNums = 3;
+	
+
 	for(int i = 0; i < diffTimeAnimCount; ++i)
 	{
 		AnimationState* animState = obj->animState;
@@ -41,6 +44,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 			std::vector<FrameBuffer*> fbs2;
 
 			for(int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			//for (int k = 0; k < camNums; ++k)
 			{
 				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
 				fbs2.push_back(fb);
@@ -56,6 +60,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 			std::vector<FrameBuffer*> fbs2;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			//for (int k = 0; k < camNums; ++k)
 			{
 				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
 				fbs2.push_back(fb);
@@ -71,6 +76,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 			std::vector<FrameBuffer*> fbs2;
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			//for (int k = 0; k < camNums; ++k)
 			{
 				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
 				fbs2.push_back(fb);
@@ -85,6 +91,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 			AnimationModel* runAnimation = animState->runAnimations[j];
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			//for (int k = 0; k < camNums; ++k)
 			{
 				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
 				fbs2.push_back(fb);
@@ -99,6 +106,7 @@ BillboardAnimatingDatas::BillboardAnimatingDatas(int windowW, int windowH
 			AnimationModel* deathAnimation = animState->deathAnimations[j];
 
 			for (int k = 0; k < static_cast<int>(CamVectorOrder::End); ++k)
+			//for (int k = 0; k < camNums; ++k)
 			{
 				FrameBuffer* fb = new FrameBuffer(windowW, windowH);
 				fbs2.push_back(fb);

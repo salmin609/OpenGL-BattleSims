@@ -5,7 +5,7 @@
  *	Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
  */
 
-#include "Floor.hpp"
+#include "Cube.h"
 
 #include <GL/glew.h>
 
@@ -16,7 +16,7 @@
 
 #include "Shader.h"
 
-Floor::Floor(Shader* shader_)
+Cube::Cube(Shader* shader_)
 {
 	shader = shader_;
 	std::vector<float>vertices = {
@@ -63,9 +63,7 @@ Floor::Floor(Shader* shader_)
 		-0.5f,  0.5f, -0.5f,
 	};
 
-	pos = glm::vec3(660.f, 0.f, 670.f);
-	scale = glm::vec3(20000.f, 1.f, 20000.f);
-	rot = glm::vec3(0.f, 1.f, 0.f);
+
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -80,19 +78,21 @@ Floor::Floor(Shader* shader_)
 	glBindVertexArray(0);
 }
 
-Floor::~Floor()
+Cube::~Cube()
 {
 	delete positionBuffer;
 	glDeleteVertexArrays(1, &vao);
 }
 
-void Floor::Draw(const glm::mat4& projViewMat) const
+void Cube::Draw(const glm::mat4& projViewMat) const
 {
 	shader->Use();
+	positionBuffer->Bind();
+	shader->SendUniformVec4("color", color);
 	glBindVertexArray(vao);
 
 	glm::mat4 projViewModelMat = projViewMat * GetModelMatrix();
-	shader->SendUniformMatGLM("projViewModelMat", &projViewModelMat);
+	shader->SendUniformMatGLM("gWVP", &projViewModelMat);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -100,7 +100,7 @@ void Floor::Draw(const glm::mat4& projViewMat) const
 	glBindVertexArray(0);
 }
 
-glm::mat4 Floor::GetModelMatrix() const
+glm::mat4 Cube::GetModelMatrix() const
 {
 	glm::mat4 modelMat = glm::mat4(1.f);
 
@@ -109,5 +109,4 @@ glm::mat4 Floor::GetModelMatrix() const
 	//modelMat = glm::rotate(modelMat, 1.5708f, rot);
 
 	return modelMat;
-
 }

@@ -38,6 +38,7 @@
 int displayIndex = 0;
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 bool firstMouse = true;
 float lastX = 800.0f / 2.0;
@@ -160,6 +161,7 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 //#if DEBUG
     ImGui::CreateContext();
@@ -284,6 +286,28 @@ int main()
     return 0;
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+        double xPos, yPos;
+        glfwGetCursorPos(window, &xPos, &yPos);
+
+        graphic->GetMousePosInWorldCoord(
+            static_cast<float>(xPos), static_cast<float>(yPos));
+	}
+    else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+    {
+        double xPos, yPos;
+        glfwGetCursorPos(window, &xPos, &yPos);
+
+        graphic->GetMousePosInWorldCoord(
+            static_cast<float>(xPos), static_cast<float>(yPos));
+
+        graphic->ForwardToPickedPos();
+    }
+}
+
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
@@ -308,6 +332,8 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
     	lastX = xpos;
 	    lastY = ypos;
+
+        //lets check
     }
     else
     {

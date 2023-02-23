@@ -39,9 +39,6 @@ bufferObjectDead {
 	int isDead[];
 };
 
-
-
-
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -60,7 +57,6 @@ float attackRange = 30.f;
 float radius = 15.f;
 int herdIndex;
 uint index;
-//float speed = 25.f;
 
 void MoveToward(inout vec4 pos, vec4 direction, float moveSpeed)
 {
@@ -97,8 +93,6 @@ bool CheckCollisionWithEnemy()
 {
 	vec4 pos = objsPoses[index];
 	int herdIndexOffset = 0;
-	//uint closestEnemyIndexSoFar = 0;
-	//float closestDistanceBtwEnemySoFar = 10000.f;
 	int thisObjSide = herdSides[herdIndex];
 
 	for (int i = 0; i < herdCount; ++i)
@@ -116,14 +110,6 @@ bool CheckCollisionWithEnemy()
 
 				if (dead == 0)
 				{
-					/*float dist = distance(pos, otherPos);
-
-					if (dist < closestDistanceBtwEnemySoFar)
-					{
-						closestEnemyIndexSoFar = othersIndex;
-						closestDistanceBtwEnemySoFar = dist;
-					}*/
-
 					if (CheckCollision(pos, otherPos, attackRange))
 					{
 						attackedCount[othersIndex]++;
@@ -137,15 +123,12 @@ bool CheckCollisionWithEnemy()
 		}
 		herdIndexOffset += herdNums;
 	}
-
-	//objsDirections[index] = objsPoses[closestEnemyIndexSoFar] - pos;
 	return false;
 }
 
 bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollisionIndex,
 	vec4 herdDirection)
 {
-	//vec4 direction = objsDirections[index];
 	vec4 nextPos = objsPoses[index];
 	MoveToward(nextPos, herdDirection, speed);
 	int herdIndexOffset = 0;
@@ -191,7 +174,6 @@ void main(void)
 	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
 	float timer = time[index];
-	//float speed = randSpeed[index];
 	vec4 direction = objsDirections[index];
 	int animIndex = animationIndex[index];
 
@@ -203,32 +185,29 @@ void main(void)
 
 	if (isStop == false)
 	{
-		//if (animIndex != State_Death)
-		//{
-			bool collisionWithEnemy = CheckCollisionWithEnemy();
+		bool collisionWithEnemy = CheckCollisionWithEnemy();
 
-			if (collisionWithEnemy)
+		if (collisionWithEnemy)
+		{
+			animationIndex[index] = State_Attack;
+		}
+		else
+		{
+			int allyCollisionIndex = 0;
+			bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex, herdDirection);
+
+			if (collisionWithAlly)
 			{
-				animationIndex[index] = State_Attack;
+				if (animationIndex[allyCollisionIndex] != State_Run)
+					animationIndex[index] = State_Idle;
 			}
 			else
 			{
-				int allyCollisionIndex = 0;
-				bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex, herdDirection);
-
-				if (collisionWithAlly)
-				{
-					if (animationIndex[allyCollisionIndex] != State_Run)
-						animationIndex[index] = State_Idle;
-				}
-				else
-				{
-					animationIndex[index] = State_Run;
-					objsDirections[index] = herdDirection;
-					MoveToward(objsPoses[index], herdDirection, speed);
-				}
+				animationIndex[index] = State_Run;
+				objsDirections[index] = herdDirection;
+				MoveToward(objsPoses[index], herdDirection, speed);
 			}
-		//}
+		}
 	}
 	else
 	{

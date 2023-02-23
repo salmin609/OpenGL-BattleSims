@@ -16,9 +16,10 @@ public:
 	~Herd();
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat,
 		glm::vec4* posDatas, int startIndex);
-	void DrawLine(const glm::mat4& projMat, const glm::mat4& viewMat,
-		glm::vec4* posDatas, int startIndex);
+	void DrawLine(const glm::mat4& projMat, const glm::mat4& viewMat);
+	void UpdateBoundingBox(glm::vec4* posDatas, int startIndex);
 
+	std::vector<glm::vec3> boundingBoxes;
 	int herdOffset{};
 	std::vector<BillBoardObject*> bos;
 	int count;

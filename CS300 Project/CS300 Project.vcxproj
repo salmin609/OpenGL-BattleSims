@@ -243,7 +243,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\ComputeShaderClass.h" />
     <ClInclude Include="..\Common\CSBufferNames.h" />
     <ClInclude Include="..\Common\DataTypes.h" />
-    <ClInclude Include="..\Common\Floor.hpp" />
+    <ClInclude Include="..\Common\Cube.h" />
     <ClInclude Include="..\Common\FrameBuffer.h" />
     <ClInclude Include="..\Common\FrustumCulling.h" />
     <ClInclude Include="..\Common\Graphic.h" />
@@ -257,6 +257,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\MultipleAnimationObject.h" />
     <ClInclude Include="..\Common\Object.h" />
     <ClInclude Include="..\Common\Quaternion.h" />
+    <ClInclude Include="..\Common\Ray.h" />
     <ClInclude Include="..\Common\Shader.h" />
     <ClInclude Include="..\Common\SimpleMeshes.h" />
     <ClInclude Include="..\Common\SingleAnimationObject.h" />

@@ -59,7 +59,8 @@ public:
 		const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
 		const glm::mat4& projMat, const glm::mat4& modelMat,
 		AnimationModel* baseModel,
-		int& fbSlotIndex);
+		int& fbSlotIndex,
+		int& usingFrameBufferCount);
 	void CheckAnimationPlayingStatus();
 	void ChangeStatus(std::vector<AnimationModel*> animations);
 	

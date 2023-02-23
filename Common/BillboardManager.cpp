@@ -15,7 +15,7 @@
 #include "BillboardAnimatingDatas.h"
 #include "BillBoardObject.h"
 #include "Camera.hpp"
-#include "Floor.hpp"
+//#include "Floor.hpp"
 #include "FrameBuffer.h"
 #include "Graphic.h"
 #include "StringParser.h"
@@ -189,7 +189,8 @@ void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations,
 	const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
 	const glm::mat4& projMat, const glm::mat4& modelMat,
 	AnimationModel* baseModel,
-	int& fbSlotIndex)
+	int& fbSlotIndex,
+	int& usingFrameBufferCount)
 {
 	const int animationCount = static_cast<int>(animations.size());
 
@@ -207,6 +208,7 @@ void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations,
 
 			if (fb->isOnUsage)
 			{
+				usingFrameBufferCount++;
 				const glm::mat4 projViewMat = projMat * boCamMats[k];
 
 				fb->Bind();
@@ -296,6 +298,14 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	AnimationModel* baseModel = datas->obj->animState->idleAnimations[0];
 	int fbSlotIndex = 0;
 
+	int idleCount = 0;
+	int attackCount = 0;
+	int painCount = 0;
+	int runCount = 0;
+	int deathCount = 0;
+
+	const glm::mat4& modelMat = datas->obj->GetModelMatrix();
+
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		SaveAnimation(datas->obj->animState->idleAnimations,
@@ -303,9 +313,10 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			current,
 			datas->frameBuffers,
 			projMat,
-			datas->obj->GetModelMatrix(),
+			modelMat,
 			baseModel,
-			fbSlotIndex);
+			fbSlotIndex,
+			idleCount);
 
 		
 		SaveAnimation(datas->obj->animState->attackAnimations,
@@ -313,37 +324,50 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			current,
 			datas->frameBuffers,
 			projMat,
-			datas->obj->GetModelMatrix(),
+			modelMat,
 			baseModel,
-			fbSlotIndex);
+			fbSlotIndex,
+			attackCount);
 
 		SaveAnimation(datas->obj->animState->painAnimations,
 			State::Pain,
 			current,
 			datas->frameBuffers,
 			projMat,
-			datas->obj->GetModelMatrix(),
+			modelMat,
 			baseModel,
-			fbSlotIndex);
+			fbSlotIndex,
+			painCount);
 
 		SaveAnimation(datas->obj->animState->runAnimations,
 			State::Run,
 			current,
 			datas->frameBuffers,
 			projMat,
-			datas->obj->GetModelMatrix(),
+			modelMat,
 			baseModel,
-			fbSlotIndex);
+			fbSlotIndex,
+			runCount);
 
 		SaveAnimation(datas->obj->animState->deathAnimations,
 			State::Death,
 			current,
 			datas->frameBuffers,
 			projMat,
-			datas->obj->GetModelMatrix(),
+			modelMat,
 			baseModel,
-			fbSlotIndex);
+			fbSlotIndex,
+			deathCount);
 	}
+	//if(datas->name == "Mutant")
+	//{
+	//	std::cout << "Idle Usage Count : " << idleCount << std::endl;
+	//	std::cout << "Attack Usage Count : " << attackCount << std::endl;
+	//	std::cout << "Run Usage Count : " << runCount << std::endl;
+	//	std::cout << "Pain Usage Count : " << painCount << std::endl;
+	//	std::cout << "Death Usage Count : " << deathCount << std::endl;
+	//}
+		
 }
 
 void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)

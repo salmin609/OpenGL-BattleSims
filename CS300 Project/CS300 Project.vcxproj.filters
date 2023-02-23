@@ -239,7 +239,7 @@
     <ClInclude Include="..\ThirdParty\Imgui\imgui.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Floor.hpp">
+    <ClInclude Include="..\Common\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\FrameBuffer.h">
@@ -339,6 +339,9 @@
       <Filter>Header Files\ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\ModelKinds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
