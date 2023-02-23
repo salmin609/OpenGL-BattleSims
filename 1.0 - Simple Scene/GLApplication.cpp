@@ -55,7 +55,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         camLock = !camLock;
 
-    if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || 
+    /*if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || 
         key == GLFW_KEY_4 || key == GLFW_KEY_5 || key == GLFW_KEY_6 || 
         key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
         && action == GLFW_PRESS)
@@ -82,7 +82,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
     {
         graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, 0.f, 0.f));
-    }
+    }*/
 
     //if (key == GLFW_KEY_C && action == GLFW_PRESS)
         //graphic->ResetCamAngle();
@@ -295,6 +295,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
         graphic->GetMousePosInWorldCoord(
             static_cast<float>(xPos), static_cast<float>(yPos));
+
+        graphic->SelectHerd();
 	}
     else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {

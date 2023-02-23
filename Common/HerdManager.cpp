@@ -240,4 +240,7 @@ void HerdManager::ForwardSelectedHerdToPos(glm::vec3 pos)
 
 		selectedHerd->herdDirection = glm::vec4(temp, 0.f);
 	}
+
+	selectedHerd->selected = false;
+	selectedHerd = nullptr;
 }

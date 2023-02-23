@@ -52,6 +52,7 @@ public:
 	void GetMousePosInWorldCoord(float mouseX, float mouseY);
 	void ForwardPickingPos();
 	void ForwardToPickedPos();
+	void SelectHerd();
 
 	GLFWwindow* window{};
 	Camera* cam;
@@ -69,7 +70,7 @@ public:
 	SkyBox* skybox;
 	BillboardObjectManager* boObjsManager;
 	Cube* floor;
-	Cube* mouseClicker;
+	Cube* selector;
 	glm::vec3 mouseClickDir;
 private:
 

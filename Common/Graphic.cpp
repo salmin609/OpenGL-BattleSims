@@ -59,11 +59,11 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	floor->rot = glm::vec3(0.f, 1.f, 0.f);
 	floor->color = glm::vec4{ .7f, .7f, .7f, 1.f };
 
-	mouseClicker = new Cube(lineShader);
-	mouseClicker->pos = glm::vec3(0.f, 0.f, 0.f);
-	mouseClicker->scale = glm::vec3(10.f, 10.f, 10.f);
-	mouseClicker->rot = glm::vec3(0.f, 1.f, 0.f);
-	mouseClicker->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	selector = new Cube(lineShader);
+	selector->pos = glm::vec3(0.f, 0.f, 0.f);
+	selector->scale = glm::vec3(10.f, 10.f, 10.f);
+	selector->rot = glm::vec3(0.f, 1.f, 0.f);
+	selector->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
 
 	cam->fov = (float)windowWidth / (float)windowHeight;
 	cam->fovY = glm::radians(cam->Zoom);
@@ -138,10 +138,10 @@ void Graphic::Draw()
 	//Request to change animation state
 	boObjsManager->ChangeAnimationOfHerds();
 
-	if(glm::dot(mouseClickDir, mouseClickDir) != 0.f)
-	{
-		boObjsManager->herdManager->CheckPicking(mouseClicker->pos);
-	}
+	//if(glm::dot(mouseClickDir, mouseClickDir) != 0.f)
+	//{
+	//	boObjsManager->herdManager->CheckPicking(selector->pos);
+	//}
 
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
@@ -235,7 +235,6 @@ void Graphic::GetMousePosInWorldCoord(float mouseX, float mouseY)
 
 	float x = (2.f * mouseX) / static_cast<float>(windowWidth) - 1.f;
 	float y = (2.f * mouseY) / static_cast<float>(windowHeight) - 1.f;
-
 	glm::vec4 clipCoords{ x, y, 1.f, 1.f };
 	
 	glm::mat4 inverseProjMat = glm::inverse(projMat);
@@ -251,7 +250,7 @@ void Graphic::GetMousePosInWorldCoord(float mouseX, float mouseY)
 
 	mouseClickDir = dir;
 
-	mouseClicker->pos = cam->Position;
+	selector->pos = cam->Position;
 
 	ForwardPickingPos();
 }
@@ -260,13 +259,19 @@ void Graphic::GetMousePosInWorldCoord(float mouseX, float mouseY)
 
 void Graphic::ForwardPickingPos()
 {
-	while (mouseClicker->pos.y > 15.f)
+	while (selector->pos.y > 15.f)
 	{
-		mouseClicker->pos += mouseClickDir;
+		selector->pos += mouseClickDir;
 	}
 }
 
 void Graphic::ForwardToPickedPos()
 {
-	boObjsManager->herdManager->ForwardSelectedHerdToPos(mouseClicker->pos);
+	boObjsManager->herdManager->ForwardSelectedHerdToPos(selector->pos);
+}
+
+void Graphic::SelectHerd()
+{
+	boObjsManager->herdManager->CheckPicking(selector->pos);
+	mouseClickDir = glm::vec3(0.f, 0.f, 0.f);
 }
