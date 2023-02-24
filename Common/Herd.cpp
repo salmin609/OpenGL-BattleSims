@@ -1,5 +1,7 @@
 #include "Herd.h"
 
+#include <glm/gtc/quaternion.hpp>
+
 #include "BillBoardObject.h"
 #include "Line.h"
 
@@ -65,8 +67,38 @@ void Herd::DrawLine(const glm::mat4& projMat, const glm::mat4& viewMat)
 void Herd::UpdateBoundingBox(glm::vec4* posDatas, int startIndex)
 {
 	boundingBoxes.clear();
-	boundingBoxes.emplace_back(posDatas[startIndex]);
-	boundingBoxes.emplace_back(posDatas[startIndex + (herdWidth - 1)]);
-	boundingBoxes.emplace_back(posDatas[startIndex + (count - (herdWidth - 1))]);
-	boundingBoxes.emplace_back(posDatas[startIndex + (count - 1)]);
+	float yPos = 3.f;
+
+	glm::vec4 point0 = posDatas[startIndex];
+	glm::vec4 point1 = posDatas[startIndex + (herdWidth - 1)];
+	glm::vec4 point2 = posDatas[startIndex + (count - (herdWidth - 1))];
+	glm::vec4 point3 = posDatas[startIndex + (count - 1)];
+
+	point0.y = yPos;
+	point1.y = yPos;
+	point2.y = yPos;
+	point3.y = yPos;
+
+	glm::vec4 midPoint;
+	midPoint.x = (point0.x + point1.x) / 2.f;
+	midPoint.y = yPos;
+	midPoint.z = (point0.z + point2.z) / 2.f;
+
+	glm::vec4 midToPoint0 = glm::normalize(point0 - midPoint);
+	glm::vec4 midToPoint1 = glm::normalize(point1 - midPoint);
+	glm::vec4 midToPoint2 = glm::normalize(point2 - midPoint);
+	glm::vec4 midToPoint3 = glm::normalize(point3 - midPoint);
+
+	float str = 12.f;
+
+	glm::vec4 newPoint0 = point0 + midToPoint0 * str;
+	glm::vec4 newPoint1 = point1 + midToPoint1 * str;
+	glm::vec4 newPoint2 = point2 + midToPoint2 * str;
+	glm::vec4 newPoint3 = point3 + midToPoint3 * str;
+
+
+	boundingBoxes.emplace_back(newPoint0);
+	boundingBoxes.emplace_back(newPoint1);
+	boundingBoxes.emplace_back(newPoint2);
+	boundingBoxes.emplace_back(newPoint3);
 }

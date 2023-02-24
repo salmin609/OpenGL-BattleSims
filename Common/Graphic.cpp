@@ -125,6 +125,9 @@ void Graphic::Draw()
 	//Move those billboard objects to desired direction. which is to nearest enemy.
 	boObjsManager->Move(deltaTime);
 
+	//Check if herd reached destination.
+	boObjsManager->CheckHerdReachedDestination();
+
 	//Check if object is attacking animation, if it, += dt to timer buffer.
 	//if timer over some certain number, change to death state.
 	boObjsManager->Attack(deltaTime);

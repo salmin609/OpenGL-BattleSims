@@ -10,6 +10,7 @@
 #include "BufferManager.h"
 #include "Camera.hpp"
 #include "CSBufferNames.h"
+#include "Herd.h"
 #include "HerdManager.h"
 #include "Shader.h"
 
@@ -67,7 +68,7 @@ void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& v
 
 void BillboardObjectManager::ChangeAnimationOfHerds() const
 {
-	Buffer* animationIndexBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::AnimationIndex));
+	Buffer* animationIndexBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::animationIndices));
 	const Buffer* frameIndexBuffer = boFBusageCS->csBuffers->GetBuffer(ToInt(AngleCS::frameBufferUsageIndex));
 
 	//also, check dead objects
@@ -81,4 +82,31 @@ void BillboardObjectManager::ChangeAnimationOfHerds() const
 		boAttackCS->isDead);
 
 	animationIndexBuffer->WriteData(boMovingCS->animationIndexBuffer);
+}
+
+void BillboardObjectManager::CheckHerdReachedDestination() const
+{
+	Buffer* herdReachedBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdReachedDestination));
+	herdReachedBuffer->GetData(boMovingCS->herdReachedBuffer);
+
+	const int herdCount = herdManager->GetHerdCount();
+	bool someReached = false;
+	std::vector<int> herdReached;
+	for(int i = 0; i < herdCount; ++i)
+	{
+		int reached = boMovingCS->herdReachedBuffer[i];
+		Herd* herd = herdManager->GetHerd(i);
+
+		if(reached == 1)
+		{
+			herd->herdDirection = glm::vec4(0.f, 0.f, 0.f, 0.f);
+			someReached = true;
+		}
+		herdReached.push_back(0);
+	}
+
+	if(someReached)
+	{
+		herdReachedBuffer->WriteData(herdReached.data());
+	}
 }

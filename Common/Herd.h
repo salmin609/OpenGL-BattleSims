@@ -29,6 +29,7 @@ public:
 	Line* outline;
 	bool selected;
 	int herdWidth;
+	glm::vec4 herdDestination;
 private:
 
 };

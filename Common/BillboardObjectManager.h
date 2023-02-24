@@ -35,6 +35,7 @@ public:
 	void ResetAnimationState() const;
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat) const;
 	void ChangeAnimationOfHerds() const;
+	void CheckHerdReachedDestination() const;
 
 	HerdManager* herdManager;
 	BillboardMovingCS* boMovingCS;

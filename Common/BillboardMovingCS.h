@@ -16,6 +16,7 @@ public:
 	~BillboardMovingCS() override;
 	void Move(float dt) const;
 	int* animationIndexBuffer;
+	int* herdReachedBuffer;
 
 private:
 	void SetShaderUniforms() override;

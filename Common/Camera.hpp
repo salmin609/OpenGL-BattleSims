@@ -61,7 +61,7 @@ public:
         WorldUp = up;
         Yaw = yaw;
         Pitch = pitch;
-        zNear = 0.1f;
+        zNear = 1.f;
         zFar = 10000.f;
 
         updateCameraVectors();

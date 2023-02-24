@@ -89,12 +89,14 @@ void Line::Draw(const glm::mat4& projViewMat)
 
 	lineShader->SendUniformMatGLM("gWVP", projViewMat);
 	lineShader->SendUniformVec4("color", &color);
-
+	glEnable(GL_LINE_WIDTH);
+	glLineWidth(100);
 	//const size_t size = line->Coords().size();
 
 	glDrawArrays(GL_LINES, 0, static_cast<int>(points.size()));
 
 	glBindVertexArray(0);
+	glDisable(GL_LINE_WIDTH);
 }
 
 void Line::UpdatePosBuffer(std::vector<glm::vec3> points_)

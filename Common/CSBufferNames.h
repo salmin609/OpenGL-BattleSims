@@ -2,13 +2,14 @@
 
 enum class MoveCS
 {
-	AnimationIndex = 0,
+	animationIndices = 0,
 	objsPoses,
 	objsDirections,
 	time,
 	targetEnemyPos,
 	attackedCount,
 	isDead,
+	herdReachedDestination
 };
 
 inline int ToInt(MoveCS val)
@@ -20,7 +21,7 @@ inline int ToInt(MoveCS val)
 enum class AttackCS
 {
 	time = 0,
-	AnimationIndex,
+	animationIndices,
 	objsPoses,
 	attackedCount,
 	isDead
@@ -45,7 +46,7 @@ inline int ToInt(AngleCS val)
 
 enum class AnimationChangeCS
 {
-	animationIndex = 0,
+	animationIndices = 0,
 	prevAnimationIndex,
 	needReset,
 };

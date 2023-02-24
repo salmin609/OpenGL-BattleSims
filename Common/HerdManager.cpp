@@ -237,10 +237,11 @@ void HerdManager::ForwardSelectedHerdToPos(glm::vec3 pos)
 		midPos.y = boundingBoxes[0].y;
 
 		glm::vec3 temp = pos - midPos;
+		temp.y = 0.f;
 
 		selectedHerd->herdDirection = glm::vec4(temp, 0.f);
+		selectedHerd->herdDestination = glm::vec4(pos, 1.f);
+		selectedHerd->selected = false;
+		selectedHerd = nullptr;
 	}
-
-	selectedHerd->selected = false;
-	selectedHerd = nullptr;
 }

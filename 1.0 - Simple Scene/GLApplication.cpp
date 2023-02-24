@@ -129,7 +129,7 @@ int main()
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
     GLFWwindow* window = glfwCreateWindow(window_width, window_height,
-                                          "GAM400 - Massive Animating Objects",
+                                          "GAM450 - OpenGL Battle Simulation",
                                           //glfwGetPrimaryMonitor(),
                                           nullptr,
                                           nullptr); 
@@ -229,15 +229,15 @@ int main()
             ImGui::TreePop();
         }
 
-        ImGui::SliderInt("Amount", &addingNum, 200, 1000);
-        /*if (ImGui::Button("Add objects"))
-            graphic->PopulateObjs(addingNum, item_current_idx);
-        if (ImGui::Button("Delete objects"))
-            graphic->DeleteObjs(addingNum);*/
-
+        
         ImGui::Text("Space  : Toggle cam moving");
         ImGui::Text("W/A/S/D: Cam movement");
         ImGui::Text("Mouse  : Cam rotation");
+        ImGui::Text("V      : Enable mouse cursor");
+        ImGui::Text("L-Click: Select herd");
+        ImGui::Text("R-Click: Move selected herd");
+        
+
         ImGui::Text(fpsDisplay.c_str());
         
         //ImGui::Text("TotalRendering : %d", graphic->totalRenderingAmount);

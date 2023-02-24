@@ -4,8 +4,8 @@ layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 
 layout(binding = 0) buffer
-bufferReached {
-	int animationIndex[];
+bufferAnimationIndices {
+	int animationIndices[];
 };
 
 layout(std430, binding = 1) buffer
@@ -39,6 +39,11 @@ bufferObjectDead {
 	int isDead[];
 };
 
+layout(binding = 7) buffer
+bufferHerdReachedDestination {
+	int herdReachedDestination[];
+};
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -50,6 +55,7 @@ uniform int herdCounts[32];
 uniform int herdSides[32];
 uniform vec4 herdDirections[32];
 uniform float herdSpeeds[32];
+uniform vec4 herdDestinations[32];
 
 uniform float dt;
 uniform int herdCount;
@@ -149,7 +155,7 @@ bool CheckCollisionWithAllyInForthDirection(float speed, inout int allyCollision
 				{
 					int dead = isDead[othersInSameHerdIndex];
 					vec4 otherPos = objsPoses[othersInSameHerdIndex];
-					int animState = animationIndex[othersInSameHerdIndex];
+					int animState = animationIndices[othersInSameHerdIndex];
 
 					//collision if statement
 					if (dead == 0)
@@ -175,50 +181,59 @@ void main(void)
 
 	float timer = time[index];
 	vec4 direction = objsDirections[index];
-	int animIndex = animationIndex[index];
+	int animIndex = animationIndices[index];
 
 	GetBufferOffset();
 	vec4 herdDirection = herdDirections[herdIndex];
 	float speed = herdSpeeds[herdIndex];
 
+	int dead = isDead[index];
 	bool isStop = dot(herdDirection, herdDirection) == 0;
 
-	if (isStop == false)
+	if (dead == 0)
 	{
-		bool collisionWithEnemy = CheckCollisionWithEnemy();
-
-		if (collisionWithEnemy)
+		if (isStop == false)
 		{
-			animationIndex[index] = State_Attack;
-		}
-		else
-		{
-			int allyCollisionIndex = 0;
-			bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex, herdDirection);
+			bool collisionWithEnemy = CheckCollisionWithEnemy();
 
-			if (collisionWithAlly)
+			if (collisionWithEnemy)
 			{
-				if (animationIndex[allyCollisionIndex] != State_Run)
-					animationIndex[index] = State_Idle;
+				animationIndices[index] = State_Attack;
 			}
 			else
 			{
-				animationIndex[index] = State_Run;
-				objsDirections[index] = herdDirection;
-				MoveToward(objsPoses[index], herdDirection, speed);
+				int allyCollisionIndex = 0;
+				bool collisionWithAlly = CheckCollisionWithAllyInForthDirection(speed, allyCollisionIndex, herdDirection);
+
+				if (collisionWithAlly)
+				{
+					if (animationIndices[allyCollisionIndex] != State_Run)
+						animationIndices[index] = State_Idle;
+				}
+				else
+				{
+					animationIndices[index] = State_Run;
+					objsDirections[index] = herdDirection;
+					MoveToward(objsPoses[index], herdDirection, speed);
+
+					//Distance check btw destination.
+					float dist = distance(objsPoses[index], herdDestinations[herdIndex]);
+
+					if (dist < 10.f)
+						herdReachedDestination[herdIndex] = 1;
+				}
+			}
+		}
+		else
+		{
+			animationIndices[index] = State_Idle;
+
+			bool collisionWithEnemy = CheckCollisionWithEnemy();
+
+			if (collisionWithEnemy)
+			{
+				animationIndices[index] = State_Attack;
 			}
 		}
 	}
-	else
-	{
-		animationIndex[index] = State_Idle;
-
-		bool collisionWithEnemy = CheckCollisionWithEnemy();
-
-		if (collisionWithEnemy)
-		{
-			animationIndex[index] = State_Attack;
-		}
-	}
-
 }

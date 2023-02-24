@@ -18,11 +18,13 @@ BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdM
 	BillboardMovingCS::PopulateBuffers();
 	BillboardMovingCS::SetShaderUniforms();
 	animationIndexBuffer = new int[herdManager->totalRenderingAmount];
+	herdReachedBuffer = new int[herdManager->GetHerdCount()];
 }
 
 BillboardMovingCS::~BillboardMovingCS()
 {
 	delete[] animationIndexBuffer;
+	delete[] herdReachedBuffer;
 }
 
 void BillboardMovingCS::SetShaderUniforms()
@@ -48,6 +50,9 @@ void BillboardMovingCS::SetShaderUniforms()
 
 		const std::string uName5 = "herdSpeeds[" + std::to_string(i) + "]";
 		shader->AddUniformValues(uName5, ShaderValueType::Float, &herd->speed);
+
+		const std::string uName6 = "herdDestinations[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName6, ShaderValueType::Vec4, &herd->herdDestination);
 	}
 
 	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
@@ -63,7 +68,7 @@ void BillboardMovingCS::PopulateBuffers()
 	}
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::AnimationIndex)));
+		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::animationIndices)));
 	
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, nullptr, ToInt(MoveCS::targetEnemyPos)));
@@ -76,6 +81,18 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::attackedCount)));
+
+	const int herdCount = herdManager->GetHerdCount();
+
+	std::vector<int> herdReachedDest;
+
+	for(int i = 0; i < herdCount; ++i)
+	{
+		herdReachedDest.push_back(0);
+	}
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdCount,
+		GL_DYNAMIC_DRAW, herdReachedDest.data(), ToInt(MoveCS::herdReachedDestination)));
 
 }
 

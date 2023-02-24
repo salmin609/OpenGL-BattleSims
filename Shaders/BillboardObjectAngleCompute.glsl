@@ -179,6 +179,7 @@ void main(void)
 	frameBufferUsingIndex[index] = -1;
 
 	vec3 boPos = vec3(objsPoses[index]);
+	boPos.y += 5.f;
 	vec3 boDirection = vec3(objsDirections[index]);
 
 
@@ -187,7 +188,7 @@ void main(void)
 	if (distance < zFar)
 	{
 		Frustum camFrustum = GetFrustumPlans();
-		SphereBV spv = GetSPV(boPos, 0.1f);
+		SphereBV spv = GetSPV(boPos, 10.f);
 
 		if (isOnFrustum(camFrustum, spv))
 			frameBufferUsingIndex[index] = GetUsingFrameBufferIndex(boPos, boDirection);

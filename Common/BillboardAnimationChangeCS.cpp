@@ -31,8 +31,8 @@ void BillboardAnimationChangeCS::ResetAnimation()
 
 	csBuffers->BindBuffers();
 	boObjManager->boMovingCS->csBuffers->
-		GetBuffer(ToInt(MoveCS::AnimationIndex))
-			->BindStorage(ToInt(AnimationChangeCS::animationIndex));
+		GetBuffer(ToInt(MoveCS::animationIndices))
+			->BindStorage(ToInt(AnimationChangeCS::animationIndices));
 
 
 	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
