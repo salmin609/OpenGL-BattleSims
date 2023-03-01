@@ -34,41 +34,41 @@ BillboardManager::BillboardManager(Shader* boShader_, Shader* boComputeShader_,
 	glm::vec3 camUpVec = glm::vec3(0.f, 1.f, 0.f);
 	//TODO: Need to slight modify
 	//front
-	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, 100.f),
+	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, 110.f),
 		camUpVec,
 		-90.f, -7.f));
 
 	//back
-	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, -100.f),
+	boCams.push_back(new Camera(glm::vec3(0.f, 45.f, -110.f),
 		camUpVec,
 		90.f, -7.f));
 
 	//left
-	boCams.push_back(new Camera(glm::vec3(-90.f, 45.f, 0.f),
+	boCams.push_back(new Camera(glm::vec3(-100.f, 45.f, 0.f),
 		camUpVec,
 		0.f, -7.f));
 	//right
-	boCams.push_back(new Camera(glm::vec3(90.f, 45.f, 0.f),
+	boCams.push_back(new Camera(glm::vec3(100.f, 45.f, 0.f),
 		camUpVec,
 		180.f, -7.f));
 
 	//leftfront
-	boCams.push_back(new Camera(glm::vec3(-75.f, 45.f, 75.f),
+	boCams.push_back(new Camera(glm::vec3(-85.f, 45.f, 85.f),
 		camUpVec,
 		-45.f, -7.f));
 
 	//rightfront
-	boCams.push_back(new Camera(glm::vec3(75.f, 45.f, 75.f),
+	boCams.push_back(new Camera(glm::vec3(85.f, 45.f, 85.f),
 		camUpVec,
 		225.f, -7.f));
 
 	//leftback
-	boCams.push_back(new Camera(glm::vec3(-75.f, 45.f, -75.f),
+	boCams.push_back(new Camera(glm::vec3(-85.f, 45.f, -85.f),
 		camUpVec,
 		45.f, -7.f));
 
 	//rightback
-	boCams.push_back(new Camera(glm::vec3(75.f, 45.f, -75.f),
+	boCams.push_back(new Camera(glm::vec3(85.f, 45.f, -85.f),
 		camUpVec,
 		135.f, -7.f));
 

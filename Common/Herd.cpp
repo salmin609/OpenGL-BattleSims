@@ -5,7 +5,8 @@
 #include "BillBoardObject.h"
 #include "Line.h"
 
-Herd::Herd(int num_, glm::vec4 herdDirection_, int side_, Shader* lineShader_,int herdWidth_, float speed_)
+Herd::Herd(int num_, glm::vec4 herdDirection_, int side_, Shader* lineShader_,int herdWidth_, float speed_, float attackRange_,
+	int attackType_)
 {
 	count = num_;
 	herdDirection = herdDirection_;
@@ -13,6 +14,8 @@ Herd::Herd(int num_, glm::vec4 herdDirection_, int side_, Shader* lineShader_,in
 	selected = false;
 	herdWidth = herdWidth_;
 	speed = speed_;
+	attackRange = attackRange_;
+	attackType = attackType_;
 
 	std::vector<glm::vec3> temp;
 	for(int i = 0 ; i < 8; ++i)

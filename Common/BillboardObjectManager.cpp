@@ -3,6 +3,7 @@
 
 #include "BillboardAnimationChangeCS.h"
 #include "BillboardAttackCS.h"
+#include "BillboardCollisionCheckCS.h"
 #include "BillboardFrameBufferUsageCS.h"
 #include "BillboardManager.h"
 #include "BillboardMovingCS.h"
@@ -20,7 +21,8 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 												Shader* boMovingShader_,
 												Shader* boAttackShader_,
 												Shader* boChangeAnimationShader_,
-												Shader* lineShader_)
+												Shader* lineShader_,
+												Shader* bbCollisionCheck_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
@@ -31,6 +33,7 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boMovingCS = new BillboardMovingCS(boMovingShader_, herdManager, this);
 	boAttackCS = new BillboardAttackCS(boAttackShader_, herdManager, this);
 	boAnimChangeCS = new BillboardAnimationChangeCS(boChangeAnimationShader_, herdManager, this);
+	boCollisionCheckCS = new BillboardCollisionCheckCS(bbCollisionCheck_, herdManager, this);
 }
 
 BillboardObjectManager::~BillboardObjectManager()
@@ -39,6 +42,7 @@ BillboardObjectManager::~BillboardObjectManager()
 	delete boFBusageCS;
 	delete boMovingCS;
 	delete boAttackCS;
+	delete boCollisionCheckCS;
 }
 
 void BillboardObjectManager::CalculateBOAngle() const
@@ -54,6 +58,11 @@ void BillboardObjectManager::Move(float dt) const
 void BillboardObjectManager::Attack(float dt) const
 {
 	boAttackCS->AttackComputation(dt);
+}
+
+void BillboardObjectManager::CollisionCheck(float dt) const
+{
+	boCollisionCheckCS->CollisionCheck(dt);
 }
 
 void BillboardObjectManager::ResetAnimationState() const
@@ -109,4 +118,14 @@ void BillboardObjectManager::CheckHerdReachedDestination() const
 	{
 		herdReachedBuffer->WriteData(herdReached.data());
 	}
+}
+
+void BillboardObjectManager::ResetAttackingCountBuffer() const
+{
+	boMovingCS->ResetHerdAttackingCountBuffer();
+}
+
+void BillboardObjectManager::ResetCollisionCheckBuffer() const
+{
+	boCollisionCheckCS->ResetCollisionCheckBuffer();
 }

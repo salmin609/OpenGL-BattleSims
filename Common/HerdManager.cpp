@@ -8,8 +8,8 @@
 #include "Buffer.hpp"
 #include "CSBufferNames.h"
 #include "Herd.h"
-#include "ModelKinds.h"
 #include "MultipleAnimationObject.h"
+#include "ModelKinds.h"
 
 HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
                          Shader* lineShader_)
@@ -22,25 +22,50 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 	selectedHerd = nullptr;
 
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -300.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, -20.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 300.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
 	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::KNIGHT), glm::vec3(400.f, 12.f, 600.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -300.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, -20.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 300.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
-	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::SWAT), glm::vec3(800.f, 12.f, 600.f), 15.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f));
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::ARCHER), glm::vec3(800.f, 12.f, -300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 600.f, static_cast<int>(ObjAttackType::RANGED)));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::ARCHER), glm::vec3(800.f, 12.f, -20.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 600.f, static_cast<int>(ObjAttackType::RANGED)));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::ARCHER), glm::vec3(800.f, 12.f, 300.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 600.f, static_cast<int>(ObjAttackType::RANGED)));
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::ARCHER), glm::vec3(800.f, 12.f, 600.f), 15.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 0, 16, 50.f, 600.f, static_cast<int>(ObjAttackType::RANGED)));
 
-	AddHerd(PopulateHerd(256 * 6, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, -20.f), 20.f,
-		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f));
-	
+
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, -350.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, 0.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, 350.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-400.f, 12.f, 700.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, -350.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, 0.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, 350.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	AddHerd(PopulateHerd(256, static_cast<int>(ObjKind::MUTANT), glm::vec3(-800.f, 12.f, 700.f), 20.f,
+		glm::vec4(0.f, 0.f, 0.f, 0.f), 1, 16, 25.f, 30.f, static_cast<int>(ObjAttackType::MELEE)));
+
+	//SelectHerd(0);
+
 	PopulateBuffers();
 }
 
@@ -96,11 +121,11 @@ void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset, int her
 	{
 		glm::vec4 newPos = startPos;
 
-		startPos.x += offset;
+		startPos.z += offset;
 		if (i % herdWidth == 0 && i != 0)
 		{
-			startPos.x = ogStartPos.x;
-			startPos.z += offset;
+			startPos.z = ogStartPos.z;
+			startPos.x += offset;
 		}
 		positionDatas.push_back(newPos);
 	}
@@ -135,12 +160,12 @@ void HerdManager::PopulateBuffers()
 }
 
 Herd* HerdManager::PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
-	int side, int herdWidth, float speed)
+	int side, int herdWidth, float speed, float attackRange, int attackType)
 {
 	BillboardAnimatingDatas* data = boManager->boDatas[obj];
 	GetHerdPositions(num, pos, offset, herdWidth);
 
-	Herd* herd = new Herd(num, herdDirection, side, lineShader, herdWidth, speed);
+	Herd* herd = new Herd(num, herdDirection, side, lineShader, herdWidth, speed, attackRange, attackType);
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -213,10 +238,10 @@ void HerdManager::CheckPicking(glm::vec3 pos)
 	for(Herd* herd : herds)
 	{
 		std::vector<glm::vec3> bounding = herd->boundingBoxes;
-		if((bounding[0].x < pos.x && pos.x < bounding[1].x) &&
-			(bounding[0].z < pos.z && pos.z < bounding[2].z) &&
-			(bounding[2].x < pos.x && pos.x < bounding[3].x) &&
-			(bounding[1].z < pos.z && pos.z < bounding[3].z))
+		if((bounding[0].z < pos.z && pos.z < bounding[1].z) &&
+			(bounding[0].x < pos.x && pos.x < bounding[2].x) &&
+			(bounding[2].z < pos.z && pos.z < bounding[3].z) &&
+			(bounding[1].x < pos.x && pos.x < bounding[3].x))
 		{
 			SelectHerd(herdIndex);
 		}
@@ -232,8 +257,8 @@ void HerdManager::ForwardSelectedHerdToPos(glm::vec3 pos)
 		std::vector<glm::vec3> boundingBoxes = selectedHerd->boundingBoxes;
 
 		glm::vec3 midPos;
-		midPos.x = (boundingBoxes[0].x + boundingBoxes[1].x) / 2.f;
-		midPos.z = (boundingBoxes[0].z + boundingBoxes[2].z) / 2.f;
+		midPos.x = (boundingBoxes[0].x + boundingBoxes[2].x) / 2.f;
+		midPos.z = (boundingBoxes[0].z + boundingBoxes[1].z) / 2.f;
 		midPos.y = boundingBoxes[0].y;
 
 		glm::vec3 temp = pos - midPos;

@@ -23,7 +23,7 @@ public:
 	void GetHerdPositions(int num, glm::vec3 pos, float offset, int herdWidth);
 	void PopulateBuffers();
 	Herd* PopulateHerd(int num, int obj, glm::vec3 pos, float offset, glm::vec4 herdDirection,
-		int side, int herdWidth, float speed);
+		int side, int herdWidth, float speed, float attackRange, int attackType);
 	void ChangeAnimationIndicesOfHerd(int* fbAngleIndices, int* animationStateIndices,
 		int* isDead);
 	void SelectHerd(int herdIndex);

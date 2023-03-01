@@ -36,6 +36,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	bbMoving = new Shader("../Shaders/BillboardObjectMovingCompute.glsl");
 	bbAttack = new Shader("../Shaders/BillboardAttackCompute.glsl");
 	bbChangeAnimation = new Shader("../Shaders/BillboardObjectAnimationStateCompute.glsl");
+	bbCollisionCheck = new Shader("../Shaders/BillboardObjectCollisionCheckCompute.glsl");
 
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
@@ -48,7 +49,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
 		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,
 		bbChangeAnimation,
-		lineShader);
+		lineShader, bbCollisionCheck);
 	skybox = new SkyBox();
 
 	//floorLine = new Line(lineShader, std::vector<glm::vec3>{},
@@ -102,6 +103,7 @@ Graphic::~Graphic()
 	delete bbCheckFrameBufferUsage;
 	delete bbMoving;
 	delete bbChangeAnimation;
+	delete bbCollisionCheck;
 }
 
 void Graphic::Draw()
@@ -122,6 +124,8 @@ void Graphic::Draw()
 	//If it, get angle index from that
 	boObjsManager->CalculateBOAngle();
 
+	boObjsManager->CollisionCheck(deltaTime);
+
 	//Move those billboard objects to desired direction. which is to nearest enemy.
 	boObjsManager->Move(deltaTime);
 
@@ -140,6 +144,9 @@ void Graphic::Draw()
 
 	//Request to change animation state
 	boObjsManager->ChangeAnimationOfHerds();
+
+	boObjsManager->ResetAttackingCountBuffer();
+	boObjsManager->ResetCollisionCheckBuffer();
 
 	//if(glm::dot(mouseClickDir, mouseClickDir) != 0.f)
 	//{

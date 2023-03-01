@@ -83,6 +83,7 @@ private:
 	Shader* bbMoving;
 	Shader* bbAttack;
 	Shader* bbChangeAnimation;
+	Shader* bbCollisionCheck;
 	int windowWidth;
 	int windowHeight;
 	//Line* floorLine;

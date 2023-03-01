@@ -42,10 +42,17 @@ void main(void)
 	int attackedNum = attackedCount[index];
 	int animIndex = animationIndex[index];
 
-	if (attackedNum > 0 || animationIndex[index] == State_Death)
+	if (attackedNum > 0)
 	{
 		time[index] += (dt * attackedNum);
 		attackedCount[index] = 0;
+	}
+	else
+	{
+		if (animIndex == State_Death)
+		{
+			time[index] += dt;
+		}
 	}
 
 	if (time[index] > 7.f && time[index] < 8.5f)

@@ -9,7 +9,9 @@ enum class MoveCS
 	targetEnemyPos,
 	attackedCount,
 	isDead,
-	herdReachedDestination
+	herdReachedDestination,
+	herdAttackingCounts,
+	objsCollisionStatus,
 };
 
 inline int ToInt(MoveCS val)
@@ -52,6 +54,21 @@ enum class AnimationChangeCS
 };
 
 inline int ToInt(AnimationChangeCS val)
+{
+	return static_cast<int>(val);
+}
+
+enum class CollisionCheckCS
+{
+	objsCollisionStatus = 0,
+	objsPoses,
+	objsDirections,
+	isDead,
+	attackedCount,
+	herdAttackingCounts,
+};
+
+inline int ToInt(CollisionCheckCS val)
 {
 	return static_cast<int>(val);
 }
