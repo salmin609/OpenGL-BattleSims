@@ -20,6 +20,7 @@ enum class ObjKind
 	SWAT,
 	ARCHER,
 	KNIGHT,
+	ZOMBIE,
 	VIKING,
 	END,
 };

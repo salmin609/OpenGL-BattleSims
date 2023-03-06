@@ -1,17 +1,34 @@
 #pragma once
 
-enum class MoveCS
+enum class TotalBuffer
 {
-	animationIndices = 0,
-	objsPoses,
+	objsPoses = 0,
 	objsDirections,
 	time,
-	targetEnemyPos,
-	attackedCount,
 	isDead,
 	herdReachedDestination,
 	herdAttackingCounts,
 	objsCollisionStatus,
+	animationIndices,
+	attackedCount,
+	frameBufferUsageIndex,
+	rangeTimer,
+};
+
+inline int ToInt(TotalBuffer val)
+{
+	return static_cast<int>(val);
+}
+
+enum class MoveCS
+{
+	objsPoses = 0,
+	time,
+	isDead,
+	herdReachedDestination,
+	herdAttackingCounts,
+	objsCollisionStatus,
+	objsDirections
 };
 
 inline int ToInt(MoveCS val)
@@ -49,8 +66,9 @@ inline int ToInt(AngleCS val)
 enum class AnimationChangeCS
 {
 	animationIndices = 0,
-	prevAnimationIndex,
-	needReset,
+	isDead,
+	objsCollisionStatus,
+	herdAttackingCounts
 };
 
 inline int ToInt(AnimationChangeCS val)
@@ -69,6 +87,29 @@ enum class CollisionCheckCS
 };
 
 inline int ToInt(CollisionCheckCS val)
+{
+	return static_cast<int>(val);
+}
+
+enum class RangeAttackTimerCS
+{
+	objsPoses = 0,
+	rangeTimer,
+	animationIndices
+};
+
+inline int ToInt(RangeAttackTimerCS val)
+{
+	return static_cast<int>(val);
+}
+
+enum class ResetCS
+{
+	herdAttackingCounts = 0,
+	objsCollisionStatus
+};
+
+inline int ToInt(ResetCS val)
 {
 	return static_cast<int>(val);
 }

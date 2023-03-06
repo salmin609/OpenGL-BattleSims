@@ -41,6 +41,9 @@ void main(void)
 	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	int attackedNum = attackedCount[index];
 	int animIndex = animationIndex[index];
+	float deathTimer = 7.f;
+	float term = 1.5f;
+	float acDeath = deathTimer + term;
 
 	if (attackedNum > 0)
 	{
@@ -55,11 +58,11 @@ void main(void)
 		}
 	}
 
-	if (time[index] > 7.f && time[index] < 8.5f)
+	if (time[index] > deathTimer && time[index] < acDeath)
 	{
 		animationIndex[index] = State_Death;
 	}
-	else if (time[index] > 8.5f)
+	else if (time[index] > acDeath)
 	{
 		isDead[index] = 1;
 	}

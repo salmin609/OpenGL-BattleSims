@@ -1,6 +1,8 @@
 #pragma once
 #include "glm/mat4x4.hpp"
 
+class BillboardBufferResetCS;
+class BillboardRangeAttackTimerCS;
 class BillboardCollisionCheckCS;
 class BillboardAnimationChangeCS;
 class BillboardAttackCS;
@@ -28,7 +30,9 @@ public:
 		Shader* boAttackShader_,
 		Shader* boChangeAnimationShader_,
 		Shader* lineShader_,
-		Shader* bbCollisionCheck_);
+		Shader* bbCollisionCheck_,
+		Shader* bbRangeAttackTimer_,
+		Shader* bbResetBuffer_);
 	~BillboardObjectManager();
 
 	void CalculateBOAngle() const;
@@ -39,14 +43,21 @@ public:
 	void Render(const glm::mat4& projMat, const glm::mat4& viewMat) const;
 	void ChangeAnimationOfHerds() const;
 	void CheckHerdReachedDestination() const;
-	void ResetAttackingCountBuffer() const;
-	void ResetCollisionCheckBuffer() const;
+	void CheckRangeAttackTimer(float dt) const;
+	void PopulateBuffer();
+	void RunSimulation(float dt) const;
+	void ResetBuffer() const;
 
 	HerdManager* herdManager;
 	BillboardMovingCS* boMovingCS;
 	BillboardAttackCS* boAttackCS;
 	BillboardAnimationChangeCS* boAnimChangeCS;
 	BillboardCollisionCheckCS* boCollisionCheckCS;
+	BillboardRangeAttackTimerCS* boRangeAttackTimerCS;
+	BillboardBufferResetCS* boResetBufferCS;
+
+	BufferManager* csBuffers{};
+	
 private:
 	Shader* boShader;
 	Shader* boFBusageComputeShader;

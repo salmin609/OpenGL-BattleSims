@@ -14,12 +14,10 @@ public:
 		BillboardObjectManager* boObjManager_);
 	~BillboardCollisionCheckCS() override;
 	void CollisionCheck(float dt) const;
-	void ResetCollisionCheckBuffer();
 private:
 	HerdManager* herdManager;
 	void SetShaderUniforms() override;
 	void PopulateBuffers() override;
 	BillboardObjectManager* boObjManager;
-	std::vector<int> collisionStatusVec;
 
 };

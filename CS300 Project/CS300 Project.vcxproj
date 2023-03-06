@@ -189,12 +189,14 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\BillboardAnimatingDatas.cpp" />
     <ClCompile Include="..\Common\BillboardAnimationChangeCS.cpp" />
     <ClCompile Include="..\Common\BillboardAttackCS.cpp" />
+    <ClCompile Include="..\Common\BillboardBufferResetCS.cpp" />
     <ClCompile Include="..\Common\BillboardCollisionCheckCS.cpp" />
     <ClCompile Include="..\Common\BillboardFrameBufferUsageCS.cpp" />
     <ClCompile Include="..\Common\BillboardManager.cpp" />
     <ClCompile Include="..\Common\BillboardMovingCS.cpp" />
     <ClCompile Include="..\Common\BillBoardObject.cpp" />
     <ClCompile Include="..\Common\BillboardObjectManager.cpp" />
+    <ClCompile Include="..\Common\BillboardRangeAttackTimerCS.cpp" />
     <ClCompile Include="..\Common\BoneStorageManager.cpp" />
     <ClCompile Include="..\Common\BufferManager.cpp" />
     <ClCompile Include="..\Common\ComputeShaderClass.cpp" />
@@ -204,6 +206,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClCompile Include="..\Common\Graphic.cpp" />
     <ClCompile Include="..\Common\Herd.cpp" />
     <ClCompile Include="..\Common\HerdManager.cpp" />
+    <ClCompile Include="..\Common\HerdSetter.cpp" />
     <ClCompile Include="..\Common\Interpolation.cpp" />
     <ClCompile Include="..\Common\Line.cpp" />
     <ClCompile Include="..\Common\MeshDatas.cpp" />
@@ -232,12 +235,14 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\BillboardAnimatingDatas.h" />
     <ClInclude Include="..\Common\BillboardAnimationChangeCS.h" />
     <ClInclude Include="..\Common\BillboardAttackCS.h" />
+    <ClInclude Include="..\Common\BillboardBufferResetCS.h" />
     <ClInclude Include="..\Common\BillboardCollisionCheckCS.h" />
     <ClInclude Include="..\Common\BillboardFrameBufferUsageCS.h" />
     <ClInclude Include="..\Common\BillboardManager.h" />
     <ClInclude Include="..\Common\BillboardMovingCS.h" />
     <ClInclude Include="..\Common\BillBoardObject.h" />
     <ClInclude Include="..\Common\BillboardObjectManager.h" />
+    <ClInclude Include="..\Common\BillboardRangeAttackTimerCS.h" />
     <ClInclude Include="..\Common\BoneStorageManager.h" />
     <ClInclude Include="..\Common\Buffer.hpp" />
     <ClInclude Include="..\Common\Camera.hpp" />
@@ -251,6 +256,7 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <ClInclude Include="..\Common\Graphic.h" />
     <ClInclude Include="..\Common\Herd.h" />
     <ClInclude Include="..\Common\HerdManager.h" />
+    <ClInclude Include="..\Common\HerdSetter.h" />
     <ClInclude Include="..\Common\Interpolation.h" />
     <ClInclude Include="..\Common\Line.h" />
     <ClInclude Include="..\Common\Material.h" />
@@ -287,7 +293,9 @@ xcopy /y /d "..\ThirdParty\GLEW\*.dll" "$(TargetDir)"</Command>
     <None Include="..\Shaders\BillboardObjectAnimationStateCompute.glsl" />
     <None Include="..\Shaders\BillboardObjectCollisionCheckCompute.glsl" />
     <None Include="..\Shaders\BillboardObjectMovingCompute.glsl" />
+    <None Include="..\Shaders\BillboardObjectRangeAttackTimerCompute.glsl" />
     <None Include="..\Shaders\billboardVert.glsl" />
+    <None Include="..\Shaders\BufferRefreshingCompute.glsl" />
     <None Include="..\Shaders\SkinningComputeShader.glsl" />
     <None Include="..\Shaders\AnimationFragment.glsl" />
     <None Include="..\Shaders\lineFrag.glsl" />

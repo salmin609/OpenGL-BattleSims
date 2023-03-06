@@ -3,10 +3,12 @@
 
 #include "BillboardAnimationChangeCS.h"
 #include "BillboardAttackCS.h"
+#include "BillboardBufferResetCS.h"
 #include "BillboardCollisionCheckCS.h"
 #include "BillboardFrameBufferUsageCS.h"
 #include "BillboardManager.h"
 #include "BillboardMovingCS.h"
+#include "BillboardRangeAttackTimerCS.h"
 #include "Buffer.hpp"
 #include "BufferManager.h"
 #include "Camera.hpp"
@@ -22,7 +24,9 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 												Shader* boAttackShader_,
 												Shader* boChangeAnimationShader_,
 												Shader* lineShader_,
-												Shader* bbCollisionCheck_)
+												Shader* bbCollisionCheck_,
+												Shader* bbRangeAttackTimer_,
+												Shader* bbResetBuffer_)
 {
 	boShader = boShader_;
 	boManager = boManager_;
@@ -34,6 +38,10 @@ BillboardObjectManager::BillboardObjectManager(Shader* boShader_, BillboardManag
 	boAttackCS = new BillboardAttackCS(boAttackShader_, herdManager, this);
 	boAnimChangeCS = new BillboardAnimationChangeCS(boChangeAnimationShader_, herdManager, this);
 	boCollisionCheckCS = new BillboardCollisionCheckCS(bbCollisionCheck_, herdManager, this);
+	boRangeAttackTimerCS = new BillboardRangeAttackTimerCS(bbRangeAttackTimer_, herdManager, this);
+	boResetBufferCS = new BillboardBufferResetCS(bbResetBuffer_, herdManager, this);
+
+	PopulateBuffer();
 }
 
 BillboardObjectManager::~BillboardObjectManager()
@@ -43,6 +51,8 @@ BillboardObjectManager::~BillboardObjectManager()
 	delete boMovingCS;
 	delete boAttackCS;
 	delete boCollisionCheckCS;
+	delete boRangeAttackTimerCS;
+	delete csBuffers;
 }
 
 void BillboardObjectManager::CalculateBOAngle() const
@@ -77,7 +87,7 @@ void BillboardObjectManager::Render(const glm::mat4& projMat, const glm::mat4& v
 
 void BillboardObjectManager::ChangeAnimationOfHerds() const
 {
-	Buffer* animationIndexBuffer = boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::animationIndices));
+	Buffer* animationIndexBuffer = boAnimChangeCS->csBuffers->GetBuffer(ToInt(AnimationChangeCS::animationIndices));
 	const Buffer* frameIndexBuffer = boFBusageCS->csBuffers->GetBuffer(ToInt(AngleCS::frameBufferUsageIndex));
 
 	//also, check dead objects
@@ -120,12 +130,102 @@ void BillboardObjectManager::CheckHerdReachedDestination() const
 	}
 }
 
-void BillboardObjectManager::ResetAttackingCountBuffer() const
+void BillboardObjectManager::CheckRangeAttackTimer(float dt) const
 {
-	boMovingCS->ResetHerdAttackingCountBuffer();
+	boRangeAttackTimerCS->TimeCheck(dt);
 }
 
-void BillboardObjectManager::ResetCollisionCheckBuffer() const
+void BillboardObjectManager::PopulateBuffer()
 {
-	boCollisionCheckCS->ResetCollisionCheckBuffer();
+	csBuffers = new BufferManager();
+	
+	std::vector<int> zeroVecInt;
+	std::vector<int> zeroVecFloat;
+
+	std::vector<int> zeroVecInt2;
+	std::vector<int> zeroVecFloat2;
+
+	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
+	{
+		zeroVecInt.push_back(0);
+		zeroVecFloat.push_back(0.f);
+	}
+
+	for (int i = 0; i < herdManager->GetHerdCount(); ++i)
+	{
+		zeroVecInt2.push_back(0);
+		zeroVecFloat2.push_back(0.f);
+	}
+
+	//csBuffers->AddBuffer(herdManager->posBuffer);
+	//csBuffers->AddBuffer(herdManager->directionBuffer);
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecFloat.data(), ToInt(TotalBuffer::time)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecInt.data(), ToInt(TotalBuffer::isDead)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->GetHerdCount(),
+	//	GL_DYNAMIC_DRAW, zeroVecInt2.data(), ToInt(TotalBuffer::herdReachedDestination)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->GetHerdCount(),
+	//	GL_DYNAMIC_DRAW, zeroVecInt2.data(), ToInt(TotalBuffer::herdAttackingCounts)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecInt.data(), ToInt(TotalBuffer::objsCollisionStatus)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecInt.data(), ToInt(TotalBuffer::animationIndices)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecInt.data(), ToInt(TotalBuffer::attackedCount)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount, 
+	//	GL_DYNAMIC_DRAW, nullptr, ToInt(TotalBuffer::frameBufferUsageIndex)));
+
+	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(float) * herdManager->totalRenderingAmount,
+	//	GL_DYNAMIC_DRAW, zeroVecFloat.data(), ToInt(TotalBuffer::rangeTimer)));
+}
+
+void BillboardObjectManager::RunSimulation(float dt) const
+{
+	//Decide whether billboard object is in frustum or not.
+	//If it, get angle index from that
+	CalculateBOAngle();
+
+	//Decide whether ranger unit's attack is ready or not
+	//If so, 
+	CheckRangeAttackTimer(dt);
+
+	//Check collision status btw objects.
+	//Records on objsCollisionStatus[]
+	CollisionCheck(dt);
+
+	//Move objs by it's current collision status.
+	//If collision_none, move it
+	Move(dt);
+
+	//Check if herd reached destination.
+	CheckHerdReachedDestination();
+
+	//Change object's animation state by it's collision state.
+	//If collision with ally, set to idle.
+	//Enemy, set to attack.
+	//None, whether idle or run states.
+	ResetAnimationState();
+
+	//Check if object is attacking animation, if it, += dt to timer buffer.
+	//if timer over some certain number, change to death state.
+	Attack(dt);
+
+	//Request to change animation state
+	ChangeAnimationOfHerds();
+
+	ResetBuffer();
+}
+
+void BillboardObjectManager::ResetBuffer() const
+{
+	boResetBufferCS->ResetBuffer();
 }

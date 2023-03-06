@@ -37,7 +37,8 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	bbAttack = new Shader("../Shaders/BillboardAttackCompute.glsl");
 	bbChangeAnimation = new Shader("../Shaders/BillboardObjectAnimationStateCompute.glsl");
 	bbCollisionCheck = new Shader("../Shaders/BillboardObjectCollisionCheckCompute.glsl");
-
+	bbRangeAttackTimer = new Shader("../Shaders/BillboardObjectRangeAttackTimerCompute.glsl");
+	bbBufferReset = new Shader("../Shaders/BufferRefreshingCompute.glsl");
 
 	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
 		glm::vec3(0.f, 1.f, 0.f),
@@ -49,7 +50,8 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	boObjsManager = new BillboardObjectManager(billboardShader, boManager, 
 		bbCheckFrameBufferUsage, currentCam, bbMoving, bbAttack,
 		bbChangeAnimation,
-		lineShader, bbCollisionCheck);
+		lineShader, bbCollisionCheck, bbRangeAttackTimer,
+		bbBufferReset);
 	skybox = new SkyBox();
 
 	//floorLine = new Line(lineShader, std::vector<glm::vec3>{},
@@ -58,7 +60,7 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	floor->pos = glm::vec3(660.f, 0.f, 670.f);
 	floor->scale = glm::vec3(20000.f, 1.f, 20000.f);
 	floor->rot = glm::vec3(0.f, 1.f, 0.f);
-	floor->color = glm::vec4{ .7f, .7f, .7f, 1.f };
+	floor->color = glm::vec4{ 1.f, 1.f, 1.f, 1.f };
 
 	selector = new Cube(lineShader);
 	selector->pos = glm::vec3(0.f, 0.f, 0.f);
@@ -104,6 +106,8 @@ Graphic::~Graphic()
 	delete bbMoving;
 	delete bbChangeAnimation;
 	delete bbCollisionCheck;
+	delete bbRangeAttackTimer;
+	delete bbBufferReset;
 }
 
 void Graphic::Draw()
@@ -120,46 +124,12 @@ void Graphic::Draw()
 	const glm::mat4 viewMat = currentCam->GetViewMatrix();
 	const glm::mat4 projViewMat = projMat * viewMat;
 
-	//Decide whether billboard object is in frustum or not.
-	//If it, get angle index from that
-	boObjsManager->CalculateBOAngle();
-
-	boObjsManager->CollisionCheck(deltaTime);
-
-	//Move those billboard objects to desired direction. which is to nearest enemy.
-	boObjsManager->Move(deltaTime);
-
-	//Check if herd reached destination.
-	boObjsManager->CheckHerdReachedDestination();
-
-	//Check if object is attacking animation, if it, += dt to timer buffer.
-	//if timer over some certain number, change to death state.
-	boObjsManager->Attack(deltaTime);
-
-	//Update animation's status whether Ready or Playing
-	//boManager->CheckAnimationPlayingStatus();
-
-	//Set angle index from framebuffers[]. if index >= 0, which means
-	//billboard object is in frustum, near of camera position.
-
-	//Request to change animation state
-	boObjsManager->ChangeAnimationOfHerds();
-
-	boObjsManager->ResetAttackingCountBuffer();
-	boObjsManager->ResetCollisionCheckBuffer();
-
-	//if(glm::dot(mouseClickDir, mouseClickDir) != 0.f)
-	//{
-	//	boObjsManager->herdManager->CheckPicking(selector->pos);
-	//}
+	boObjsManager->RunSimulation(deltaTime);
 
 	boManager->GenBillboard(projMat);
 	boObjsManager->Render(projMat, viewMat);
-
 	skybox->Draw(projMat, viewMat);
-	//floorLine->Draw(projViewMat);
 	floor->Draw(projViewMat);
-	//mouseClicker->Draw(projViewMat);
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */

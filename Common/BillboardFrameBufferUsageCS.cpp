@@ -27,16 +27,15 @@ BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 
 void BillboardFrameBufferUsageCS::CalculateBOAngle() const
 {
-	shader->Use();
-	csBuffers->BindBuffers();
+	SendBuffersAndUniforms(0.f);
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::frameBufferUsageIndex))
+	//	->BindStorage(ToInt(AngleCS::frameBufferUsageIndex));
+
 	herdManager->posBuffer->BindStorage(ToInt(AngleCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(AngleCS::objsDirections));
-	shader->SendUniformValues();
 
-	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	glUseProgram(0);
+	Dispatch(herdManager->totalRenderingAmount / 64);
 }
 
 void BillboardFrameBufferUsageCS::PopulateBuffers()

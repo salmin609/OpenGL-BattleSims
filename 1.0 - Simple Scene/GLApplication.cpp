@@ -163,13 +163,13 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
-//#if DEBUG
+#if DEBUG
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init();
     ImGui::StyleColorsDark();
-//#endif
+#endif
 
     graphic = new Graphic(window_width, window_height);
     graphic->window = window;
@@ -198,55 +198,20 @@ int main()
             counter = 0;
         }
         
-//#if DEBUG
+#if DEBUG
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
         ImGui::Begin("ImGui");
-
-        static int item_current_idx = 0; // Here we store our selection data as an index.
-        const char* items[] = { "SWAT", "AMY", "KNIGHT", "MICHELLE", "ADAM"};
-
-        const int itemArraySize = ARRAYSIZE(items);
-
-        if (ImGui::TreeNode("Models"))
-        {
-            if (ImGui::BeginListBox("ModelList"))
-            {
-                for (int n = 0; n < itemArraySize; n++)
-                {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(items[n], is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndListBox();
-            }
-            ImGui::TreePop();
-        }
-
-        
         ImGui::Text("Space  : Toggle cam moving");
         ImGui::Text("W/A/S/D: Cam movement");
         ImGui::Text("Mouse  : Cam rotation");
         ImGui::Text("V      : Enable mouse cursor");
         ImGui::Text("L-Click: Select herd");
         ImGui::Text("R-Click: Move selected herd");
-        
-
         ImGui::Text(fpsDisplay.c_str());
-        
-        //ImGui::Text("TotalRendering : %d", graphic->totalRenderingAmount);
-
-        //ImGui::SliderFloat3("Pos", &graphic->floor->pos.x, 600.f, 1000.f);
-        //ImGui::SliderFloat3("scale", &graphic->floor->scale.x, 1.f, 1500.f);
-        
         ImGui::End();
-//#endif
+#endif
 
         if(oneTime == true)
         {
@@ -261,10 +226,10 @@ int main()
         graphic->ProcessInput();
         graphic->Draw();
 
-//#if DEBUG
+#if DEBUG
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-//#endif
+#endif
 
         // Swap buffers
         glfwSwapBuffers(window);
@@ -275,11 +240,11 @@ int main()
            glfwWindowShouldClose(window) == 0);
 
     // Close OpenGL window and terminate GLFW
-//#if DEBUG
+#if DEBUG
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-//#endif
+#endif
     glfwTerminate();
     delete graphic;
 

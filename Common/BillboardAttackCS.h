@@ -12,7 +12,7 @@ public:
 		BillboardObjectManager* boObjManager_);
 	~BillboardAttackCS() override;
 	void AttackComputation(float dt) const;
-	float* timers;
+	//float* timers;
 	int* isDead;
 private:
 	HerdManager* herdManager;

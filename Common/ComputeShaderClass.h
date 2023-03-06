@@ -11,6 +11,8 @@ public:
 	BufferManager* csBuffers{};
 
 protected:
+	void SendBuffersAndUniforms(float dt) const;
+	void Dispatch(int xGroupNum) const;
 	Shader* shader;
 
 private:

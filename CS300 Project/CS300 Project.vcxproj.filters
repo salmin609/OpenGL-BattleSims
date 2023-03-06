@@ -186,6 +186,15 @@
     <ClCompile Include="..\Common\BillboardCollisionCheckCS.cpp">
       <Filter>Source Files\ComputeShader</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\BillboardRangeAttackTimerCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\HerdSetter.cpp">
+      <Filter>Source Files\Herd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\BillboardBufferResetCS.cpp">
+      <Filter>Source Files\ComputeShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\Graphic.h">
@@ -350,6 +359,15 @@
     <ClInclude Include="..\Common\BillboardCollisionCheckCS.h">
       <Filter>Header Files\ComputeShader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\BillboardRangeAttackTimerCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\HerdSetter.h">
+      <Filter>Header Files\Herd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\BillboardBufferResetCS.h">
+      <Filter>Header Files\ComputeShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Shaders\BillboardObjectAngleCompute.glsl">
@@ -395,6 +413,12 @@
       <Filter>Shader\ComputeShader</Filter>
     </None>
     <None Include="..\Shaders\BillboardObjectCollisionCheckCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
+    </None>
+    <None Include="..\Shaders\BillboardObjectRangeAttackTimerCompute.glsl">
+      <Filter>Shader\ComputeShader</Filter>
+    </None>
+    <None Include="..\Shaders\BufferRefreshingCompute.glsl">
       <Filter>Shader\ComputeShader</Filter>
     </None>
   </ItemGroup>

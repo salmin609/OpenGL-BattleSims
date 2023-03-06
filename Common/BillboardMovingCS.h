@@ -17,10 +17,8 @@ public:
 		BillboardObjectManager* boObjManager_);
 	~BillboardMovingCS() override;
 	void Move(float dt) const;
-	void ResetHerdAttackingCountBuffer();
 	int* animationIndexBuffer;
 	int* herdReachedBuffer;
-	std::vector<int> herdAttackingCoutReset;
 
 private:
 	void SetShaderUniforms() override;

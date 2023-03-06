@@ -3,66 +3,50 @@
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 
-layout(binding = 0) buffer
-bufferAnimationIndices
-{
-	int animationIndices[];
-};
-
-layout(std430, binding = 1) buffer
+layout(std430, binding = 0) buffer
 bufferObjsPos
 {
 	vec4 objsPoses[];
 };
 
-layout(std430, binding = 2) buffer
-bufferObjsDirection
-{
-	vec4 objsDirections[];
-};
 
-
-layout(binding = 3) buffer
+layout(binding = 1) buffer
 bufferTimeCheck
 {
 	float time[];
 };
 
-layout(binding = 4) buffer
-bufferTargetEnemyPosition
-{
-	vec4 targetEnemyPos[];
-};
 
-layout(binding = 5) buffer
-bufferTargetingCounts
-{
-	int attackedCount[];
-};
-
-layout(binding = 6) buffer
+layout(binding = 2) buffer
 bufferObjectDead
 {
 	int isDead[];
 };
 
-layout(binding = 7) buffer
+layout(binding = 3) buffer
 bufferHerdReachedDestination
 {
 	int herdReachedDestination[];
 };
 
-layout(binding = 8) buffer
+layout(binding = 4) buffer
 bufferHerdAttackingCount
 {
 	int herdAttackingCounts[];
 };
 
-layout(binding = 9) buffer
+layout(binding = 5) buffer
 bufferObjsCollisionStatus
 {
 	int objsCollisionStatus[];
 };
+
+layout(binding = 6) buffer
+bufferObjsDirections
+{
+	vec4 objsDirections[];
+};
+
 
 #define State_Idle 0
 #define State_Attack 1
@@ -83,13 +67,11 @@ uniform int herdSides[32];
 uniform vec4 herdDirections[32];
 uniform float herdSpeeds[32];
 uniform vec4 herdDestinations[32];
-uniform float herdAttackRanges[32];
-uniform int herdAttackTypes[32];
 uniform int herdWidths[32];
+uniform int herdAttackTypes[32];
 
 uniform float dt;
 uniform int herdCount;
-float attackRange;
 float radius = 15.f;
 int herdIndex;
 uint index;
@@ -137,94 +119,42 @@ void main(void)
 {
 	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
-	float timer = time[index];
-	vec4 direction = objsDirections[index];
-	int animIndex = animationIndices[index];
-
 	GetBufferOffset();
+	int herdAttackingNum = herdAttackingCounts[herdIndex];
+	int herdNum = herdCounts[herdIndex];
+	int attackType = herdAttackTypes[herdIndex];
 	vec4 herdDirection = herdDirections[herdIndex];
 	float speed = herdSpeeds[herdIndex];
-	attackRange = herdAttackRanges[herdIndex];
 
 	int dead = isDead[index];
 	bool isStop = dot(herdDirection, herdDirection) == 0;
-	int attackType = herdAttackTypes[herdIndex];
+	int thisCollisionState = objsCollisionStatus[index];
 
+	if (attackType == Attack_Ranged)
+	{
+		int attackingCount = herdAttackingCounts[herdIndex];
+
+		if (attackingCount < herdNum - 10)
+		{
+			thisCollisionState = Collision_None;
+			//objsCollisionStatus[index] = Collision_None;
+		}
+	}
 
 	if (dead == 0)
 	{
 		if (isStop == false)
 		{
-			int allyCollisionIndex = 0;
-			int collisionState = objsCollisionStatus[index];
-
-			if (collisionState > 0)
+			if (thisCollisionState == Collision_None)
 			{
-				allyCollisionIndex = collisionState - Collision_With_Ally;
-				collisionState = Collision_With_Ally;
-			}
+				objsDirections[index] = herdDirection;
+				MoveToward(objsPoses[index], herdDirection, speed);
 
-			if (collisionState == Collision_With_Enemy)
-			{
-				if (attackType == Attack_Melee)
-				{
-					animationIndices[index] = State_Attack;
-				}
-				else
-				{
-					int herdNums = herdCounts[herdIndex];
+				float dist = distance(objsPoses[index], herdDestinations[herdIndex]);
 
-					//all herd members attacking
-					if (herdAttackingCounts[herdIndex] == herdNums)
-					{
-						animationIndices[index] = State_Attack;
-					}
-					else
-					{
-						animationIndices[index] = State_Run;
-						objsDirections[index] = herdDirection;
-						MoveToward(objsPoses[index], herdDirection, speed);
-
-						float dist = distance(objsPoses[index], herdDestinations[herdIndex]);
-
-						if (dist < 10.f)
-							herdReachedDestination[herdIndex] = 1;
-					}
-				}
-			}
-			else
-			{
-				if (collisionState == Collision_With_Ally)
-				{
-					if (animationIndices[allyCollisionIndex] != State_Run)
-						animationIndices[index] = State_Idle;
-				}
-				else
-				{
-					animationIndices[index] = State_Run;
-					objsDirections[index] = herdDirection;
-					MoveToward(objsPoses[index], herdDirection, speed);
-
-					float dist = distance(objsPoses[index], herdDestinations[herdIndex]);
-
-					if (dist < 10.f)
-						herdReachedDestination[herdIndex] = 1;
-				}
-			}
-		}
-		else
-		{
-			int collisionState = objsCollisionStatus[index];
-
-			if (collisionState == Collision_With_Enemy)
-			{
-				animationIndices[index] = State_Attack;
-			}
-			else
-			{
-				animationIndices[index] = State_Idle;
+				if (dist < 10.f)
+					herdReachedDestination[herdIndex] = 1;
 			}
 		}
 	}
-
 }

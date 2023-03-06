@@ -25,11 +25,9 @@ BillboardCollisionCheckCS::~BillboardCollisionCheckCS()
 
 void BillboardCollisionCheckCS::CollisionCheck(float dt) const
 {
-	shader->Use();
-	csBuffers->BindBuffers();
-	shader->SendUniformValues();
-	shader->SendUniformFloat("dt", dt);
-	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::attackedCount))
+	SendBuffersAndUniforms(dt);
+
+	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::attackedCount))
 		->BindStorage(ToInt(CollisionCheckCS::attackedCount));
 
 	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdAttackingCounts))
@@ -38,19 +36,24 @@ void BillboardCollisionCheckCS::CollisionCheck(float dt) const
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))
 		->BindStorage(ToInt(CollisionCheckCS::isDead));
 
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::objsCollisionStatus))
+	//	->BindStorage(ToInt(CollisionCheckCS::objsCollisionStatus));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::attackedCount))
+	//	->BindStorage(ToInt(CollisionCheckCS::attackedCount));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdAttackingCounts))
+	//	->BindStorage(ToInt(CollisionCheckCS::herdAttackingCounts));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
+	//	->BindStorage(ToInt(CollisionCheckCS::isDead));
+
 	herdManager->posBuffer->BindStorage(ToInt(CollisionCheckCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(CollisionCheckCS::objsDirections));
 
-	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	glUseProgram(0);
+	Dispatch(herdManager->totalRenderingAmount / 64);
 }
 
-void BillboardCollisionCheckCS::ResetCollisionCheckBuffer()
-{
-	csBuffers->GetBuffer(ToInt(CollisionCheckCS::objsCollisionStatus))->WriteData(collisionStatusVec.data());
-}
 
 void BillboardCollisionCheckCS::SetShaderUniforms()
 {
@@ -84,6 +87,7 @@ void BillboardCollisionCheckCS::SetShaderUniforms()
 
 void BillboardCollisionCheckCS::PopulateBuffers()
 {
+	std::vector<int> collisionStatusVec;
 	for (int i = 0; i < herdManager->totalRenderingAmount; ++i)
 	{
 		collisionStatusVec.push_back(0);

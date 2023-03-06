@@ -20,11 +20,6 @@ BillboardMovingCS::BillboardMovingCS(Shader* boMovingShader_, HerdManager* herdM
 	BillboardMovingCS::SetShaderUniforms();
 	animationIndexBuffer = new int[herdManager->totalRenderingAmount];
 	herdReachedBuffer = new int[herdManager->GetHerdCount()];
-
-	for (int i = 0; i < herdManager->GetHerdCount(); ++i)
-	{
-		herdAttackingCoutReset.push_back(0);
-	}
 }
 
 BillboardMovingCS::~BillboardMovingCS()
@@ -69,36 +64,12 @@ void BillboardMovingCS::SetShaderUniforms()
 
 		const std::string uName9 = "herdWidths[" + std::to_string(i) + "]";
 		shader->AddUniformValues(uName9, ShaderValueType::Int, &herd->herdWidth);
-
 	}
-
-	
 }
 
 
 void BillboardMovingCS::PopulateBuffers()
 {
-	std::vector<int> ck;
-	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
-	{
-		ck.push_back(static_cast<int>(State::Idle));
-	}
-
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, ck.data(), ToInt(MoveCS::animationIndices)));
-	
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(glm::vec4) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, nullptr, ToInt(MoveCS::targetEnemyPos)));
-
-	std::vector<int> attackedCount;
-	for(int i = 0; i < herdManager->totalRenderingAmount; ++i)
-	{
-		attackedCount.push_back(0);
-	}
-
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
-		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(MoveCS::attackedCount)));
-
 	const int herdCount = herdManager->GetHerdCount();
 
 	std::vector<int> herdReachedDest;
@@ -118,8 +89,23 @@ void BillboardMovingCS::PopulateBuffers()
 
 void BillboardMovingCS::Move(float dt) const
 {
-	shader->Use();
-	csBuffers->BindBuffers();
+	SendBuffersAndUniforms(dt);
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::time))
+	//	->BindStorage(ToInt(MoveCS::time));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
+	//	->BindStorage(ToInt(MoveCS::isDead));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::objsCollisionStatus))
+	//	->BindStorage(ToInt(MoveCS::objsCollisionStatus));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdReachedDestination))
+	//	->BindStorage(ToInt(MoveCS::herdReachedDestination));
+
+	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdAttackingCounts))
+	//	->BindStorage(ToInt(MoveCS::herdAttackingCounts));
+
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::time))->
 		BindStorage(ToInt(MoveCS::time));
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))->
@@ -130,17 +116,6 @@ void BillboardMovingCS::Move(float dt) const
 	herdManager->posBuffer->BindStorage(ToInt(MoveCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(MoveCS::objsDirections));
 
-	shader->SendUniformValues();
-	shader->SendUniformFloat("dt", dt);
-
-	glDispatchCompute(herdManager->totalRenderingAmount / 64, 1, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-	glUseProgram(0);
+	Dispatch(herdManager->totalRenderingAmount / 64);
 }
 
-void BillboardMovingCS::ResetHerdAttackingCountBuffer()
-{
-	csBuffers->GetBuffer(ToInt(MoveCS::herdAttackingCounts))
-		->WriteData(herdAttackingCoutReset.data());
-}
