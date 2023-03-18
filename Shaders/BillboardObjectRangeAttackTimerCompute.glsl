@@ -3,7 +3,7 @@
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
 
 
-layout(std430, binding = 0) buffer
+layout(std430, binding = 0) readonly buffer
 bufferObjsPos {
 	vec4 objsPoses[];
 };
@@ -13,7 +13,7 @@ bufferRangedTimeCheck {
 	float rangedTimer[];
 };
 
-layout(binding = 2) buffer
+layout(binding = 2) readonly buffer
 bufferAnimationIndices
 {
 	int animationIndices[];

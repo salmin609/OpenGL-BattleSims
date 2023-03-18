@@ -9,43 +9,46 @@ bufferObjsPos
 	vec4 objsPoses[];
 };
 
-
-layout(binding = 1) buffer
-bufferTimeCheck
-{
-	float time[];
-};
-
-
-layout(binding = 2) buffer
+layout(binding = 1) readonly buffer
 bufferObjectDead
 {
 	int isDead[];
 };
 
-layout(binding = 3) buffer
+layout(binding = 2) writeonly buffer
 bufferHerdReachedDestination
 {
 	int herdReachedDestination[];
 };
 
-layout(binding = 4) buffer
+layout(binding = 3) buffer
 bufferHerdAttackingCount
 {
 	int herdAttackingCounts[];
 };
 
-layout(binding = 5) buffer
+layout(binding = 4) buffer
 bufferObjsCollisionStatus
 {
 	int objsCollisionStatus[];
 };
 
-layout(binding = 6) buffer
+layout(binding = 5) buffer
 bufferObjsDirections
 {
 	vec4 objsDirections[];
 };
+
+//layout(binding = 6) buffer
+//bufferHerdNumCount {
+//	int herdNumCount[];
+//};
+//
+//layout(binding = 7) buffer
+//bufferHerdMovable
+//{
+//	int herdMovable[];
+//};
 
 
 #define State_Idle 0
@@ -130,16 +133,9 @@ void main(void)
 	bool isStop = dot(herdDirection, herdDirection) == 0;
 	int thisCollisionState = objsCollisionStatus[index];
 
-	if (attackType == Attack_Ranged)
-	{
-		int attackingCount = herdAttackingCounts[herdIndex];
+	int herdIndexStart = herdOffset[herdIndex];
 
-		if (attackingCount < herdNum - 10)
-		{
-			thisCollisionState = Collision_None;
-			//objsCollisionStatus[index] = Collision_None;
-		}
-	}
+	int herdNoneCollisionCount = 0;
 
 	if (dead == 0)
 	{
@@ -155,6 +151,7 @@ void main(void)
 				if (dist < 10.f)
 					herdReachedDestination[herdIndex] = 1;
 			}
+
 		}
 	}
 }

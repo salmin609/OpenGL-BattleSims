@@ -19,7 +19,6 @@
 #include "Cube.h"
 #include "HerdManager.h"
 #include "Skybox.h"
-#include "Line.h"
 #include "ModelKinds.h"
 #include "Ray.h"
 #include "assimp/anim.h"
@@ -40,9 +39,9 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	bbRangeAttackTimer = new Shader("../Shaders/BillboardObjectRangeAttackTimerCompute.glsl");
 	bbBufferReset = new Shader("../Shaders/BufferRefreshingCompute.glsl");
 
-	cam = new Camera(glm::vec3(-47.5701f, 56.8972f, -76.2187f),
+	cam = new Camera(glm::vec3(136.497f, 176.542f, -612.206f),
 		glm::vec3(0.f, 1.f, 0.f),
-		50.8f, -14.0999f);
+		-267.2f, -18.1999f);
 	currentCam = cam;
 
 	objPaths = GetObjStr();
@@ -54,13 +53,11 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 		bbBufferReset);
 	skybox = new SkyBox();
 
-	//floorLine = new Line(lineShader, std::vector<glm::vec3>{},
-	//	glm::vec4(1.f, 1.f, 1.f, 1.f), true);
 	floor = new Cube(lineShader);
 	floor->pos = glm::vec3(660.f, 0.f, 670.f);
 	floor->scale = glm::vec3(20000.f, 1.f, 20000.f);
 	floor->rot = glm::vec3(0.f, 1.f, 0.f);
-	floor->color = glm::vec4{ 1.f, 1.f, 1.f, 1.f };
+	floor->color = glm::vec4{ 0.607f, 0.462f, 0.325f, 1.f };
 
 	selector = new Cube(lineShader);
 	selector->pos = glm::vec3(0.f, 0.f, 0.f);
@@ -75,17 +72,6 @@ Graphic::Graphic(int w, int h) : deltaTime(0.f), lastFrame(0.f), windowWidth(w),
 	cam->height = cam->width / 1.f;
 
 	mouseClickDir = glm::vec3(0.f, 0.f, 0.f);
-
-	//BillboardAnimatingDatas* data = boManager->boDatas[0];
-
-	//objs.push_back(reinterpret_cast<Object*>(data->obj));
-	//currentCam = boManager->GetBoObjCamera(0);
-
-
-	//frustum = new Frustum();
-	//frustum->ResetFrustumPlans(*currentCam, fov,
-	//	glm::radians(currentCam->Zoom), boObjsManager->zNear, 
-	//	boObjsManager->zFar);
 }
 
 Graphic::~Graphic()
@@ -93,13 +79,11 @@ Graphic::~Graphic()
 	delete boObjsManager;
 	delete boManager;
 	delete skybox;
-	//delete frustum;
 	delete cam;
 	delete animShader;
 	delete interpolationComputeShader;
 	delete lineShader;
 	delete billboardShader;
-	//delete floorLine;
 	delete floor;
 	delete floorShader;
 	delete bbCheckFrameBufferUsage;
@@ -130,6 +114,7 @@ void Graphic::Draw()
 	boObjsManager->Render(projMat, viewMat);
 	skybox->Draw(projMat, viewMat);
 	floor->Draw(projViewMat);
+
 	/*
 	 * Traverse all objects and calculate time ticks and pass to Draw()
 	 */
@@ -239,9 +224,12 @@ void Graphic::GetMousePosInWorldCoord(float mouseX, float mouseY)
 
 void Graphic::ForwardPickingPos()
 {
-	while (selector->pos.y > 15.f)
+	if(mouseClickDir.y < 0.f)
 	{
-		selector->pos += mouseClickDir;
+		while (selector->pos.y > 15.f)
+		{
+			selector->pos += mouseClickDir;
+		}
 	}
 }
 

@@ -44,48 +44,15 @@ bool firstMouse = true;
 float lastX = 800.0f / 2.0;
 float lastY = 600.0 / 2.0;
 float fov = 45.0f;
-bool camLock = true;
+//bool camLock = true;
 Graphic* graphic;
 bool cursorHidden = true;
+bool middleMouseButtonPressed = false;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     (scancode);
     (mods);
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-        camLock = !camLock;
-
-    /*if ((key == GLFW_KEY_1 || key == GLFW_KEY_2 || key == GLFW_KEY_3 || 
-        key == GLFW_KEY_4 || key == GLFW_KEY_5 || key == GLFW_KEY_6 || 
-        key == GLFW_KEY_7 || key == GLFW_KEY_8 || key == GLFW_KEY_9)
-        && action == GLFW_PRESS)
-    {
-        graphic->SelectHerd(key - GLFW_KEY_1);
-    }
-
-    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-    {
-        graphic->ChangeHerdDirection(glm::vec4(-1.f, 0.f, 0.f, 0.f));
-    }
-    else if(key == GLFW_KEY_UP && action == GLFW_PRESS)
-    {
-        graphic->ChangeHerdDirection(glm::vec4(1.f, 0.f, 0.f, 0.f));
-    }
-    else if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-    {
-        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, 1.f, 0.f));
-    }
-    else if(key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-    {
-        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, -1.f, 0.f));
-    }
-    else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
-    {
-        graphic->ChangeHerdDirection(glm::vec4(0.f, 0.f, 0.f, 0.f));
-    }*/
-
-    //if (key == GLFW_KEY_C && action == GLFW_PRESS)
-        //graphic->ResetCamAngle();
 
     if(key == GLFW_KEY_V && action == GLFW_PRESS)
     {
@@ -255,6 +222,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
 
@@ -265,6 +234,8 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
     else if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         double xPos, yPos;
         glfwGetCursorPos(window, &xPos, &yPos);
 
@@ -273,6 +244,15 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
         graphic->ForwardToPickedPos();
     }
+
+    else if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
+    {
+        middleMouseButtonPressed = true;
+    }
+    else if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
+    {
+        middleMouseButtonPressed = false;
+    }
 }
 
 
@@ -280,7 +260,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     (window);
 
-    if(!camLock)
+    if(middleMouseButtonPressed)
     {
 	    const float xpos = static_cast<float>(xposIn);
 	    const float ypos = static_cast<float>(yposIn);

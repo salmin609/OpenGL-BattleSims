@@ -57,6 +57,8 @@ void BillboardAnimationChangeCS::ResetAnimation()
 	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdAttackingCounts))
 		->BindStorage(ToInt(AnimationChangeCS::herdAttackingCounts));
 
+	//boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdMovable))
+	//	->BindStorage(ToInt(AnimationChangeCS::herdMovable));
 
 	Dispatch(herdManager->totalRenderingAmount / 64);
 }
@@ -95,4 +97,6 @@ void BillboardAnimationChangeCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, ck.data(), ToInt(AnimationChangeCS::animationIndices)));
+
+
 }

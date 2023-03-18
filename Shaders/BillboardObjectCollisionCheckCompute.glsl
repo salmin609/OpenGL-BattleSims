@@ -14,7 +14,7 @@ bufferObjsPos
 	vec4 objsPoses[];
 };
 
-layout(std430, binding = 2) buffer
+layout(std430, binding = 2) writeonly buffer
 bufferObjsDirection
 {
 	vec4 objsDirections[];
@@ -130,9 +130,9 @@ int CheckCollisionBtwEnemyAndAlly(inout int allyCollisionIndex)
 				{
 					if (CheckCollision(thisPos, otherPos, attackRange))
 					{
-						attackedCount[otherIndex]++;
+						attackedCount[otherIndex] += 1;
 						objsDirections[index] = otherPos - thisPos;
-						herdAttackingCounts[herdIndex]++;
+						herdAttackingCounts[herdIndex] += 1;
 						return Collision_With_Enemy;
 					}
 				}

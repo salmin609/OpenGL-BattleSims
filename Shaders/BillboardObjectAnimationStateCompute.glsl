@@ -38,6 +38,12 @@ bufferHerdAttackingCount
 	int herdAttackingCounts[];
 };
 
+//layout(binding = 4) buffer
+//bufferHerdMovable
+//{
+//	int herdMovable[];
+//};
+
 uniform int herdAttackTypes[32];
 uniform int herdOffset[32];
 uniform int herdCounts[32];
@@ -73,6 +79,7 @@ void main()
 	int attackType = herdAttackTypes[herdIndex];
 	vec4 herdDirection = herdDirections[herdIndex];
 	bool isStop = dot(herdDirection, herdDirection) == 0;
+	//int movable = herdMovable[herdIndex];
 
 
 	if (dead == 0)
@@ -106,7 +113,7 @@ void main()
 					}
 					else
 					{
-						if(isStop)
+						if(isStop /*|| movable == 0*/)
 							animationIndices[index] = State_Idle;
 						else 
 							animationIndices[index] = State_Run;

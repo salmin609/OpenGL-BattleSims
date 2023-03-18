@@ -28,6 +28,11 @@ bufferObjectDead {
 	int isDead[];
 };
 
+//layout(binding = 5) buffer
+//bufferHerdNumCount {
+//	int herdNumCount[];
+//};
+
 #define State_Idle 0
 #define State_Attack 1
 #define State_Pain 2
@@ -35,15 +40,38 @@ bufferObjectDead {
 #define State_Death 4
 
 uniform float dt;
+uniform int herdCount;
+
+uniform int herdCounts[32];
+uniform int herdOffset[32];
+
+int herdIndex;
+uint index;
+//
+void GetBufferOffset()
+{
+	for (int i = herdCount - 1; i >= 0; --i)
+	{
+		int offset = herdOffset[i];
+
+		if (index >= uint(offset))
+		{
+			herdIndex = i;
+			break;
+		}
+	}
+}
 
 void main(void)
 {
-	uint index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
+	index = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 	int attackedNum = attackedCount[index];
 	int animIndex = animationIndex[index];
 	float deathTimer = 7.f;
 	float term = 1.5f;
 	float acDeath = deathTimer + term;
+
+	GetBufferOffset();
 
 	if (attackedNum > 0)
 	{
@@ -65,5 +93,6 @@ void main(void)
 	else if (time[index] > acDeath)
 	{
 		isDead[index] = 1;
+		//herdNumCount[herdIndex]--;
 	}
 }

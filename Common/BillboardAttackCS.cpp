@@ -52,6 +52,21 @@ void BillboardAttackCS::AttackComputation(float dt) const
 
 void BillboardAttackCS::SetShaderUniforms()
 {
+	int& herdCount = herdManager->GetHerdCount();
+	shader->AddUniformValues("herdCount", ShaderValueType::Int, &herdCount);
+
+	for (int i = 0; i < herdCount; ++i)
+	{
+		Herd* herd = herdManager->GetHerd(i);
+		herd->herdOffset = herdManager->herdOffset[i];
+
+		const std::string uName = "herdOffset[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName, ShaderValueType::Int, &herd->herdOffset);
+
+		const std::string uName2 = "herdCounts[" + std::to_string(i) + "]";
+		shader->AddUniformValues(uName2, ShaderValueType::Int, &herd->count);
+	}
+
 }
 
 void BillboardAttackCS::PopulateBuffers()
@@ -82,4 +97,14 @@ void BillboardAttackCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->totalRenderingAmount,
 		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(AttackCS::attackedCount)));
+
+	std::vector<int> herdNumCount;
+
+	/*for(int i = 0; i < herdManager->GetHerdCount(); ++i)
+	{
+		herdNumCount.push_back(herdManager->GetHerd(i)->count);
+	}
+
+	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->GetHerdCount(),
+		GL_DYNAMIC_DRAW, herdNumCount.data(), ToInt(AttackCS::herdNumCount)));*/
 }

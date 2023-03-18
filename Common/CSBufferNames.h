@@ -23,12 +23,13 @@ inline int ToInt(TotalBuffer val)
 enum class MoveCS
 {
 	objsPoses = 0,
-	time,
 	isDead,
 	herdReachedDestination,
 	herdAttackingCounts,
 	objsCollisionStatus,
-	objsDirections
+	objsDirections,
+	//herdNumCount,
+	//herdMovable
 };
 
 inline int ToInt(MoveCS val)
@@ -43,7 +44,8 @@ enum class AttackCS
 	animationIndices,
 	objsPoses,
 	attackedCount,
-	isDead
+	isDead,
+	//herdNumCount
 };
 
 inline int ToInt(AttackCS val)
@@ -68,7 +70,8 @@ enum class AnimationChangeCS
 	animationIndices = 0,
 	isDead,
 	objsCollisionStatus,
-	herdAttackingCounts
+	herdAttackingCounts,
+	//herdMovable
 };
 
 inline int ToInt(AnimationChangeCS val)
@@ -106,7 +109,8 @@ inline int ToInt(RangeAttackTimerCS val)
 enum class ResetCS
 {
 	herdAttackingCounts = 0,
-	objsCollisionStatus
+	objsCollisionStatus,
+	//herdMovable
 };
 
 inline int ToInt(ResetCS val)

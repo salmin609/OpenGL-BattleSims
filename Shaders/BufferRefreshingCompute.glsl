@@ -14,10 +14,42 @@ bufferObjsCollisionStatus
 	int objsCollisionStatus[];
 };
 
+//layout(std430, binding = 2) writeonly buffer
+//bufferHerdMovable
+//{
+//	int herdMovable[];
+//};
+
+uint index;
+uniform int herdCount;
+
+uniform int herdCounts[32];
+uniform int herdOffset[32];
+
+int herdIndex;
+
+void GetBufferOffset()
+{
+	for (int i = herdCount - 1; i >= 0; --i)
+	{
+		int offset = herdOffset[i];
+
+		if (index >= uint(offset))
+		{
+			herdIndex = i;
+			break;
+		}
+	}
+}
+
 void main(void)
 {
-	uint index = gl_GlobalInvocationID.x + 
+	index = gl_GlobalInvocationID.x + 
 		gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
+
+	GetBufferOffset();
+
+	//herdMovable[herdIndex] = 1;
 
 	herdAttackingCounts[index] = 0;
 	objsCollisionStatus[index] = 0;

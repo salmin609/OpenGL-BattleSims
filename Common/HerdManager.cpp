@@ -8,7 +8,6 @@
 #include "Buffer.hpp"
 #include "CSBufferNames.h"
 #include "Herd.h"
-#include "HerdSetter.h"
 #include "MultipleAnimationObject.h"
 #include "ModelKinds.h"
 
@@ -22,25 +21,24 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 	lineShader = lineShader_;
 	selectedHerd = nullptr;
 
-	int num = 256;
-	int width = 16;
+	int num = 512;
+	int width = 32;
 	float speed = 100.f;
 
 	glm::vec3 initialPos = glm::vec3(250.f, 12.f, -300.f);
-	glm::vec3 initialPos2 = glm::vec3(-250.f, 12.f, -350.f);
+	glm::vec3 initialPos2 = glm::vec3(-250.f, 12.f, -300.f);
 
-	std::vector<int> objKind1{ static_cast<int>(ObjKind::KNIGHT) , static_cast<int>(ObjKind::SWAT) , static_cast<int>(ObjKind::VIKING), static_cast<int>(ObjKind::ARCHER)};
-	std::vector<int> objKind2{ static_cast<int>(ObjKind::MUTANT) , static_cast<int>(ObjKind::ZOMBIE) , static_cast<int>(ObjKind::MUTANT), static_cast<int>(ObjKind::ZOMBIE) };
+	std::vector<int> objKind1{ static_cast<int>(ObjKind::KNIGHT) , static_cast<int>(ObjKind::SWAT) , static_cast<int>(ObjKind::VIKING), static_cast<int>(ObjKind::ARCHER),
+	static_cast<int>(ObjKind::KNIGHT) , static_cast<int>(ObjKind::SWAT) , static_cast<int>(ObjKind::VIKING), static_cast<int>(ObjKind::ARCHER) };
+	std::vector<int> objKind2{ static_cast<int>(ObjKind::MUTANT) , static_cast<int>(ObjKind::ZOMBIE) , static_cast<int>(ObjKind::MUTANT), static_cast<int>(ObjKind::ZOMBIE) ,
+	static_cast<int>(ObjKind::MUTANT) , static_cast<int>(ObjKind::ZOMBIE) , static_cast<int>(ObjKind::MUTANT), static_cast<int>(ObjKind::ZOMBIE) };
 
-	float posOffsetZ = 400.f;
-	float posOffsetZ2 = 400.f;
-	//HerdSetterDatas hData0(objKind1, initialPos, posOffsetZ, num, width, speed);
-	//HerdSetterDatas hData1(objKind2, initialPos2, posOffsetZ2, num, width, speed);
-
+	float posOffsetZ = 500.f;
+	float posOffsetZ2 = 500.f;
 
 	for(int i = 0; i < objKind1.size(); ++i)
 	{
-		AddHerd(PopulateHerd(num, objKind1[i], initialPos, 25.f,
+		AddHerd(PopulateHerd(num, objKind1[i], initialPos, 15.f,
 		                     glm::vec4(0.f, 0.f, 0.f, 0.f), 0, width, speed, 30.f, static_cast<int>(ObjAttackType::MELEE)));
 
 		initialPos.z += posOffsetZ;
@@ -54,7 +52,7 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 
 	for (int i = 0; i < objKind2.size(); ++i)
 	{
-		AddHerd(PopulateHerd(num, objKind2[i], initialPos2, 25.f,
+		AddHerd(PopulateHerd(num, objKind2[i], initialPos2, 15.f,
 			glm::vec4(0.f, 0.f, 0.f, 0.f), 1, width, speed, 30.f, static_cast<int>(ObjAttackType::MELEE)));
 
 		initialPos2.z += posOffsetZ2;
@@ -62,7 +60,7 @@ HerdManager::HerdManager(BillboardManager* boManager_, Shader* boShader_,
 		if (i == (objKind2.size() / 2) - 1)
 		{
 			initialPos2.x -= 500.f;
-			initialPos2.z = -350.f;
+			initialPos2.z = -300.f;
 		}
 	}
 	PopulateBuffers();
@@ -116,20 +114,20 @@ void HerdManager::GetHerdPositions(int num, glm::vec3 pos, float offset, int her
 {
 	glm::vec4 startPos = glm::vec4(pos, 1.f);
 	const glm::vec4 ogStartPos = startPos;
-	for (int i = 0; i < num; ++i)
+
+	const int numDivWidth = num / herdWidth;
+
+	for(int i = 0; i < numDivWidth; ++i)
 	{
-		glm::vec4 newPos = startPos;
-
-		if (i % herdWidth == 0)
+		for(int j = 0; j < herdWidth; ++j)
 		{
-			startPos.z = ogStartPos.z;
-			startPos.x += offset;
+			glm::vec4 newPos = startPos;
+			positionDatas.push_back(newPos);
+			startPos.z += offset;
 		}
-		startPos.z += offset;
-
-		positionDatas.push_back(newPos);
+		startPos.z = ogStartPos.z;
+		startPos.x += offset;
 	}
-
 }
 
 void HerdManager::PopulateBuffers()
@@ -151,7 +149,6 @@ void HerdManager::PopulateBuffers()
 			{
 				directions.emplace_back(1.f, 0.f, 0.f, 1.f);
 			}
-			//directions.push_back(herd->herdDirection);
 		}
 	}
 
@@ -263,6 +260,14 @@ void HerdManager::ForwardSelectedHerdToPos(glm::vec3 pos)
 
 		glm::vec3 temp = pos - midPos;
 		temp.y = 0.f;
+
+		float tempX = abs(temp.x);
+		float tempZ = abs(temp.z);
+
+		if (tempX > tempZ)
+			temp.z = 0.f;
+		else 
+			temp.x = 0.f;
 
 		selectedHerd->herdDirection = glm::vec4(temp, 0.f);
 		selectedHerd->herdDestination = glm::vec4(pos, 1.f);
