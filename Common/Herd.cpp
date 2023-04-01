@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "Herd.h"
 
 #include <glm/gtc/quaternion.hpp>
@@ -28,8 +34,6 @@ Herd::Herd(int num_, glm::vec4 herdDirection_, int side_, Shader* lineShader_,in
 
 Herd::~Herd()
 {
-	//delete posBuffer;
-
 	for (const auto& bo : bos)
 		delete bo;
 

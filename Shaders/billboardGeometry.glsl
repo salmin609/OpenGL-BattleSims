@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #version 330 core
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;

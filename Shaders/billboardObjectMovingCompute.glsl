@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #version 430 core
 
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
@@ -38,17 +44,6 @@ bufferObjsDirections
 {
 	vec4 objsDirections[];
 };
-
-//layout(binding = 6) buffer
-//bufferHerdNumCount {
-//	int herdNumCount[];
-//};
-//
-//layout(binding = 7) buffer
-//bufferHerdMovable
-//{
-//	int herdMovable[];
-//};
 
 
 #define State_Idle 0

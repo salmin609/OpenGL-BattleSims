@@ -54,7 +54,7 @@ public:
 	~BillboardManager();
 	void PopulateBoDatas(const std::vector<std::string>& objPaths);
 	void GenBillboard(const glm::mat4& projMat);
-	void SaveAnimation(std::vector<AnimationModel*> animations, State state,
+	void SaveAnimation(std::vector<AnimationModel*> animations,
 		const std::chrono::system_clock::time_point& current,
 		const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
 		const glm::mat4& projMat, const glm::mat4& modelMat,

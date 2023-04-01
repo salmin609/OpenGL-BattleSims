@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BillboardMovingCS.h"
 
 #include "BillboardAttackCS.h"
@@ -84,42 +90,16 @@ void BillboardMovingCS::PopulateBuffers()
 
 	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdCount,
 		GL_DYNAMIC_DRAW, herdReachedDest.data(), ToInt(MoveCS::herdAttackingCounts)));
-
-	//std::vector<int> ck2;
-	//for (int i = 0; i < herdManager->GetHerdCount(); ++i)
-	//{
-	//	ck2.push_back(1);
-	//}
-
-	//csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->GetHerdCount(),
-	//	GL_DYNAMIC_DRAW, ck2.data(), ToInt(MoveCS::herdMovable)));
 }
 
 void BillboardMovingCS::Move(float dt) const
 {
 	SendBuffersAndUniforms(dt);
 
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::time))
-	//	->BindStorage(ToInt(MoveCS::time));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
-	//	->BindStorage(ToInt(MoveCS::isDead));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::objsCollisionStatus))
-	//	->BindStorage(ToInt(MoveCS::objsCollisionStatus));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdReachedDestination))
-	//	->BindStorage(ToInt(MoveCS::herdReachedDestination));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdAttackingCounts))
-	//	->BindStorage(ToInt(MoveCS::herdAttackingCounts));
-
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))->
 		BindStorage(ToInt(MoveCS::isDead));
 	boObjManager->boCollisionCheckCS->csBuffers->GetBuffer(ToInt(CollisionCheckCS::objsCollisionStatus))->
 		BindStorage(ToInt(MoveCS::objsCollisionStatus));
-	//boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::herdNumCount))->
-	//	BindStorage(ToInt(MoveCS::herdNumCount));
 
 	herdManager->posBuffer->BindStorage(ToInt(MoveCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(MoveCS::objsDirections));

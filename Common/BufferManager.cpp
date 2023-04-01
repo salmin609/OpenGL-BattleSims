@@ -1,3 +1,10 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Description	: Functions for buffer manager
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BufferManager.h"
 
 #include <cassert>

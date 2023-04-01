@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BillboardCollisionCheckCS.h"
 
 #include "BillboardAttackCS.h"
@@ -35,18 +41,6 @@ void BillboardCollisionCheckCS::CollisionCheck(float dt) const
 
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))
 		->BindStorage(ToInt(CollisionCheckCS::isDead));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::objsCollisionStatus))
-	//	->BindStorage(ToInt(CollisionCheckCS::objsCollisionStatus));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::attackedCount))
-	//	->BindStorage(ToInt(CollisionCheckCS::attackedCount));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdAttackingCounts))
-	//	->BindStorage(ToInt(CollisionCheckCS::herdAttackingCounts));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
-	//	->BindStorage(ToInt(CollisionCheckCS::isDead));
 
 	herdManager->posBuffer->BindStorage(ToInt(CollisionCheckCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(CollisionCheckCS::objsDirections));

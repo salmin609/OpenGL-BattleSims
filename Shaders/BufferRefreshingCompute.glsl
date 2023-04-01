@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #version 430 core
 
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
@@ -13,12 +19,6 @@ bufferObjsCollisionStatus
 {
 	int objsCollisionStatus[];
 };
-
-//layout(std430, binding = 2) writeonly buffer
-//bufferHerdMovable
-//{
-//	int herdMovable[];
-//};
 
 uint index;
 uniform int herdCount;
@@ -48,8 +48,6 @@ void main(void)
 		gl_GlobalInvocationID.y * gl_NumWorkGroups.x * gl_WorkGroupSize.x;
 
 	GetBufferOffset();
-
-	//herdMovable[herdIndex] = 1;
 
 	herdAttackingCounts[index] = 0;
 	objsCollisionStatus[index] = 0;

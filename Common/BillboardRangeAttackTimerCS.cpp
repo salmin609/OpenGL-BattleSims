@@ -1,3 +1,8 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
 #include "BillboardRangeAttackTimerCS.h"
 
 #include "BillboardAnimationChangeCS.h"
@@ -26,15 +31,7 @@ void BillboardRangeAttackTimerCS::TimeCheck(float dt) const
 {
 	SendBuffersAndUniforms(dt);
 
-	//boObjManager->
-
 	herdManager->posBuffer->BindStorage(ToInt(RangeAttackTimerCS::objsPoses));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::animationIndices))
-	//	->BindStorage(ToInt(RangeAttackTimerCS::animationIndices));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::rangeTimer))
-	//	->BindStorage(ToInt(RangeAttackTimerCS::rangeTimer));
 
 	boObjManager->boAnimChangeCS->csBuffers->GetBuffer(ToInt(AnimationChangeCS::animationIndices))
 		->BindStorage(ToInt(RangeAttackTimerCS::animationIndices));

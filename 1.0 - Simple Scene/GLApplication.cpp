@@ -28,11 +28,6 @@
 #include "Shader.h"
 
 #include "AnimationModel.h"
-#include "imgui_impl_glfw.h"
-
-#include "Imgui/imgui.h"
-#include "imgui_impl_opengl3.h"
-
 //////////////////////////////////////////////////////////////////////
 
 int displayIndex = 0;
@@ -145,9 +140,6 @@ int main()
     double crntTime = 0.0;
     double timeDiff;
     int counter = 0;
-    //Floor* floor = graphic->floor;
-    //Camera* cam = graphic->cam;
-    int addingNum = 200;
     std::string fpsDisplay = "";
     do
     {
@@ -220,6 +212,7 @@ int main()
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
+    (mods);
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

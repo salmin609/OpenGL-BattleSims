@@ -17,12 +17,6 @@ FrameBuffer::FrameBuffer(int width_, int height_)
 
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    // create a color attachment texture
-    //glGenTextures(1, &textureColorBuffer);
-    //glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1024, 768, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     texture = new Texture(GL_TEXTURE_2D, "");
     texture->LoadEmptyTexture(width, height);
@@ -65,10 +59,6 @@ void FrameBuffer::ReadValue()
     glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
-
-    //Place here
-
-
     
     delete[] pBuffer;
 }

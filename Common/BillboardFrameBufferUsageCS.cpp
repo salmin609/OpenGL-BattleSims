@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BillboardFrameBufferUsageCS.h"
 #include "BillboardMovingCS.h"
 #include "BillboardObjectManager.h"
@@ -28,10 +34,7 @@ BillboardFrameBufferUsageCS::~BillboardFrameBufferUsageCS()
 void BillboardFrameBufferUsageCS::CalculateBOAngle() const
 {
 	SendBuffersAndUniforms(0.f);
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::frameBufferUsageIndex))
-	//	->BindStorage(ToInt(AngleCS::frameBufferUsageIndex));
-
+	
 	herdManager->posBuffer->BindStorage(ToInt(AngleCS::objsPoses));
 	herdManager->directionBuffer->BindStorage(ToInt(AngleCS::objsDirections));
 
@@ -65,7 +68,6 @@ void BillboardFrameBufferUsageCS::SetShaderUniforms()
 	{
 		Herd* herd = herdManager->GetHerd(i);
 
-		//herd->herdBoDirAndOffset.w = static_cast<float>(herdManager->herdOffset[i]);
 		herd->herdOffset = herdManager->herdOffset[i];
 
 		const std::string uName = "herdOffset[" + std::to_string(i) + "]";

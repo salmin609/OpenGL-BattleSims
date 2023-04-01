@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #version 430 core
 
 layout(local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
@@ -38,12 +44,6 @@ bufferHerdAttackingCount
 	int herdAttackingCounts[];
 };
 
-//layout(binding = 4) buffer
-//bufferHerdMovable
-//{
-//	int herdMovable[];
-//};
-
 uniform int herdAttackTypes[32];
 uniform int herdOffset[32];
 uniform int herdCounts[32];
@@ -79,7 +79,6 @@ void main()
 	int attackType = herdAttackTypes[herdIndex];
 	vec4 herdDirection = herdDirections[herdIndex];
 	bool isStop = dot(herdDirection, herdDirection) == 0;
-	//int movable = herdMovable[herdIndex];
 
 
 	if (dead == 0)
@@ -97,7 +96,6 @@ void main()
 
 			if (thisCollisionState == Collision_With_Enemy)
 			{
-				//animationIndices[index] = State_Attack;
 				if (attackType == Attack_Melee)
 				{
 					animationIndices[index] = State_Attack;

@@ -24,15 +24,6 @@ SkyBox::SkyBox()
 
 	int width, height;
 	unsigned char* data;
-	/*std::vector<std::string> textureFaces
-	{
-		"../Images/alldim.png",
-		"../Images/alldim.png",
-		"../Images/alldim.png",
-		"../Images/alldim.png",
-		"../Images/front2.png",
-		"../Images/alldim.png",
-	};*/
 	std::vector<std::string> textureFaces
 	{
 		"../Models/Skybox/skybox_right.jpg",

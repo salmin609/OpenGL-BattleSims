@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BillboardAttackCS.h"
 
 #include "BillboardAnimationChangeCS.h"
@@ -14,7 +20,6 @@ BillboardAttackCS::BillboardAttackCS(Shader* shader_, HerdManager* herdManager_,
 	BillboardObjectManager* boObjManager_):
 ComputeShaderClass(shader_), herdManager(herdManager_), boObjManager(boObjManager_)
 {
-	//timers = new float[herdManager->totalRenderingAmount];
 	isDead = new int[herdManager->totalRenderingAmount];
 
 	BillboardAttackCS::PopulateBuffers();
@@ -23,7 +28,6 @@ ComputeShaderClass(shader_), herdManager(herdManager_), boObjManager(boObjManage
 
 BillboardAttackCS::~BillboardAttackCS()
 {
-	//delete[] timers;
 	delete[] isDead;
 }
 
@@ -32,18 +36,6 @@ void BillboardAttackCS::AttackComputation(float dt) const
 	SendBuffersAndUniforms(dt);
 	boObjManager->boAnimChangeCS->csBuffers->
 		GetBuffer(ToInt(AnimationChangeCS::animationIndices))->BindStorage(ToInt(AttackCS::animationIndices));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::animationIndices))
-	//	->BindStorage(ToInt(AttackCS::animationIndices));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::time))
-	//	->BindStorage(ToInt(AttackCS::time));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
-	//	->BindStorage(ToInt(AttackCS::isDead));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::attackedCount))
-	//	->BindStorage(ToInt(AttackCS::attackedCount));
 
 	herdManager->posBuffer->BindStorage(ToInt(AttackCS::objsPoses));
 
@@ -99,12 +91,4 @@ void BillboardAttackCS::PopulateBuffers()
 		GL_DYNAMIC_DRAW, attackedCount.data(), ToInt(AttackCS::attackedCount)));
 
 	std::vector<int> herdNumCount;
-
-	/*for(int i = 0; i < herdManager->GetHerdCount(); ++i)
-	{
-		herdNumCount.push_back(herdManager->GetHerd(i)->count);
-	}
-
-	csBuffers->AddBuffer(new Buffer(GL_SHADER_STORAGE_BUFFER, sizeof(int) * herdManager->GetHerdCount(),
-		GL_DYNAMIC_DRAW, herdNumCount.data(), ToInt(AttackCS::herdNumCount)));*/
 }

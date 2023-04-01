@@ -1,3 +1,9 @@
+/*
+ * Author		: Ryan Kim.
+ * Date			: 2023-03-17
+ * Copyright © 2022 DigiPen (USA) LLC. and its owners. All Rights Reserved.
+ */
+
 #include "BillboardAnimationChangeCS.h"
 
 #include "BillboardAttackCS.h"
@@ -32,21 +38,6 @@ void BillboardAnimationChangeCS::ResetAnimation()
 	SendBuffersAndUniforms(0.f);
 
 	csBuffers->BindBuffers();
-	//boObjManager->boMovingCS->csBuffers->
-	//	GetBuffer(ToInt(MoveCS::animationIndices))
-	//		->BindStorage(ToInt(AnimationChangeCS::animationIndices));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::isDead))
-	//	->BindStorage(ToInt(AnimationChangeCS::isDead));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::objsCollisionStatus))
-	//	->BindStorage(ToInt(AnimationChangeCS::objsCollisionStatus));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::herdAttackingCounts))
-	//	->BindStorage(ToInt(AnimationChangeCS::herdAttackingCounts));
-
-	//boObjManager->csBuffers->GetBuffer(ToInt(TotalBuffer::animationIndices))
-	//	->BindStorage(ToInt(AnimationChangeCS::animationIndices));
 
 	boObjManager->boAttackCS->csBuffers->GetBuffer(ToInt(AttackCS::isDead))
 		->BindStorage(ToInt(AnimationChangeCS::isDead));
@@ -56,10 +47,7 @@ void BillboardAnimationChangeCS::ResetAnimation()
 
 	boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdAttackingCounts))
 		->BindStorage(ToInt(AnimationChangeCS::herdAttackingCounts));
-
-	//boObjManager->boMovingCS->csBuffers->GetBuffer(ToInt(MoveCS::herdMovable))
-	//	->BindStorage(ToInt(AnimationChangeCS::herdMovable));
-
+	
 	Dispatch(herdManager->totalRenderingAmount / 64);
 }
 

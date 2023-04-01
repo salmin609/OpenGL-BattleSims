@@ -183,8 +183,7 @@ void BillboardManager::GenBillboard(const glm::mat4& projMat)
 	}
 }
 
-void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations, 
-	State state,
+void BillboardManager::SaveAnimation(std::vector<AnimationModel*> animations,
 	const std::chrono::system_clock::time_point& current,
 	const std::vector<std::vector<std::vector<FrameBuffer*>>>& frameBuffers,
 	const glm::mat4& projMat, const glm::mat4& modelMat,
@@ -309,7 +308,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 	for (int i = 0; i < datas->diffTimeAnimCount; ++i)
 	{
 		SaveAnimation(datas->obj->animState->idleAnimations,
-			State::Idle,
 			current,
 			datas->frameBuffers,
 			projMat,
@@ -320,7 +318,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 
 		
 		SaveAnimation(datas->obj->animState->attackAnimations,
-			State::Attack,
 			current,
 			datas->frameBuffers,
 			projMat,
@@ -330,7 +327,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			attackCount);
 
 		SaveAnimation(datas->obj->animState->painAnimations,
-			State::Pain,
 			current,
 			datas->frameBuffers,
 			projMat,
@@ -340,7 +336,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			painCount);
 
 		SaveAnimation(datas->obj->animState->runAnimations,
-			State::Run,
 			current,
 			datas->frameBuffers,
 			projMat,
@@ -350,7 +345,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			runCount);
 
 		SaveAnimation(datas->obj->animState->deathAnimations,
-			State::Death,
 			current,
 			datas->frameBuffers,
 			projMat,
@@ -359,15 +353,6 @@ void BillboardManager::GenerateBillboard(const std::chrono::system_clock::time_p
 			fbSlotIndex,
 			deathCount);
 	}
-	//if(datas->name == "Mutant")
-	//{
-	//	std::cout << "Idle Usage Count : " << idleCount << std::endl;
-	//	std::cout << "Attack Usage Count : " << attackCount << std::endl;
-	//	std::cout << "Run Usage Count : " << runCount << std::endl;
-	//	std::cout << "Pain Usage Count : " << painCount << std::endl;
-	//	std::cout << "Death Usage Count : " << deathCount << std::endl;
-	//}
-		
 }
 
 void BillboardManager::SaveAngleTextures(BillboardAnimatingDatas* datas)
